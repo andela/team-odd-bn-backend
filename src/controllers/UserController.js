@@ -1,12 +1,16 @@
 import dotenv from 'dotenv';
 import HttpStatus from 'http-status-codes';
 import { users } from '../database/models';
-import HashedPassword from '../helpers/HashPassword';
+import HashPassword from '../helpers/HashPassword';
 import Customize from '../helpers/Customize';
-import AuthToken from '../helpers/AuthenticateToken';
 import emailHelper from '../helpers/EmailHelper';
 import Token from '../helpers/TokenHelper';
+import AuthenticateToken from '../helpers/AuthenticateToken';
+import UserService from '../services/UserService';
+import passwordHelper from '../helpers/resetPasswordEmail';
 
+const { hashPassword } = HashPassword;
+const { getAUser } = UserService;
 dotenv.config();
 
 /**
@@ -24,7 +28,7 @@ class UserController {
    */
   static async signUp(req, res) {
     try {
-      const hashedPassword = HashedPassword.hashPassword(req.body.password);
+      const hashedPassword = HashPassword.hashPassword(req.body.password);
       const {
         firstName,
         lastName,
@@ -41,7 +45,7 @@ class UserController {
         password,
         ...data
       } = newUser.dataValues;
-      const token = AuthToken.signToken(data);
+      const token = AuthenticateToken.signToken(data);
       data.token = token;
       emailHelper.verifyEmailHelper(req, newUser.dataValues);
       return Customize.successMessage(req, res, 'User created successfully, Please check your email', token, 201);
@@ -81,7 +85,7 @@ class UserController {
     if (!user) {
       return Customize.errorMessage(req, res, 'Invalid ID', 400);
     }
-    emailHelper.verifyEmailHelper(req, user);
+    emailHelper.verifyEmailHelper(req, user.dataValues);
     return Customize.successMessage(req, res, 'An email has been sent to you.', '', 200);
   }
 
@@ -96,7 +100,7 @@ class UserController {
   static async signin(req, res) {
     const { result } = req;
     const { password: pwd, ...data } = result.dataValues;
-    const token = AuthToken.signToken(data);
+    const token = AuthenticateToken.signToken(data);
     return Customize.successMessage(req, res, 'Successfuly login', token, 200);
   }
 
@@ -185,7 +189,7 @@ class UserController {
    * @returns {object} object
    */
   static OAuthfacebook(req, res) {
-    const token = AuthToken.signToken(req.user);
+    const token = AuthenticateToken.signToken(req.user);
     const {
       id, email, firstName, lastName, signupType, isVerified
     } = req.user;
@@ -202,7 +206,7 @@ class UserController {
   * @returns {object} object
   */
   static OAuthgoogle(req, res) {
-    const token = AuthToken.signToken(req.user);
+    const token = AuthenticateToken.signToken(req.user);
     const {
       id, email, firstName, lastName, signupType, isVerified
     } = req.user;
@@ -210,6 +214,42 @@ class UserController {
       id, email, firstName, lastName, signupType, isVerified, token
     };
     return Customize.successMessage(req, res, 'Logged in with google successfully', data, HttpStatus.OK);
+  }
+
+  /**
+   * @static
+   * @param {Object} req request object
+   * @param {Object} res response object
+   * @returns {Object} response
+   */
+  static async forgotPasswordController(req, res) {
+    const { email } = req.body;
+    const user = await getAUser({ email });
+    if (!user) {
+      return Customize.errorMessage(req, res, 'User not found', 400);
+    }
+    passwordHelper.resetPasswordEmailHelper(req, user);
+    return Customize.successMessage(req, res, 'A reset link has been sent to your email. Please check your email!', user.email, 200);
+  }
+
+  /**
+   * @static
+   * @param {Object} req request object
+   * @param {Object} res response object
+   * @returns {Object} response
+   */
+  static async resetPasswordController(req, res) {
+    const { password } = req.body;
+    const { id } = req.user;
+    const user = await getAUser({ id });
+    const hashedPassword = hashPassword(password);
+    user.password = hashedPassword;
+    user.save();
+    if (!user) {
+      return Customize.errorMessage(req, res, 'Oops reset password was not successful', user.password, 404);
+    }
+    passwordHelper.resetPasswordSuccessfulHelper(user);
+    return Customize.successMessage(req, res, 'Password reset successfull!', user.password, 200);
   }
 }
 

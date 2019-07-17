@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       isVerified: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.STRING
       },
       signupType: {
         type: Sequelize.STRING
