@@ -91,5 +91,8 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+#DB files
+/src/temp-server.js
+/package-lock.json
 
 # End of https://www.gitignore.io/api/node
