@@ -5,12 +5,22 @@
   "main": "index.js",
   "scripts": {
     "eslint": "eslint --ignore-path .gitignore .",
-    "dev": "export NODE_ENV=development && nodemon src/temp-server.js ",
-    "test": "export NODE_ENV=testing && nodemon src/temp-server.js "
+    "dev": "export NODE_ENV=development && nodemon --exec babel-node src/temp-server.js ",
+    "test": "export NODE_ENV=testing && nodemon --exec babel-node src/temp-server.js ",
+    "start": "NODE_ENV=development nodemon  --exec babel-node src/index.js",
+    "db-init": "sequelize init",
+    "dummy-model": "npx sequelize-cli model:generate --name user --attributes firstName:string,lastName:string,email:string",
+    "db-migrate": "sequelize db:migrate "
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
   "dependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/node": "^7.4.5",
+    "@babel/polyfill": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/register": "^7.4.4",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
     "dotenv": "^6.0.0",
