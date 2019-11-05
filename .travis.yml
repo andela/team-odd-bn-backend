@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - 'stable'
+install: npm install
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database barefoot_nomad_test_db;' -U postgres
+script: npm test
+after_success: 
+ - npm run coverage
+ 
