@@ -4,8 +4,9 @@
   "description": "A Social platform for the creative at heart",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "eslint": "eslint --ignore-path .gitignore ."
+    "eslint": "eslint --ignore-path .gitignore .",
+    "dev": "export NODE_ENV=development && nodemon src/temp-server.js ",
+    "test": "export NODE_ENV=testing && nodemon src/temp-server.js "
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
@@ -25,11 +26,14 @@
     "mongoose-unique-validator": "^2.0.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "pg": "^7.12.1",
+    "pg-hstore": "^2.3.3",
     "request": "^2.87.0",
     "underscore": "^1.9.1"
   },
   "devDependencies": {
     "eslint": "^6.6.0",
-    "eslint-config-airbnb-base": "^14.0.0"
+    "eslint-config-airbnb-base": "^14.0.0",
+    "nodemon": "^1.19.4"
   }
 }
