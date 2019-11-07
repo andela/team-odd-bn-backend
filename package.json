@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "eslint": "eslint --ignore-path .gitignore .",
-    "dev": "export NODE_ENV=development && nodemon src/temp-server.js ",
+    "dev": "export NODE_ENV=testing && mocha src/tests/*.js --exit ",
     "test": "NODE_ENV=testing nyc mocha ./src/tests/*.js  --timeout 200000 --exit",
-    "coverage": "nyc npm test  && npm run coveralls-coverage"
-    
+    "coverage": "nyc npm test  && npm run coveralls-coverage",
+    "dev-start": "nodemon --exec babel-node ./src/index.js"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
@@ -25,14 +25,16 @@
     "dotenv": "^6.0.0",
     "ejs": "^2.6.1",
     "errorhandler": "^1.5.0",
-    "express": "^4.16.3",
+    "express": "^4.17.1",
     "express-jwt": "^5.3.1",
-    "express-session": "^1.15.6",
+    "express-session": "^1.17.0",
     "jsonwebtoken": "^8.3.0",
     "method-override": "^2.3.10",
     "methods": "^1.1.2",
     "mongoose": "^5.2.2",
     "mongoose-unique-validator": "^2.0.1",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.19.4",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "pg": "^7.12.1",
@@ -40,6 +42,8 @@
     "request": "^2.87.0",
     "sequelize": "^5.21.2",
     "sequelize-cli": "^5.5.1",
+    "swagger-jsdoc": "^3.4.0",
+    "swagger-ui-express": "^4.1.2",
     "underscore": "^1.9.1"
   },
   "devDependencies": {
