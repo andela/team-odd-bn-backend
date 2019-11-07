@@ -6,7 +6,9 @@
   "scripts": {
     "eslint": "eslint --ignore-path .gitignore .",
     "dev": "export NODE_ENV=development && nodemon src/temp-server.js ",
-    "test": "export NODE_ENV=testing && mocha src/tests/*.js --exit "
+    "test": "NODE_ENV=testing nyc mocha ./src/tests/*.js  --timeout 200000 --exit",
+    "coverage": "nyc npm test  && npm run coveralls-coverage"
+    
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
@@ -46,7 +48,8 @@
     "coveralls": "^3.0.7",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
+    "nodemon": "^1.19.4",
     "mocha": "^6.2.2",
-    "nodemon": "^1.19.4"
+    "nyc": "^14.1.1"
   }
 }
