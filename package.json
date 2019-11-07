@@ -5,10 +5,9 @@
   "main": "index.js",
   "scripts": {
     "eslint": "eslint --ignore-path .gitignore .",
-    "dev": "export NODE_ENV=testing && mocha src/tests/*.js --exit ",
+    "dev": "nodemon --exec babel-node ./src/index.js",
     "test": "NODE_ENV=testing nyc mocha ./src/tests/*.js  --timeout 200000 --exit",
-    "coverage": "nyc npm test  && npm run coveralls-coverage",
-    "dev-start": "nodemon --exec babel-node ./src/index.js"
+    "coverage": "nyc npm test  && npm run coveralls-coverage"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",

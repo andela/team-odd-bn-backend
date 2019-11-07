@@ -1,0 +1,22 @@
+version: '3.7'
+services:
+  app: 
+      container_name: odd_bn
+      restart: always
+      env_file: .env
+      environment:
+        - NODE_ENV=$NODE_ENV
+      build: .
+      ports:
+        - "300:3000"
+      links:
+        - db
+  db:
+    container_name: postgresDb
+    image: "postgres:11"
+    volumes:
+      - my_dbdata:/var/lib/postgresql/data
+    ports:
+      - "54320:5432"
+volumes:
+  my_dbdata:
