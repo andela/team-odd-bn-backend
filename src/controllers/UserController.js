@@ -3,6 +3,8 @@ import { users } from '../database/models';
 import HashedPassword from '../helpers/HashPassword';
 import tokenGenerator from '../helpers/AuthenticateToken';
 import customize from '../helpers/Customize';
+import Customize from '../helpers/Customize';
+import AuthToken from '../helpers/AuthenticateToken';
 
 dotenv.config();
 /**
@@ -44,5 +46,21 @@ class UserController {
       return res.status(400).json({ error: err.message });
     }
   }
+
+  /**
+  * User can be able to sign in
+  * @description POST /api/auth/signin
+  * @static
+  * @param {object} req request object
+  * @param {object} res response object
+  * @returns {object} data
+  */
+  static async signin(req, res) {
+    const { result } = req;
+    const { password: pwd, ...data } = result.dataValues;
+    const token = AuthToken.signToken(data);
+    return Customize.successMessage(req, res, 'Successfuly login', token, 200);
+  }
 }
+
 export default UserController;

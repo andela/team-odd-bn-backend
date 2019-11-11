@@ -20,11 +20,14 @@ const options = {
     servers: [
       {
         url: 'http://localhost:3000/api/v1'
+      },
+      {
+        url: 'https://team-odd-barefoot-backend.herokuapp.com/api/v1'
       }
     ]
   },
   apis: [
-    path.resolve(__dirname, '../database/api/authRoute.js'),
+    path.resolve(__dirname, '../database/models/users.js'),
     path.resolve(__dirname, '../routes/api/authRoute.js')
   ]
 };

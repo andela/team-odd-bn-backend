@@ -2,6 +2,8 @@ import express from 'express';
 import UserController from '../../controllers/UserController';
 import isUserExist from '../../middlewares/FindUsers';
 import ValidateUser from '../../middlewares/ValidateUser';
+import validateCredentials from '../../middlewares/validateCredentials';
+
 
 const authRouter = express.Router();
 
@@ -42,7 +44,6 @@ authRouter.post('/signup', ValidateUser.signupRules(), ValidateUser.validateSign
  *            format: email
  *          password:
  *            type: string
-
  *        example:
  *           firstName: dnffd
  *           lastName: fkbndf
@@ -50,5 +51,48 @@ authRouter.post('/signup', ValidateUser.signupRules(), ValidateUser.validateSign
  *           password: yourpassword
  *
  */
+
+authRouter
+  .post(
+    '/signin',
+    ValidateUser.signinRules(),
+    ValidateUser.validateSignUp,
+    validateCredentials,
+    UserController.signin
+  );
+/**
+* @swagger
+*
+* /auth/signin:
+*    post:
+*      summary: User login
+*      tags: [Users]
+*      requestBody:
+*        required: true
+*        content:
+*          application/json:
+*            schema:
+*              $ref: '#/components/schemas/Signin'
+*      responses:
+*        "200":
+*          description: 'A user schema'
+*        "400":
+*          description: 'Bad request'
+*        "500":
+*          description: 'Server Error'
+* components:
+*   schemas:
+*     Signin:
+*       type: "object"
+*       properties:
+*         email:
+*           type: string
+*         password:
+*           type: string
+*       required:
+*         - 'email'
+*         - 'password'
+*
+*/
 
 export default authRouter;
