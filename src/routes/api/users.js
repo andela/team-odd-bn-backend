@@ -1,11 +1,17 @@
+import userController from '../../controllers/users.controller';
+import validateUser from '../../middlewares/ValidateUser';
+import isUserExist from '../../middlewares/findUser';
+
 const router = require('express').Router();
 
+const { validateSignup } = validateUser;
+router.post('/auth/signup', validateSignup, isUserExist, userController.signUp);
 /**
  * @swagger
  *
- * /users/login:
+ * /auth/signup:
  *    post:
- *      summary: User login
+ *      summary: User can signup
  *      tags: [Users]
  *      requestBody:
  *        required: true
@@ -14,8 +20,8 @@ const router = require('express').Router();
  *            schema:
  *              $ref: '#/components/schemas/User'
  *      responses:
- *        "200":
+ *        "201":
  *          description: A user schema
  */
 
-module.exports = router;
+export default router;

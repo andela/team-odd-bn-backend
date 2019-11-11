@@ -24,7 +24,7 @@ const options = {
     ]
   },
   apis: [
-    path.resolve(__dirname, '../database/models/User.js'),
+    path.resolve(__dirname, '../database/models/users.js'),
     path.resolve(__dirname, '../routes/api/users.js')
   ]
 };
