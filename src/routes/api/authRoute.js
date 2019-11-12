@@ -7,6 +7,9 @@ import validateCredentials from '../../middlewares/validateCredentials';
 
 const authRouter = express.Router();
 
+const { verifyEmailController, resendEmailController } = UserController;
+
+
 authRouter.post('/signup', ValidateUser.signupRules(), ValidateUser.validateSignUp, isUserExist, UserController.signUp);
 /**
  * @swagger
@@ -52,6 +55,7 @@ authRouter.post('/signup', ValidateUser.signupRules(), ValidateUser.validateSign
  *
  */
 
+
 authRouter
   .post(
     '/signin',
@@ -94,5 +98,46 @@ authRouter
 *         - 'password'
 *
 */
+
+authRouter.get('/verify-email/:id/:token', verifyEmailController);
+/**
+ * @swagger
+ *
+ * /verify-email/:id/:token:
+ *    get:
+ *      summary: verify email
+ *      tags: [Email]
+ *      requestBody:
+ *        required: false
+ *      responses:
+ *        "200":
+ *          description: 'A response message'
+ *        "400":
+ *          description: 'Bad request'
+ *        "500":
+ *          description: 'Server Error'
+ *
+ */
+
+
+authRouter.get('/:id/resend-email', resendEmailController);
+/**
+ * @swagger
+ *
+ * /:id/resend-email:
+ *    get:
+ *      summary: resend email
+ *      tags: [Email]
+ *      requestBody:
+ *        required: false
+ *      responses:
+ *        "200":
+ *          description: 'A response message'
+ *        "400":
+ *          description: 'Bad request'
+ *        "500":
+ *          description: 'Server Error'
+ *
+ */
 
 export default authRouter;

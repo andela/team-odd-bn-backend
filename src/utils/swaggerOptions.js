@@ -1,4 +1,4 @@
-const path = require('path');
+import path from 'path';
 // Swagger definition
 const options = {
   swaggerDefinition: {
@@ -31,4 +31,4 @@ const options = {
     path.resolve(__dirname, '../routes/api/socialRoute.js')
   ]
 };
-module.exports = options;
+export default options;

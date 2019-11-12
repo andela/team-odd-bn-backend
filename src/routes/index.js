@@ -9,10 +9,7 @@ router.use('/api/v1', api);
 const specs = swaggerJsdoc(swaggerOption);
 
 router.use('/api-docs', swaggerUi.serve);
-router.get(
-  '/api-docs',
-  swaggerUi.setup(specs, {
-    explorer: true
-  })
-);
+router.get('/api-docs', swaggerUi.setup(specs, { explorer: true }));
+
+
 export default router;
