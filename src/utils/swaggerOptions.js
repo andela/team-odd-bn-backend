@@ -27,8 +27,8 @@ const options = {
     ]
   },
   apis: [
-    path.resolve(__dirname, '../database/models/users.js'),
-    path.resolve(__dirname, '../routes/api/authRoute.js')
+    path.resolve(__dirname, '../routes/api/authRoute.js'),
+    path.resolve(__dirname, '../routes/api/socialRoute.js')
   ]
 };
 module.exports = options;
