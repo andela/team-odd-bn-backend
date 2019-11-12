@@ -5,7 +5,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const swaggerOption = require('../utils/swaggerOptions');
 
-router.use('/api/', api);
+router.use('/api/v1/', api);
 const specs = swaggerJsdoc(swaggerOption);
 router.use('/api-docs', swaggerUi.serve);
 router.get(

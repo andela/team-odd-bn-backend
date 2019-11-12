@@ -10,7 +10,7 @@ class Validations {
     * @param {object} req request object
     * @param {object} res response object
     * @param {object} next next
-    * @memberof UserController
+    * @memberof Validations
     * @returns {object} data
     */
   static validateSignup(req, res, next) {

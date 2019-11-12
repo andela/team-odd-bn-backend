@@ -7,14 +7,13 @@
     "start": "./src/index.js --exec babel-node --",
     "build": "babel src -d dist ",
     "eslint": "eslint --ignore-path .gitignore .",
-    "dev": "export NODE_ENV=testing && mocha src/tests/*.js --exit ",
     "test": "NODE_ENV=testing npm run dropTables && NODE_ENV=testing npm run db-migrate && NODE_ENV=testing nyc --reporter=text --reporter=html --require @babel/polyfill --require @babel/register mocha ./src/tests/*.js  --timeout 200000 --exit",
     "coverage": "nyc npm test  && npm run coveralls-coverage",
     "dev-start": "nodemon --exec babel-node ./src/index.js",
     "create-db": "npx sequelize-cli model:generate --name users --attributes firstName:string,lastName:string,email:string,password:string && sequelize db:migrate",
     "db-migrate": "sequelize db:migrate",
     "dropTables": "sequelize db:migrate:undo:all"
-  }, 
+  },
   "author": "Andela Simulations Programme",
   "license": "MIT",
   "dependencies": {
@@ -41,6 +40,7 @@
     "pg-hstore": "^2.3.3",
     "request": "^2.87.0",
     "sequelize": "^5.21.2",
+    "sequelize-cli": "^5.5.1",
     "swagger-jsdoc": "^3.4.0",
     "swagger-ui-express": "^4.1.2",
     "underscore": "^1.9.1"

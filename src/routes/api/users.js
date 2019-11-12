@@ -1,4 +1,4 @@
-import userController from '../../controllers/users.controller';
+import userController from '../../controllers/userController';
 import validateUser from '../../middlewares/ValidateUser';
 import isUserExist from '../../middlewares/findUser';
 

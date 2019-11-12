@@ -1,7 +1,5 @@
 import dotenv from 'dotenv';
-import {
-  users
-} from '../database/models';
+import { users } from '../database/models';
 import HashedPassword from '../helpers/hashPassword';
 import tokenGenerator from '../helpers/authenticateToken';
 
@@ -42,7 +40,7 @@ class UserController {
       data.token = token;
       return res.status(201).json({
         message: 'User created successfully',
-        data
+        data: token
       });
     } catch (err) {
       return res.status(400).json({ error: err.message });

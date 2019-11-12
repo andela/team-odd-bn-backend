@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 /**
  * @export
- * @class hashPassword
+ * @class HashedPassword
  */
 export default class HashedPassword {
   /**
