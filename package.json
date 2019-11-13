@@ -4,16 +4,22 @@
   "description": "A Social platform for the creative at heart",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=dev nodemon ./src/index.js --exec babel-node --",
+    "start": "./src/index.js --exec babel-node --",
     "build": "babel src -d dist ",
     "eslint": "eslint --ignore-path .gitignore .",
-    "dev": "nodemon --exec babel-node ./src/index.js",
-    "test": "NODE_ENV=testing nyc mocha ./src/tests/*.js  --timeout 200000 --exit",
-    "coverage": "nyc npm test  && npm run coveralls-coverage"
+    "test": "NODE_ENV=testing npm run dropTables && NODE_ENV=testing npm run db-migrate && NODE_ENV=testing nyc --reporter=text --reporter=html --require @babel/polyfill --require @babel/register mocha ./src/tests/*.js  --timeout 200000 --exit",
+    "coverage": "nyc npm test  && npm run coveralls-coverage",
+    "dev-start": "nodemon --exec babel-node ./src/index.js",
+    "create-db": "npx sequelize-cli model:generate --name users --attributes firstName:string,lastName:string,email:string,password:string,isVerified:string,signupType:string && sequelize db:migrate",
+    "db-migrate": "sequelize db:migrate",
+    "dropTables": "sequelize db:migrate:undo:all"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",
   "dependencies": {
+    "@babel/polyfill": "^7.7.0",
+    "@hapi/joi": "^16.1.7",
+    "bcrypt": "^3.0.6",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
     "dotenv": "^6.0.0",
@@ -22,6 +28,7 @@
     "express": "^4.16.3",
     "express-jwt": "^5.3.1",
     "express-session": "^1.15.6",
+    "express-validator": "^6.2.0",
     "jsonwebtoken": "^8.3.0",
     "method-override": "^2.3.10",
     "methods": "^1.1.2",
@@ -33,7 +40,13 @@
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",
     "request": "^2.87.0",
-    "underscore": "^1.9.1"
+    "sequelize": "^5.21.2",
+    "sequelize-cli": "^5.5.1",
+    "swagger-jsdoc": "^3.4.0",
+    "swagger-ui-express": "^4.1.2",
+    "underscore": "^1.9.1",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.0",
@@ -44,8 +57,6 @@
     "@babel/register": "^7.7.0",
     "@babel/runtime": "^7.7.2",
     "babel-loader": "^8.0.6",
-    "chai": "^4.2.0",
-    "chai-http": "^4.3.0",
     "coveralls": "^3.0.7",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
