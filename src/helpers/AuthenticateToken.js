@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import Customize from './Customize';
 
 dotenv.config();
 /**
@@ -18,5 +19,28 @@ export default class AuthenticateToken {
     const { lastName, firstName, ...newData } = data;
     const token = jwt.sign(newData, process.env.JWT_KEY);
     return token;
+  }
+
+  /**
+    * verify token
+    * @static
+    * @param {object} req request
+    * @param {object} res response
+    * @param {object} next next object
+    * @memberof AuthenticateToken
+    * @returns {object} user
+    */
+  static verifyToken(req, res, next) {
+    const token = req.headers.token ? req.headers.token : req.params.token;
+    if (!token) {
+      return Customize.errorMessage(req, res, 'Please, insert the token', 401);
+    }
+    jwt.verify(token, process.env.JWT_KEY, (err, result) => {
+      if (err) {
+        return Customize.errorMessage(req, res, err, 401);
+      }
+      req.user = result;
+      next();
+    });
   }
 }

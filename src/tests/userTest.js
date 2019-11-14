@@ -2,13 +2,13 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import dotenv from 'dotenv';
 import { describe, it } from 'mocha';
-import TokenHelper from '../helpers/TokenHelper';
+import AuthenticateToken from '../helpers/AuthenticateToken';
 import app from '../index';
 import mockData from './mock/mockData';
 
 const user = mockData.veryfyEmailUser;
 
-const token = TokenHelper.generateToken(user);
+const token = AuthenticateToken.signToken(user);
 chai.use(chaiHttp);
 chai.should();
 
@@ -78,7 +78,7 @@ describe('Authentication test', () => {
   });
   it('Test verify email route with invalid token', (done) => {
     chai.request(app).get('/api/v1/auth/verify-email/1/invalid-token').end((err, res) => {
-      res.should.have.status(400);
+      res.should.have.status(401);
       res.body.should.be.an('object');
       done();
     });

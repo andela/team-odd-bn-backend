@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     signupType: DataTypes.STRING
   }, {});
   users.associate = function(models) {
-    // associations can be defined here
+    users.hasMany(models.tripRequest, {foreignKey: 'id'});
   };
   return users;
 };

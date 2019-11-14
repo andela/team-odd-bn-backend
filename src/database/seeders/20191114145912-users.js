@@ -6,13 +6,14 @@ module.exports = {
         firstName: 'John',
         lastName: 'Doe',
         email: 'demo@gmail.com',
+        isVerified:'false',
+        signupType:'normal',
         createdAt: new Date(),
         updatedAt: new Date()
       }], {});
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('Users', null, {});
+    return queryInterface.bulkDelete('users', null, {});
   }
 };
-

@@ -4,6 +4,7 @@ import isUserExist from '../../middlewares/FindUsers';
 import ValidateUser from '../../middlewares/ValidateUser';
 import validateCredentials from '../../middlewares/validateCredentials';
 import Middlewares from '../../middlewares/ForgotPasswordMiddlewares';
+import AuthenticateToken from '../../helpers/AuthenticateToken';
 
 const authRouter = express.Router();
 
@@ -34,14 +35,14 @@ authRouter.post('/signup', ValidateUser.signupRules(), ValidateUser.validateSign
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/User'
+ *              $ref: '#/components/schemas/user'
  *      responses:
  *        "201":
  *          description: A user schema
  *
  * components:
  *    schemas:
- *      User:
+ *      user:
  *        type: object
  *        required:
  *          - firstName
@@ -109,7 +110,7 @@ authRouter
 *
 */
 
-authRouter.get('/verify-email/:id/:token', verifyEmailController);
+authRouter.get('/verify-email/:id/:token', AuthenticateToken.verifyToken, verifyEmailController);
 /**
  * @swagger
  *
