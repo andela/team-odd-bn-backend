@@ -19,13 +19,13 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:3000/api'
+        url: 'http://localhost:3000/api/v1'
       }
     ]
   },
   apis: [
-    path.resolve(__dirname, '../database/models/User.js'),
-    path.resolve(__dirname, '../routes/api/users.js')
+    path.resolve(__dirname, '../database/api/authRoute.js'),
+    path.resolve(__dirname, '../routes/api/authRoute.js')
   ]
 };
 module.exports = options;
