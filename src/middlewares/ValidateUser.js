@@ -3,7 +3,7 @@ import Customization from '../helpers/Customize';
 
 /**
  * @export
- * @class ValidationUser
+ * @class ValidateUser
  */
 class ValidateUser {
   /**
@@ -33,6 +33,18 @@ class ValidateUser {
     return [
       check('firstName', 'first name should be valid').isAlpha(),
       check('lastName', 'last name should be valid').isAlpha(),
+      check('email', 'email should be valid').trim().isEmail(),
+      check('password', 'minimum password length is 6').isLength({ min: 6 }),
+    ];
+  }
+
+  /**
+    * Validate input
+    * @static
+    * @returns {object} errors
+    */
+  static signinRules() {
+    return [
       check('email', 'email should be valid').trim().isEmail(),
       check('password', 'minimum password length is 6').isLength({ min: 6 }),
     ];
