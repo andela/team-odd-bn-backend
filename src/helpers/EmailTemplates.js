@@ -1,4 +1,8 @@
-import TokenHelper from './TokenHelper';
+import dotenv from 'dotenv';
+import AuthenticateToken from './AuthenticateToken';
+
+dotenv.config();
+const { EMAIL_ADDRESS } = process.env;
 
 /**
  * @export
@@ -13,7 +17,7 @@ class EmailTemplates {
    * @returns {Object} template toi use
    */
   static verifyEmailTemplate(req, user) {
-    const token = TokenHelper.generateToken(user);
+    const token = AuthenticateToken.signToken(user);
     const appUrl = `${req.protocol}://${req.headers.host}/api/v1/auth/verify-email/${user.id}/${token}`;
     const resendUrl = `${req.protocol}://${req.headers.host}/api/v1/auth/${user.id}/resend-email`;
     return {
@@ -79,6 +83,42 @@ class EmailTemplates {
           </div>
        </div>
      </div>`
+    };
+  }
+
+  /**
+   * email templates
+   * @static
+   * @param {Object} req request object
+   * @param {Object} user user object
+   * @returns {Object} sendEmail
+   */
+  static forgotPasswordTemplate(req, user) {
+    const token = AuthenticateToken.signToken(user.dataValues);
+
+    const appUrl = `${req.protocol}://${req.headers.host}`;
+    return {
+      to: user.email,
+      from: EMAIL_ADDRESS,
+      subject: 'Reset Password Link',
+      html: `<h4>Hi, ${user.firstName},</h4>
+    <p>You requested for a password reset, kindly use this <a href="${appUrl}/api/v1/auth/reset-password/${token}">link</a> to reset your password</p>`
+    };
+  }
+
+  /**
+   * register a new
+   * @static
+   * @param {Object} user the template to use
+   * @returns {Object} sendEmail
+   */
+  static successResetPasswordTemplate(user) {
+    return {
+      to: user.email,
+      from: EMAIL_ADDRESS,
+      subject: 'Password Reset Successful',
+      html: `<h4>Hi, ${user.firstName},</h4>
+     <p>Your password has been successfully reset!</p>`
     };
   }
 }

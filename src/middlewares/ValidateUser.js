@@ -49,5 +49,17 @@ class ValidateUser {
       check('password', 'minimum password length is 6').isLength({ min: 6 }),
     ];
   }
+
+  /**
+    * Validate input
+    * @static
+    * @returns {object} errors
+    */
+  static requestOnewayTripRules() {
+    return [
+      check('location', 'email should be valid').isAlphanumeric().isLength({ min: 1 }),
+      check('reason', 'reason should be characters').isLength({ min: 2 }),
+    ];
+  }
 }
 export default ValidateUser;

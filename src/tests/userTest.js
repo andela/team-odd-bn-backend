@@ -4,10 +4,9 @@ import dotenv from 'dotenv';
 import { describe, it } from 'mocha';
 import TokenHelper from '../helpers/TokenHelper';
 import app from '../index';
+import mockData from './mock/mockData';
 
-import mockdata from './mock/mockData';
-
-const user = mockdata.veryfyEmailUser;
+const user = mockData.veryfyEmailUser;
 
 const token = TokenHelper.generateToken(user);
 chai.use(chaiHttp);
@@ -17,7 +16,7 @@ dotenv.config();
 
 const {
   ...data
-} = mockdata.users;
+} = mockData.users;
 
 describe('Authentication test', () => {
   it('should be able to signup', (done) => {
@@ -52,7 +51,7 @@ describe('Authentication test', () => {
     const {
       firstName,
       ...da
-    } = mockdata.users;
+    } = mockData.users;
     chai.request(app).post('/api/v1/auth/signup').send(da).end((err, res) => {
       res.should.have.status(400);
       res.body.should.be.an('object');
@@ -70,7 +69,7 @@ describe('Authentication test', () => {
     const {
       lastName,
       ...d
-    } = mockdata.users;
+    } = mockData.users;
     chai.request(app).post('/api/v1/auth/signup').send(d).end((err, res) => {
       res.should.have.status(400);
       res.body.should.be.an('object');
@@ -88,7 +87,7 @@ describe('Authentication test', () => {
     const {
       email,
       ...dat
-    } = mockdata.users;
+    } = mockData.users;
     chai.request(app).post('/api/v1/auth/signup').send(dat).end((err, res) => {
       res.should.have.status(400);
       res.body.should.be.an('object');
@@ -106,7 +105,7 @@ describe('Authentication test', () => {
     const {
       password,
       ...datas
-    } = mockdata.users;
+    } = mockData.users;
     chai.request(app).post('/api/v1/auth/signup').send(datas).end((err, res) => {
       res.should.have.status(400);
       res.body.should.be.an('object');
@@ -126,7 +125,7 @@ describe('User should signin', () => {
   it('Signin successfuly', (done) => {
     chai.request(app)
       .post('/api/v1/auth/signin')
-      .send(mockdata.usersSignin)
+      .send(mockData.usersSignin)
       .end((err, res) => {
         res.should.have.status(200);
         res.body.should.have.property('data');
@@ -138,7 +137,7 @@ describe('User should signin', () => {
   it('Email should be invalid', (done) => {
     chai.request(app)
       .post('/api/v1/auth/signin')
-      .send(mockdata.usersWrongInfo)
+      .send(mockData.usersWrongInfo)
       .end((err, res) => {
         res.should.have.status(400);
         res.body.should.have.property('message');
@@ -150,7 +149,7 @@ describe('User should signin', () => {
   it('Email or password do not match', (done) => {
     chai.request(app)
       .post('/api/v1/auth/signin')
-      .send(mockdata.usersAccountNotMatch)
+      .send(mockData.usersAccountNotMatch)
       .end((err, res) => {
         res.should.have.status(400);
         res.body.should.have.property('message');
@@ -161,7 +160,7 @@ describe('User should signin', () => {
   it('Email is wrong', (done) => {
     chai.request(app)
       .post('/api/v1/auth/signin')
-      .send(mockdata.wrongEmail)
+      .send(mockData.wrongEmail)
       .end((err, res) => {
         res.should.have.status(400);
         res.body.should.have.property('message');

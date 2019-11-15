@@ -1,8 +1,10 @@
 import dotenv from 'dotenv';
 
 dotenv.config();
+
 const { passwordEnv } = process.env;
-const mockdata = {
+
+const mockData = {
   users: {
     firstName: 'Yannick',
     lastName: 'Jamson',
@@ -40,7 +42,48 @@ const mockdata = {
     lastName: 'KARANGWA',
     signupType: 'google',
     isVerified: true
-  }
+  },
+
+  aUser: {
+    id: 1,
+    email: 'demo@gmail.com'
+  },
+
+  wrongEmailFormat: {
+    email: 'demo.com',
+  },
+
+  wrongPasswordFormat: {
+    password: 'demo12',
+    confirmPassword: 'demo12',
+  },
+
+  passwordDontMatch: {
+    password: 'Demo@123',
+    confirmPassword: 'Hemo@123',
+  },
+
+  passwordsMatch: {
+    password: 'Demo@123',
+    confirmPassword: 'Demo@123',
+  },
+
+  anyEmptyPasswordField: {
+    password: '',
+    confirmPassword: 'Demo@123',
+  },
+
+  existingEmail: {
+    email: 'demo@gmail.com',
+  },
+
+  nonExistingUser: {
+    email: 'janedoe@gmail.com',
+  },
+
+  emptyEmailField: {
+    email: '',
+  },
 };
 
-export default mockdata;
+export default mockData;
