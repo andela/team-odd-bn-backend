@@ -4,15 +4,15 @@
   "description": "A Social platform for the creative at heart",
   "main": "index.js",
   "scripts": {
-    "start": "./src/index.js --exec babel-node --",
-    "build": "babel src -d dist ",
+    "start": "npm build && node /app/build/index.js",
+    "myBuild": "babel -d build/ src",
     "eslint": "eslint --ignore-path .gitignore .",
     "temp-user": "NODE_ENV=testing npx sequelize-cli db:seed:all",
+    "db-seed-prod": "NODE_ENV=production sequelize db:seed:all",
     "db-seed": "NODE_ENV=testing sequelize db:seed:all",
     "test": "NODE_ENV=testing npm run dropTables && NODE_ENV=testing npm run db-migrate && npm run db-seed && NODE_ENV=testing nyc --reporter=text --reporter=html --require @babel/polyfill --require @babel/register mocha ./src/tests/*  --timeout 200000 --exit",
     "coverage": "nyc npm test  && npm run coveralls-coverage",
     "dev-start": "nodemon --exec babel-node ./src/index.js",
-    "create-db": "npx sequelize-cli model:generate --name users --attributes firstName:string,lastName:string,email:string,password:string,isVerified:string,signupType:string && sequelize db:migrate",
     "db-migrate": "sequelize db:migrate",
     "dropTables": "sequelize db:migrate:undo:all"
   },

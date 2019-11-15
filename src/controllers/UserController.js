@@ -229,7 +229,7 @@ class UserController {
       return Customize.errorMessage(req, res, 'User not found', 400);
     }
     passwordHelper.resetPasswordEmailHelper(req, user);
-    return Customize.successMessage(req, res, 'A reset link has been sent to your email. Please check your email!', user.email, 200);
+    return Customize.successMessage(req, res, 'A reset link has been sent to your email. Please check your email!', '', 200);
   }
 
   /**
@@ -246,10 +246,10 @@ class UserController {
     user.password = hashedPassword;
     user.save();
     if (!user) {
-      return Customize.errorMessage(req, res, 'Oops reset password was not successful', user.password, 404);
+      return Customize.errorMessage(req, res, 'Oops reset password was not successful', '', 404);
     }
     passwordHelper.resetPasswordSuccessfulHelper(user);
-    return Customize.successMessage(req, res, 'Password reset successfull!', user.password, 200);
+    return Customize.successMessage(req, res, 'Password reset successfull!', '', 200);
   }
 }
 

@@ -13,8 +13,12 @@ app.use(express.json());
 app.use('/', router);
 
 app.use('/', router);
+
 app.get('/', (req, res) => res.status(200).send({
   message: 'Welcome to Barefoot Nomad.'
+}));
+app.use('*', (req, res) => res.status(404).send({
+  message: 'Ooops route does not exist!'
 }));
 
 
