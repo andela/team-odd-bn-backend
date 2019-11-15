@@ -1,5 +1,4 @@
 import Customize from '../helpers/Customize';
-// eslint-disable-next-line import/named
 import { users } from '../database/models';
 import HashPassword from '../helpers/HashPassword';
 

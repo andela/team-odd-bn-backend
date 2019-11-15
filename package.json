@@ -7,13 +7,13 @@
     "start": "./src/index.js --exec babel-node --",
     "build": "babel src -d dist ",
     "eslint": "eslint --ignore-path .gitignore .",
-    "db-seed": "NODE_ENV=testing sequelize db:seed:all",
-    "test": "NODE_ENV=testing npm run dropTables && NODE_ENV=testing npm run db-migrate && npm run db-seed && NODE_ENV=testing nyc --reporter=text --reporter=html --require @babel/polyfill --require @babel/register mocha ./src/tests/*  --timeout 200000 --exit",
-    "coverage": "nyc npm test  && npm run coveralls-coverage",
+    "db-seed": "NODE_ENV=testing npx sequelize-cli db:seed:undo:all && NODE_ENV=testing sequelize db:seed:all",
     "db-seed-dev": "npx sequelize-cli db:seed:undo:all && sequelize db:seed:all",
-    "dev-start": "nodemon --exec babel-node ./src/index.js",
+    "test": "NODE_ENV=testing npm run dropTables && NODE_ENV=testing npm run db-migrate && NODE_ENV=testing npm run db-seed && NODE_ENV=testing nyc --reporter=text --reporter=html --require @babel/polyfill --require @babel/register mocha ./src/tests/*  --timeout 200000 --exit",
     "db-migrate": "sequelize db:migrate",
-    "dropTables": "sequelize db:migrate:undo:all"
+    "dropTables": "sequelize db:migrate:undo:all",
+    "dev-start": "nodemon --exec babel-node ./src/index.js",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "author": "Andela Simulations Programme",
   "license": "MIT",

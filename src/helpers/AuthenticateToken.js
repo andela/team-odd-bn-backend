@@ -5,7 +5,7 @@ import Customize from './Customize';
 dotenv.config();
 /**
  * @export
- * @class Helper
+ * @class AuthenticateToken
  */
 export default class AuthenticateToken {
   /**
@@ -24,14 +24,15 @@ export default class AuthenticateToken {
   /**
     * verify token
     * @static
-    * @param {object} req request
-    * @param {object} res response
-    * @param {object} next next object
+    * @param {object} req request object
+    * @param {object} res response object
+    * @param {object} next response object
+    * @returns {object} data
     * @memberof AuthenticateToken
-    * @returns {object} user
-    */
+    * next
+   */
   static verifyToken(req, res, next) {
-    const token = req.headers.token ? req.headers.token : req.params.token;
+    const token = !req.headers.token ? req.params.token : req.headers.token;
     if (!token) {
       return Customize.errorMessage(req, res, 'Please, insert the token', 401);
     }

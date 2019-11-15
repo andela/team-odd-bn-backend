@@ -43,6 +43,7 @@ const options = {
     path.resolve(__dirname, '../routes/api/authRoute.js'),
     path.resolve(__dirname, '../routes/api/socialRoute.js'),
     path.resolve(__dirname, '../routes/api/tripRoute.js'),
+    path.resolve(__dirname, '../routes/api/roleRoute.js')
   ]
 };
 export default options;

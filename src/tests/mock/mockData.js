@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
+import AuthenticateToken from '../../helpers/AuthenticateToken';
 
 dotenv.config();
 
@@ -101,8 +102,33 @@ const mockData = {
     lastName: 'Jamson',
     email: 'jamson1@gmail.com',
   }, process.env.JWT_KEY),
-  invalidToken: 'jfdgvfjfjdbfjbdjfbdjbfjdbfjdb'
+  invalidToken: 'jfdgvfjfjdbfjbdjfbdjbfjdbfjdb',
+  superAdmin: {
+    email: process.env.SUPER_ADMIN_EMAIL,
+    password: process.env.SUPER_ADMIN_REAL_PASSWORD
+  },
 
+  assignNewUser: {
+    firstName: 'Eric',
+    lastName: 'Testman',
+    email: 'eric@gmail.com',
+    password: passwordEnv
+  },
+  fekeEmail: {
+    email: 'bad@email.feke'
+  },
+  wrongRoleId: {
+    id: 10
+  },
+  newSuperAdmin: {
+    id: 4,
+    firstName: 'another',
+    lastName: 'admin',
+    roleId: 1,
+    email: 'admin@gmail.com',
+    password: passwordEnv
+  }
 };
 
+export const superAdminToken = AuthenticateToken.signToken(mockData.newSuperAdmin);
 export default mockData;

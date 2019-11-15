@@ -1,29 +1,10 @@
-import { check, validationResult } from 'express-validator';
-import Customization from '../helpers/Customize';
+import { check } from 'express-validator';
 
 /**
  * @export
- * @class ValidateUser
+ * @class Validate
  */
-class ValidateUser {
-  /**
-    * Validate user
-    * @static
-    * @param {object} req request object
-    * @param {object} res response object
-    * @param {object} next next
-    * @memberof ValidateUser
-    * @returns {object} data
-    */
-  static validateSignUp(req, res, next) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const errorMessage = errors.errors.map(err => err.msg);
-      return Customization.errorMessage(req, res, errorMessage, 400);
-    }
-    next();
-  }
-
+class Validate {
   /**
     * Validate input
     * @static
@@ -54,7 +35,7 @@ class ValidateUser {
     * Validate input
     * @static
     * @returns {object} errors
-    */
+  */
   static requestOnewayTripRules() {
     const dates = new Date();
     const year = dates.getFullYear();
@@ -67,5 +48,17 @@ class ValidateUser {
       check('startDate', 'date should be validate like in this format(YYYY-DD--MM)').isBefore(startDates)
     ];
   }
+
+  /**
+  * Validate input
+  * @static
+  * @returns {object} errors
+  */
+  static roleRequest() {
+    return [
+      check('email', 'email should be valid').trim().isEmail(),
+      check('id', 'ID should be an integer').isInt(),
+    ];
+  }
 }
-export default ValidateUser;
+export default Validate;
