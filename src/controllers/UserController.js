@@ -3,7 +3,9 @@ import HttpStatus from 'http-status-codes';
 import { users } from '../database/models';
 import HashedPassword from '../helpers/HashPassword';
 import Customize from '../helpers/Customize';
-import AuthenticateToken from '../helpers/AuthenticateToken';
+import AuthToken from '../helpers/AuthenticateToken';
+import emailHelper from '../helpers/EmailHelper';
+import Token from '../helpers/TokenHelper';
 
 dotenv.config();
 
@@ -39,12 +41,48 @@ class UserController {
         password,
         ...data
       } = newUser.dataValues;
-      const token = AuthenticateToken.signToken(data);
+      const token = AuthToken.signToken(data);
       data.token = token;
-      return Customize.successMessage(req, res, 'User created successfully', token, 201);
+      emailHelper.verifyEmailHelper(req, newUser.dataValues);
+      return Customize.successMessage(req, res, 'User created successfully, Please check your email', token, 201);
     } catch (err) {
-      return res.status(400).json({ error: err.message });
+      return Customize.errorMessage(req, res, err.message, 400);
     }
+  }
+
+  /**
+     * register a new
+     * @static
+     * @param {Object} req the request object
+     * @param {Object} res the tresponse object
+     * @returns {Object} response
+     */
+  static async verifyEmailController(req, res) {
+    if (Token.verifyToken(req.params.token).error) {
+      return Customize.errorMessage(req, res, 'Invalid jwt token', 400);
+    }
+    await users.update({ isVerified: true }, {
+      where: {
+        id: req.params.id
+      }
+    });
+    return Customize.successMessage(req, res, 'You have been verified you can now login', '', 200);
+  }
+
+  /**
+     * register a new
+     * @static
+     * @param {Object} req the request object
+     * @param {Object} res the tresponse object
+     * @returns {Object} response
+     */
+  static async resendEmailController(req, res) {
+    const user = await users.findOne({ where: { id: req.params.id } });
+    if (!user) {
+      return Customize.errorMessage(req, res, 'Invalid ID', 400);
+    }
+    emailHelper.verifyEmailHelper(req, user);
+    return Customize.successMessage(req, res, 'An email has been sent to you.', '', 200);
   }
 
   /**
@@ -58,7 +96,7 @@ class UserController {
   static async signin(req, res) {
     const { result } = req;
     const { password: pwd, ...data } = result.dataValues;
-    const token = AuthenticateToken.signToken(data);
+    const token = AuthToken.signToken(data);
     return Customize.successMessage(req, res, 'Successfuly login', token, 200);
   }
 
@@ -147,7 +185,7 @@ class UserController {
    * @returns {object} object
    */
   static OAuthfacebook(req, res) {
-    const token = AuthenticateToken.signToken(req.user);
+    const token = AuthToken.signToken(req.user);
     const {
       id, email, firstName, lastName, signupType, isVerified
     } = req.user;
@@ -164,7 +202,7 @@ class UserController {
   * @returns {object} object
   */
   static OAuthgoogle(req, res) {
-    const token = AuthenticateToken.signToken(req.user);
+    const token = AuthToken.signToken(req.user);
     const {
       id, email, firstName, lastName, signupType, isVerified
     } = req.user;
