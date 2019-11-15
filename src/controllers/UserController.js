@@ -1,14 +1,14 @@
 import dotenv from 'dotenv';
+import HttpStatus from 'http-status-codes';
 import { users } from '../database/models';
 import HashedPassword from '../helpers/HashPassword';
-import tokenGenerator from '../helpers/AuthenticateToken';
-import customize from '../helpers/Customize';
 import Customize from '../helpers/Customize';
-import AuthToken from '../helpers/AuthenticateToken';
+import AuthenticateToken from '../helpers/AuthenticateToken';
 
 dotenv.config();
+
 /**
- * @export
+ * @exports
  * @class UserController
  */
 class UserController {
@@ -39,9 +39,9 @@ class UserController {
         password,
         ...data
       } = newUser.dataValues;
-      const token = tokenGenerator.signToken(data);
+      const token = AuthenticateToken.signToken(data);
       data.token = token;
-      return customize.successMessage(req, res, 'User created successfully', token, 201);
+      return Customize.successMessage(req, res, 'User created successfully', token, 201);
     } catch (err) {
       return res.status(400).json({ error: err.message });
     }
@@ -58,8 +58,120 @@ class UserController {
   static async signin(req, res) {
     const { result } = req;
     const { password: pwd, ...data } = result.dataValues;
-    const token = AuthToken.signToken(data);
+    const token = AuthenticateToken.signToken(data);
     return Customize.successMessage(req, res, 'Successfuly login', token, 200);
+  }
+
+  /**
+     * User can be able to sign up
+     * @param {object} accessToken response
+     * @param {object} refreshToken response
+     * @param {object} profile objet
+     * @param {object} done callback
+     * @returns {object} object
+     */
+  static async facebookCallBack(accessToken, refreshToken, profile, done) {
+    try {
+      const data = {
+        id: profile.id,
+        firstName: profile.name.givenName,
+        lastName: profile.name.familyName,
+        email: profile.emails[0].value,
+        signupType: 'facebook',
+        isVerified: true
+      };
+      const {
+        email, firstName, lastName, signupType, isVerified
+      } = data;
+
+      users.findOrCreate({
+        where: { email },
+        defaults: {
+          firstName,
+          lastName,
+          email,
+          password: null,
+          signupType,
+          isVerified
+        }
+      });
+      done(null, data);
+    } catch (error) {
+      done(error, false, error.message);
+    }
+  }
+
+  /**
+   * User can be able to sign up
+   * @param {object} accessToken response
+   * @param {object} refreshToken response
+   * @param {object} profile objet
+   * @param {object} done callback
+   * @returns {object} object
+   */
+  static async googleCallBack(accessToken, refreshToken, profile, done) {
+    try {
+      const data = {
+        id: profile.id,
+        firstName: profile.name.givenName,
+        lastName: profile.name.familyName,
+        email: profile.emails[0].value,
+        signupType: 'google',
+        isVerified: true
+      };
+      const {
+        email, firstName, lastName, signupType, isVerified
+      } = data;
+
+      users.findOrCreate({
+        where: { email },
+        defaults: {
+          firstName,
+          lastName,
+          email,
+          password: null,
+          signupType,
+          isVerified
+        }
+      });
+      done(null, data);
+    } catch (error) {
+      done(error, false, error.message);
+    }
+  }
+
+  /**
+   * User can be able to sign up
+   * @param {object} req request object
+   * @param {object} res response object
+   * @returns {object} object
+   */
+  static OAuthfacebook(req, res) {
+    const token = AuthenticateToken.signToken(req.user);
+    const {
+      id, email, firstName, lastName, signupType, isVerified
+    } = req.user;
+    const data = {
+      id, email, firstName, lastName, signupType, isVerified, token
+    };
+    return Customize.successMessage(req, res, 'Logged in with facebook successfully', data, HttpStatus.OK);
+  }
+
+  /**
+  * User can be able to sign up
+  * @param {object} req request object
+  * @param {object} res response object
+  * @returns {object} object
+  */
+  static OAuthgoogle(req, res) {
+    const token = AuthenticateToken.signToken(req.user);
+    const {
+      id, email, firstName, lastName, signupType, isVerified
+    } = req.user;
+    const data = {
+      id, email, firstName, lastName, signupType, isVerified, token
+    };
+    return Customize.successMessage(req, res, 'Logged in with google successfully', data, HttpStatus.OK);
   }
 }
 

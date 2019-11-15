@@ -28,7 +28,14 @@ const wrongEmail = {
   email: 'feke@feke.ux',
   password: 'empty pwd',
 };
-
+const socialUser = {
+  id: '101381754221104952698',
+  email: 'victorkarangwa4@gmail.com',
+  firstName: 'Victor',
+  lastName: 'KARANGWA',
+  signupType: 'google',
+  isVerified: true
+};
 
 export {
   users,
@@ -36,4 +43,5 @@ export {
   usersWrongInfo,
   usersAccountNotMatch,
   wrongEmail,
+  socialUser
 };
