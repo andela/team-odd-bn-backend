@@ -62,6 +62,14 @@ passport.serializeUser((user, done) => {
  */
 
 
-router.post('/facebook', passport.authenticate('facebook-token'), UserController.OAuthfacebook);
-router.post('/google', passport.authenticate('google-plus-token'), UserController.OAuthgoogle);
+router.post(
+  '/facebook',
+  passport.authenticate('facebook-token'),
+  UserController.OAuthfacebook
+);
+router.post(
+  '/google',
+  passport.authenticate('google-plus-token'),
+  UserController.OAuthgoogle
+);
 module.exports = router;

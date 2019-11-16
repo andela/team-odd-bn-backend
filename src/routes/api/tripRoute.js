@@ -1,31 +1,26 @@
 import express from 'express';
 import AuthenticateToken from '../../helpers/AuthenticateToken';
 import TripController from '../../controllers/TripController';
-import checkInputDataError from '../../middlewares/checkInputDataError';
+import ValidateTrip from '../../middlewares/ValidateTrip';
 import Validate from '../../middlewares/Validate';
-import TripMiddleware from '../../middlewares/TripMiddlewares';
+import checkInputDataError from '../../middlewares/checkInputDataError';
+import Exists from '../../middlewares/Exists';
+
 
 const tripRouter = express.Router();
 const { verifyToken } = AuthenticateToken;
-
-const {
-  checkifOriginIdExists,
-  checkifDestinationIdExists,
-  IsOriginAndDestinationSimilar,
-  checkifReturnDateisLess,
-  checkIfTripExists
-} = TripMiddleware;
 
 const { returnTripController, OneWayTripController } = TripController;
 
 tripRouter.post('/oneway',
   verifyToken,
-  Validate.oneWayTripRules(),
+  Validate.requestOnewayTripRules(),
   checkInputDataError,
-  checkifOriginIdExists,
-  checkifDestinationIdExists,
-  IsOriginAndDestinationSimilar,
-  checkIfTripExists,
+  ValidateTrip.checkIfOriginDestinationExists,
+  ValidateTrip.checkIfOriginSameAsDestination,
+  ValidateTrip.checkMultiCityForSimilarRequests,
+  ValidateTrip.checkForSimilarRequests,
+  ValidateTrip.checkForSimilarRequestsDateRange,
   OneWayTripController);
 
 
@@ -55,16 +50,121 @@ tripRouter.post('/oneway',
  *      Trip:
  *        type: object
  *        required:
- *          - city
+ *          - location
  *          - reason
- *          - startDate
  *        properties:
- *          city:
- *            type: integer
+ *          location:
+ *            type: string
  *          reason:
  *            type: string
+ *        example:
+ *           city: kigali
+ *           reason: I wanna live there because it is a safe place
+ *           startDate: 2019-11-19 11:11:41.668+02
+ *           returnDate: 2019-11-19 11:11:41.668+02
+ */
+tripRouter.post(
+  '/multicity',
+  AuthenticateToken.verifyToken,
+  Validate.requestMultiTripRules(),
+  checkInputDataError,
+  ValidateTrip.checkIfOriginDestinationExists,
+  ValidateTrip.checkIfOriginSameAsDestination,
+  ValidateTrip.checkMultiCityForSimilarRequests,
+  ValidateTrip.checkForSimilarRequests,
+  ValidateTrip.checkForSimilarRequestsDateRange,
+  TripController.requestTrip
+);
+/**
+ * @swagger
+ *
+ * /trips/multicity:
+ *    post:
+ *      summary: User can request for multi city trip
+ *      tags: [Trip]
+ *      parameters:
+ *        - name: token
+ *          in: header
+ *          required: true
+ *          description: user token
+ *          schema:
+ *              type: string
+ *          example: XXXXXXXX.XXXXXXXXXX.XXXXXXX
+ *          minimum: 1
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/TripMultiCity'
+ *      responses:
+ *        "201":
+ *          description: A Request created
+ *        "400":
+ *          description: A Bad request
+ *        "409":
+ *          description: A Conflicting request
+ *
+ * components:
+ *    schemas:
+ *      TripMultiCity:
+ *        type: object
+ *        required:
+ *          - location
+ *          - reason
+ *        properties:
+ *          originId:
+ *            type: integer
+ *          destinationId:
+ *            type: integer
  *          startDate:
  *            type: string
+ *          returnDate:
+ *            type: string
+ *          reason:
+ *            type: string
+ *        example:
+ *          itinerary:
+ *          - originId: 4
+ *            destinationId: 2
+ *            startDate: '2029-01-20'
+ *            returnDate: '2030-01-10'
+ *            reason: Sjkjj
+ *          - originId: 4
+ *            destinationId: 2
+ *            startDate: '2028-11-20'
+ *            returnDate: '2030-01-10'
+ *            reason: Some other good reasons
+ *
+ */
+
+tripRouter
+  .patch(
+    '/:id/approval', Exists.isRequestExist,
+    TripController.approveTrip
+  );
+
+/**
+ * @swagger
+ *
+ * /trips/:id/approval:
+ *    patch:
+ *      summary: A manager should be able to approve requests
+ *      tags: [Trip]
+ *      parameters:
+ *        - name: token
+ *          in: header
+ *          required: true
+ *          description: user token
+ *          schema:
+ *              type: string
+ *          example: XXXXXXXX.XXXXXXXXXX.XXXXXXX
+ *          minimum: 1
+ *      requestBody:
+ *        required: false
+ *      responses:
+ *        "201":
+ *          Request approved
  *
  */
 
@@ -72,11 +172,12 @@ tripRouter.post('/twoWay',
   verifyToken,
   Validate.twoWayTripRules(),
   checkInputDataError,
-  checkifReturnDateisLess,
-  checkifOriginIdExists,
-  checkifDestinationIdExists,
-  IsOriginAndDestinationSimilar,
-  checkIfTripExists,
+
+  ValidateTrip.checkIfOriginDestinationExists,
+  ValidateTrip.checkIfOriginSameAsDestination,
+  ValidateTrip.checkMultiCityForSimilarRequests,
+  ValidateTrip.checkForSimilarRequests,
+  ValidateTrip.checkForSimilarRequestsDateRange,
   returnTripController);
 
 /**

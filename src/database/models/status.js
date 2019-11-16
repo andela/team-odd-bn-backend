@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'status'
   });
     status.associate = function(models) {
-      status.belongsTo(models.tripRequests, { onDelete: 'cascade'});
+      status.hasMany(models.tripRequests, { onDelete: 'cascade'});
     };
   return status;
 };

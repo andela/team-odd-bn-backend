@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken';
 import AuthenticateToken from '../../helpers/AuthenticateToken';
 
 dotenv.config();
@@ -14,7 +13,7 @@ const mockData = {
     password: passwordEnv
   },
   veryfyEmailUser: {
-    id: '45',
+    id: 1,
     firstName: 'Eric',
     lastName: 'Nayo.',
     email: 'hezronchelimo.hc@gmail.com',
@@ -74,7 +73,7 @@ const mockData = {
   },
 
   existingEmail: {
-    email: 'demo@gmail.com',
+    email: 'jamson@gmail.com',
   },
 
   nonExistingUser: {
@@ -92,22 +91,11 @@ const mockData = {
   locations: {
     name: 'kigali'
   },
-  trips: {
-    city: 1,
-    reason: 'I want too live thereee',
-    startDate: 2000 - 10 - 10
-  },
-  userToken: jwt.sign({
-    id: 3,
-    lastName: 'Jamson',
-    email: 'jamson1@gmail.com',
-  }, process.env.JWT_KEY),
   invalidToken: 'jfdgvfjfjdbfjbdjfbdjbfjdbfjdb',
   superAdmin: {
     email: process.env.SUPER_ADMIN_EMAIL,
     password: process.env.SUPER_ADMIN_REAL_PASSWORD
   },
-
   assignNewUser: {
     firstName: 'Eric',
     lastName: 'Testman',
@@ -120,6 +108,10 @@ const mockData = {
   wrongRoleId: {
     id: 10
   },
+  newSuperAdminLogin: {
+    email: 'admin@gmail.com',
+    password: 'admin1234'
+  },
   newSuperAdmin: {
     id: 4,
     firstName: 'another',
@@ -127,7 +119,14 @@ const mockData = {
     roleId: 1,
     email: 'admin@gmail.com',
     password: passwordEnv
-  }
+  },
+  locationData: {
+    name: 'Naiccrobi',
+  },
+  location2Data: {
+    name: 'Kamccpala',
+  },
+
 };
 
 export const superAdminToken = AuthenticateToken.signToken(mockData.newSuperAdmin);

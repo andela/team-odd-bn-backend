@@ -1,10 +1,10 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const cities = sequelize.define('cities', {
-    name: DataTypes.STRING
+    city: DataTypes.STRING
   }, {});
   cities.associate = function(models) {
-    cities.hasMany(models.tripRequestCities, {foreignKey: 'id'});
+    cities.hasMany(models.trips, {foreignKey: 'id'},{ onDelete: 'cascade'},{onUpdate: 'cascade'});
   };
   return cities;
 };

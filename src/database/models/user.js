@@ -10,7 +10,11 @@ module.exports = (sequelize, DataTypes) => {
     roleId: DataTypes.INTEGER,
   }, {});
   users.associate = function(models) {
-    users.belongsTo(models.roles, { onDelete: 'cascade' });
+    users.hasMany(models.tripRequests,
+       {foreignKey: 'id'},
+       { onDelete: 'cascade'},
+       {onUpdate: 'cascade'}
+       );
   };
   return users;
 };
