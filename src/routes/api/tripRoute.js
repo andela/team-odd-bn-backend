@@ -10,7 +10,7 @@ tripRouter.post('/trips/multi-city', verifyUser, validateOneTrip.requestOnewayTr
 /**
  * @swagger
  *
- * /user/trips:
+ * /user/trips/multi-city:
  *    post:
  *      summary: User can request for one-way trip
  *      tags: [Users]
