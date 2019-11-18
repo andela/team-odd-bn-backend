@@ -1,6 +1,6 @@
 import express from 'express';
 import UserController from '../../controllers/UserController';
-import isUserExist from '../../middlewares/FindUsers';
+import isUserExist from '../../middlewares/findUsers';
 import Validate from '../../middlewares/Validate';
 import validateCredentials from '../../middlewares/validateCredentials';
 import Middlewares from '../../middlewares/ForgotPasswordMiddlewares';

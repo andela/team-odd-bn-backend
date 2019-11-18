@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING,
     isVerified: DataTypes.BOOLEAN,
     signupType: DataTypes.STRING,
-    roleId: DataTypes.INTEGER,
+    roleId: DataTypes.INTEGER
   }, {});
   users.associate = function(models) {
     users.hasMany(models.tripRequests,

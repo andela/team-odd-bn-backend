@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Router } from 'express';
 import '../../services/passport';
+import socialErrorHandler from '../../middlewares/socialErrorHandler';
 import UserController from '../../controllers/UserController';
 
 
@@ -52,7 +53,7 @@ passport.serializeUser((user, done) => {
  *      User:
  *        type: object
  *        required:
- *          - access_token
+ *          - token
  *        properties:
  *          access_token:
  *            type: string
@@ -62,14 +63,6 @@ passport.serializeUser((user, done) => {
  */
 
 
-router.post(
-  '/facebook',
-  passport.authenticate('facebook-token'),
-  UserController.OAuthfacebook
-);
-router.post(
-  '/google',
-  passport.authenticate('google-plus-token'),
-  UserController.OAuthgoogle
-);
+router.post('/facebook', passport.authenticate('facebook-token'), socialErrorHandler, UserController.OAuthfacebook);
+router.post('/google', passport.authenticate('google-plus-token'), socialErrorHandler, UserController.OAuthgoogle);
 module.exports = router;
