@@ -1,7 +1,7 @@
 import express from 'express';
 import UserController from '../../controllers/UserController';
 import isUserExist from '../../middlewares/FindUsers';
-import ValidateUser from '../../middlewares/ValidateUser';
+import Validate from '../../middlewares/Validate';
 import validateCredentials from '../../middlewares/validateCredentials';
 import Middlewares from '../../middlewares/ForgotPasswordMiddlewares';
 
@@ -10,7 +10,7 @@ const authRouter = express.Router();
 const {
   checkForgotPasswordMiddleware,
   checkResetPasswordMiddleware,
-  decodeTokenMiddleware
+  decodeTokenMiddleware,
 } = Middlewares;
 
 const {
@@ -20,7 +20,7 @@ const {
   resendEmailController,
 } = UserController;
 
-authRouter.post('/signup', ValidateUser.signupRules(), ValidateUser.validateSignUp, isUserExist, UserController.signUp);
+authRouter.post('/signup', Validate.signupRules(), Validate.validateSignUp, isUserExist, UserController.signUp);
 
 /**
  * @swagger
@@ -69,8 +69,8 @@ authRouter.post('/signup', ValidateUser.signupRules(), ValidateUser.validateSign
 authRouter
   .post(
     '/signin',
-    ValidateUser.signinRules(),
-    ValidateUser.validateSignUp,
+    Validate.signinRules(),
+    Validate.validate,
     validateCredentials,
     UserController.signin
   );

@@ -3,22 +3,22 @@ import Customization from '../helpers/Customize';
 
 /**
  * @export
- * @class ValidateUser
+ * @class Validate
  */
-class ValidateUser {
+class Validate {
   /**
     * Validate user
     * @static
     * @param {object} req request object
     * @param {object} res response object
     * @param {object} next next
-    * @memberof ValidateUser
+    * @memberof Validate
     * @returns {object} data
     */
-  static validateSignUp(req, res, next) {
+  static validate(req, res, next) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      const errorMessage = errors.errors.map(err => err.msg);
+      const errorMessage = errors.errors.map((err) => err.msg);
       return Customization.errorMessage(req, res, errorMessage, 400);
     }
     next();
@@ -49,5 +49,38 @@ class ValidateUser {
       check('password', 'minimum password length is 6').isLength({ min: 6 }),
     ];
   }
+
+  /**
+  * Validate input
+  * @static
+  * @returns {object} errors
+  */
+  static requestMultiTripRules() {
+    return [
+      check('reason', 'reason should be characters').isLength({ min: 2 }),
+    ];
+  }
+
+  /**
+  * Validate input
+  * @static
+  * @returns {object} errors
+  */
+  static locationRules() {
+    return [
+      check('location', 'location should be characters').isLength({ min: 1 }),
+    ];
+  }
+
+  /**
+* Validate input
+* @static
+* @returns {object} errors
+*/
+  static profileUpdateRules() {
+    return [
+      check('gender', 'Gender should be either Male or Female').isAlpha()
+    ];
+  }
 }
-export default ValidateUser;
+export default Validate;
