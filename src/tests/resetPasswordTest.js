@@ -10,7 +10,6 @@ const { expect } = chai;
 
 
 const userToken = AuthenticateToken.signToken(mockData.aUser);
-
 describe('Forgot password', () => {
   it('it should not send a reset password email if email does not follow the correct format', (done) => {
     chai.request(app)

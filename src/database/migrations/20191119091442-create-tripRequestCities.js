@@ -1,39 +1,42 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('tripRequests', {
+    return queryInterface.createTable('tripRequestCities', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userId: {
+      tripRequestId: {
         type: Sequelize.INTEGER,
-        references: {
-          model: 'users',
-          key: 'id'
+        references:{
+          model:'tripRequests',
+          key:'id'
+        }
+      },
+      destinationId: {
+        type: Sequelize.INTEGER,
+        references:{
+          model:'cities',
+          key:'id'
+        }
+      }, 
+      originId: {
+        type: Sequelize.INTEGER,
+        references:{
+          model:'cities',
+          key:'id'
         }
       },
       reason: {
         type: Sequelize.STRING
       },
-      tripTypeId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'tripTypes',
-          key: 'id'
-        }
-      },
-      status: {
-        type: Sequelize.STRING,
-        defaultValue: 'pending'
-      },
       startDate: {
-        type: Sequelize.STRING
+        type: Sequelize.DATE
       },
       returnDate: {
-        type: Sequelize.STRING
+        type: Sequelize.DATE
       },
       createdAt: {
         allowNull: false,
@@ -46,6 +49,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('tripRequests');
+    return queryInterface.dropTable('tripRequestCities');
   }
 };

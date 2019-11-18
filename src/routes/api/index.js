@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import authRoute from './authRoute';
 import tripRoute from './tripRoute';
-
 import socialRoute from './socialRoute';
 import roleRoute from './roleRoute';
 

@@ -1,8 +1,5 @@
-import dotenv from 'dotenv';
-import Customize from '../helpers/Customize';
-import { tripRequest, tripRequestCities } from '../database/models';
+import createTripRequest from '../helpers/createTripRequest';
 
-dotenv.config();
 /**
  * @export
  * @class TripController
@@ -16,23 +13,21 @@ class TripController {
    * @memberof TripController
    * @returns {object} data
    */
-  static async requestOnewayTrip(req, res) {
-    try {
-      const userId = req.user.id;
-      const { reason, city, startDate } = req.body;
-      const newTrip = await tripRequest.create({
-        reason, tripTypeId: 1, userId, startDate
-      });
+  static async OneWayTripController(req, res) {
+    createTripRequest(req, res, 1);
+  }
 
-      const requestId = await tripRequest.findOne({ where: { userId } });
-      const cityId = parseInt(city, 10);
-      await tripRequestCities.create({
-        tripRequestId: requestId.dataValues.id, cityId
-      });
-      return Customize.successMessage(req, res, 'Trip requested successfully', newTrip, 201);
-    } catch (err) {
-      return Customize.successMessage(req, res, 'Server error', err.message, 500);
-    }
+  /**
+   * User can be able to request two way trip
+   * @static
+   * @param {object} req request object
+   * @param {object} res response object
+   * @memberof TripController
+   * @returns {object} data
+   */
+  static async returnTripController(req, res) {
+    createTripRequest(req, res, 2);
   }
 }
+
 export default TripController;

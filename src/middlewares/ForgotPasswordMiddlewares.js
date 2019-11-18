@@ -34,12 +34,7 @@ class ForgotPasswordMiddlewares {
    * response format and if password and confirm password do do not match
    */
   static checkResetPasswordMiddleware(req, res, next) {
-    const error = validationResult(req);
     const { password, confirmPassword } = req.body;
-    if (!error.isEmpty()) {
-      const err = error.errors.map(err => err.msg);
-      return Customize.errorMessage(req, res, err, 400);
-    }
     if (password !== confirmPassword) {
       return Customize.errorMessage(req, res, 'Oops! password and confirm password do not match!', 400);
     }

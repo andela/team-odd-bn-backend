@@ -1,6 +1,5 @@
 /**
  * @exports
-* @exports
  * @class Customization
 */
 class Customization {

@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       isVerified: {
-        type: Sequelize.STRING
+        type: Sequelize.BOOLEAN
       },
       signupType: {
         type: Sequelize.STRING
@@ -48,3 +48,4 @@ module.exports = {
     return queryInterface.dropTable('users');
   }
 };
+

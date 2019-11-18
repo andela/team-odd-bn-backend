@@ -17,7 +17,7 @@ export default class AuthenticateToken {
     */
   static signToken(data) {
     const { lastName, firstName, ...newData } = data;
-    const token = jwt.sign(newData, process.env.JWT_KEY);
+    const token = jwt.sign(newData, process.env.JWT_KEY, { expiresIn: '1W' });
     return token;
   }
 

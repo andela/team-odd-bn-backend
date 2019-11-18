@@ -1,17 +1,15 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const tripRequest = sequelize.define('tripRequest', {
+  const tripRequests = sequelize.define('tripRequests', {
     userId: DataTypes.INTEGER,
-    reason: DataTypes.INTEGER,
     tripTypeId: DataTypes.INTEGER,
-    status: DataTypes.STRING,
-    startDate: DataTypes.DATE,
-    returnDate: DataTypes.STRING
+    statusId: DataTypes.INTEGER,
   }, {});
-  tripRequest.associate = function(models) {
-    tripRequest.belongsTo(models.users, {foreignKey: 'userId'});
-    tripRequest.belongsTo(models.tripType, {foreignKey: 'tripTypeId'});
-    tripRequest.hasMany(models.tripRequestCities, {foreignKey: 'id'});
+  tripRequests.associate = function(models) {
+    // associations can be defined here
+    tripRequests.belongsTo(models.users, {foreignKey: 'userId'},{ onDelete: 'cascade'});
+    tripRequests.belongsTo(models.tripType, {foreignKey: 'tripTypeId'},{ onDelete: 'cascade'});
+    tripRequests.hasMany(models.tripRequestCities, {foreignKey: 'id'},{ onDelete: 'cascade'});
   };
-  return tripRequest;
+  return tripRequests;
 };
