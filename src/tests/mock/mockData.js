@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
@@ -43,12 +44,10 @@ const mockData = {
     signupType: 'google',
     isVerified: true
   },
-
   aUser: {
     id: 1,
     email: 'demo@gmail.com'
   },
-
   wrongEmailFormat: {
     email: 'demo.com',
   },
@@ -84,6 +83,26 @@ const mockData = {
   emptyEmailField: {
     email: '',
   },
+  secondUsers: {
+    id: 3,
+    lastName: 'Jamson',
+    email: 'jamson1@gmail.com',
+  },
+  locations: {
+    name: 'kigali'
+  },
+  trips: {
+    city: 1,
+    reason: 'I want too live thereee',
+    startDate: 2000 - 10 - 10
+  },
+  userToken: jwt.sign({
+    id: 3,
+    lastName: 'Jamson',
+    email: 'jamson1@gmail.com',
+  }, process.env.JWT_KEY),
+  invalidToken: 'jfdgvfjfjdbfjbdjfbdjbfjdbfjdb'
+
 };
 
 export default mockData;

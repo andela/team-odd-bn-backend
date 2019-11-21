@@ -1,4 +1,5 @@
 import path from 'path';
+
 // Swagger definition
 const options = {
   swaggerDefinition: {
@@ -17,6 +18,18 @@ const options = {
         email: 'partnerships@andela.com'
       }
     },
+    components: {
+      securitySchemes: {
+        ApiKeyAuth: {
+          type: 'apiKey',
+          in: 'header',
+          name: 'token'
+        }
+      }
+    },
+    security: [{
+      ApiKeyAuth: []
+    }],
     servers: [
       {
         url: 'http://localhost:3000/api/v1'
@@ -28,7 +41,8 @@ const options = {
   },
   apis: [
     path.resolve(__dirname, '../routes/api/authRoute.js'),
-    path.resolve(__dirname, '../routes/api/socialRoute.js')
+    path.resolve(__dirname, '../routes/api/socialRoute.js'),
+    path.resolve(__dirname, '../routes/api/tripRoute.js'),
   ]
 };
 export default options;

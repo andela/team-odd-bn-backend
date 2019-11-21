@@ -4,7 +4,6 @@ import { users } from '../database/models';
 import HashPassword from '../helpers/HashPassword';
 import Customize from '../helpers/Customize';
 import emailHelper from '../helpers/EmailHelper';
-import Token from '../helpers/TokenHelper';
 import AuthenticateToken from '../helpers/AuthenticateToken';
 import UserService from '../services/UserService';
 import passwordHelper from '../helpers/resetPasswordEmail';
@@ -62,9 +61,6 @@ class UserController {
      * @returns {Object} response
      */
   static async verifyEmailController(req, res) {
-    if (Token.verifyToken(req.params.token).error) {
-      return Customize.errorMessage(req, res, 'Invalid jwt token', 400);
-    }
     await users.update({ isVerified: true }, {
       where: {
         id: req.params.id
