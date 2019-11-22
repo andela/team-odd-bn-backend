@@ -1,10 +1,11 @@
 import express from 'express';
 import UserController from '../../controllers/UserController';
 import isUserExist from '../../middlewares/FindUsers';
-import ValidateUser from '../../middlewares/ValidateUser';
+import Validate from '../../middlewares/Validate';
 import validateCredentials from '../../middlewares/validateCredentials';
 import Middlewares from '../../middlewares/ForgotPasswordMiddlewares';
 import AuthenticateToken from '../../helpers/AuthenticateToken';
+import checkInputDataError from '../../helpers/checkInputDataError';
 
 const authRouter = express.Router();
 
@@ -21,7 +22,7 @@ const {
   resendEmailController,
 } = UserController;
 
-authRouter.post('/signup', ValidateUser.signupRules(), ValidateUser.validateSignUp, isUserExist, UserController.signUp);
+authRouter.post('/signup', Validate.signupRules(), checkInputDataError, isUserExist, UserController.signUp);
 
 /**
  * @swagger
@@ -70,8 +71,8 @@ authRouter.post('/signup', ValidateUser.signupRules(), ValidateUser.validateSign
 authRouter
   .post(
     '/signin',
-    ValidateUser.signinRules(),
-    ValidateUser.validateSignUp,
+    Validate.signinRules(),
+    checkInputDataError,
     validateCredentials,
     UserController.signin
   );

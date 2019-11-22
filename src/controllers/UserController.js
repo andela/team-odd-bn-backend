@@ -247,6 +247,21 @@ class UserController {
     passwordHelper.resetPasswordSuccessfulHelper(user);
     return Customize.successMessage(req, res, 'Password reset successfull!', user.password, 200);
   }
+
+  /**
+   * @static
+   * @description GET /api/users/all
+   * @param {Object} req request object
+   * @param {Object} res response object
+   * @returns {Object} response
+   */
+  static async availableUsers(req, res) {
+    const allUsers = await users.findAll({ attributes: ['id', 'firstName', 'lastName', 'email', 'roleId'] });
+    if (allUsers.length === 0) {
+      return Customize.errorMessage(req, res, 'no users are available', 404);
+    }
+    return Customize.successMessage(req, res, 'total Available roles', allUsers, 200);
+  }
 }
 
 export default UserController;

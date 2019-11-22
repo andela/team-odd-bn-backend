@@ -5,14 +5,12 @@ import router from './routes';
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(bodyParser.json());
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.text());
 app.use(bodyParser.json({ type: 'application/json' }));
-app.use(express.json());
 app.use('/', router);
 
-app.use('/', router);
 app.get('/', (req, res) => res.status(200).send({
   message: 'Welcome to Barefoot Nomad.'
 }));

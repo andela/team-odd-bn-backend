@@ -2,12 +2,13 @@ import express from 'express';
 import AuthenticateToken from '../../helpers/AuthenticateToken';
 import TripController from '../../controllers/TripController';
 import validateOneWayTrip from '../../middlewares/ValidateOneWayTrip';
-import validateOneTrip from '../../middlewares/ValidateUser';
+import Validate from '../../middlewares/Validate';
+import checkInputDataError from '../../helpers/checkInputDataError';
 
 const tripRouter = express.Router();
 
-tripRouter.post('/oneway', AuthenticateToken.verifyToken, validateOneTrip.requestOnewayTripRules(),
-  validateOneTrip.validateSignUp, validateOneWayTrip.validateOnewayData,
+tripRouter.post('/oneway', AuthenticateToken.verifyToken, Validate.requestOnewayTripRules(),
+  checkInputDataError, validateOneWayTrip.validateOnewayData,
   TripController.requestOnewayTrip);
 
 /**
