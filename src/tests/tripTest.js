@@ -3,6 +3,8 @@ import chaiHttp from 'chai-http';
 import dotenv from 'dotenv';
 import app from '../index';
 import mockData from './mock/mockData';
+import tripMockData from './mock/tripMockData';
+import AuthenticateToken from '../helpers/AuthenticateToken';
 
 chai.use(chaiHttp);
 chai.should();
@@ -12,11 +14,13 @@ dotenv.config();
 const {
   ...data
 } = mockData.trips;
-const { userToken, invalidToken } = mockData;
+const { invalidToken } = mockData;
+
+const userToken = AuthenticateToken.signToken(mockData.aUser);
 
 describe('Request One way trip test', () => {
   it('should be able to create one way trip', (done) => {
-    chai.request(app).post('/api/v1/trips/oneway').send(data)
+    chai.request(app).post('/api/v1/trips/oneway').send(tripMockData.correctOneWayTrip)
       .set('token', userToken)
       .end((err, res) => {
         res.should.have.status(201);

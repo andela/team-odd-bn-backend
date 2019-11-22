@@ -7,6 +7,7 @@ import Middlewares from '../../middlewares/ForgotPasswordMiddlewares';
 import AuthenticateToken from '../../helpers/AuthenticateToken';
 import checkInputDataError from '../../helpers/checkInputDataError';
 
+
 const authRouter = express.Router();
 
 const {

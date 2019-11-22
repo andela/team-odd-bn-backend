@@ -5,12 +5,11 @@ module.exports = (sequelize, DataTypes) => {
     lastName: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    isVerified: DataTypes.STRING,
+    isVerified: DataTypes.BOOLEAN,
     signupType: DataTypes.STRING,
     roleId: DataTypes.INTEGER,
   }, {});
   users.associate = function(models) {
-    users.hasMany(models.tripRequest, {foreignKey: 'id'});
     users.belongsTo(models.roles, { onDelete: 'cascade' });
   };
   return users;

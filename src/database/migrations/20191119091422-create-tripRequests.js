@@ -1,26 +1,30 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('tripRequestCities', {
+    return queryInterface.createTable('tripRequests', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      tripRequestId: {
+      userId: {
         type: Sequelize.INTEGER,
-        references: {
-          model: 'tripRequests',
-          key: 'id'
+        references:{
+          model:'users',
+          key:'id'
         }
       },
-      cityId: {
+      tripTypeId: {
         type: Sequelize.INTEGER,
-        references: {
-          model: 'cities',
-          key: 'id'
+        references:{
+          model:'tripTypes',
+          key:'id'
         }
+      },
+      statusId: {
+        type: Sequelize.INTEGER,
+        defaultValue: 1  
       },
       createdAt: {
         allowNull: false,
@@ -33,6 +37,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('tripRequestCities');
+    return queryInterface.dropTable('tripRequests');
   }
 };
