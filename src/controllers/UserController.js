@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import HttpStatus from 'http-status-codes';
-import { users } from '../database/models';
+import { users, userProfile } from '../database/models';
 import HashPassword from '../helpers/HashPassword';
 import Customize from '../helpers/Customize';
 import emailHelper from '../helpers/EmailHelper';
@@ -42,6 +42,10 @@ class UserController {
         password: hashedPassword,
         isVerified: false,
         signupType: 'Barefoot'
+      });
+      const { id } = newUser.dataValues;
+      await userProfile.create({
+        userId: id,
       });
       const {
         password,
@@ -109,6 +113,7 @@ class UserController {
      * @param {object} refreshToken response
      * @param {object} profile objet
      * @param {object} done callback
+     * @param {string} type signupType
      * @returns {object} object
      */
   static async facebookCallBack(accessToken, refreshToken, profile, done) {
@@ -196,6 +201,109 @@ class UserController {
       return Customize.errorMessage(req, res, 'no users are available', 404);
     }
     return Customize.successMessage(req, res, 'total Available roles', allUsers, 200);
+  }
+
+  /**
+* User can update his/her profile
+* @description POST /api/v1/user/profile-settings
+* @static
+* @param {object} req request object
+* @param {object} res response object
+* @returns {object} profileUpdate
+*/
+  static async updateProfile(req, res) {
+    const { id } = req.user;
+    const updateUser = await users.findOne({
+      where: {
+        id
+      }
+    });
+
+    let { firstName, lastName } = updateUser.dataValues;
+    const {
+      gender, birthDate, address, imageURL, department, managerId,
+      bio, userFirstName, userLastName,
+    } = req.body;
+    firstName = userFirstName || firstName;
+    lastName = userLastName || lastName;
+    const data = {
+      firstName,
+      lastName,
+      gender,
+      birthDate,
+      address,
+      imageURL,
+      department,
+      managerId,
+      bio
+    };
+    try {
+      const profileUpdate = await userProfile.update(
+        {
+          gender,
+          birthDate,
+          address,
+          imageURL,
+          department,
+          managerId,
+          bio
+        },
+        {
+          where: {
+            userId: id
+          }
+        }
+      );
+
+      await users.update(
+        {
+          firstName,
+          lastName
+        },
+        {
+          where: {
+            id
+          }
+        }
+      );
+      if (profileUpdate[0]) {
+        // Check if record exists in db
+        Customize.successMessage(req, res, 'Your profile updated successfully', data, HttpStatus.OK);
+      } else {
+        Customize.errorMessage(req, res, 'Unable to update your profile', HttpStatus.BAD_REQUEST);
+      }
+    } catch (e) {
+      console.log(e);
+
+      Customize.errorMessage(req, res, e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+* User can view his/her profile
+* @description POST /api/v1/user/view-profile
+* @static
+* @param {object} req request object
+* @param {object} res response object
+* @returns {object} view-profile
+*/
+  static async viewProfile(req, res) {
+    try {
+      const { id } = req.user;
+      const userData = await userProfile.findOne({
+        attributes: ['gender', 'birthDate', 'address', 'imageURL', 'department', 'managerId', 'bio'],
+        include: [{
+          model: users,
+          as: 'user',
+          attributes: ['id', 'firstName', 'lastName', 'email']
+        }],
+        where: { userId: id },
+      });
+
+      Customize.successMessage(req, res, 'User profile retrieved successfully', userData, HttpStatus.OK);
+    } catch (e) {
+      Customize.errorMessage(req, res, 'Server error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
 

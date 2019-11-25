@@ -1,4 +1,4 @@
-import { check } from 'express-validator';
+import { check, oneOf } from 'express-validator';
 
 /**
  * @export
@@ -105,6 +105,44 @@ class Validate {
       check('reason', 'Reason should be a minimum of 2 letters').isString().isLength({ min: 2 }),
       check('startDate', 'Start date should be a valid date after today(YY-MM-DD) ').isAfter().isISO8601(),
       check('returnDate', 'returnDate must be valid date after today(YY-MM-DD) ').isAfter().isISO8601(),
+    ];
+  }
+
+  /**
+    * Validate input
+    * @static
+    * @returns {object} errors
+    */
+  static oneWayTripRules() {
+    return [
+      check('originId', 'originId should be an integer').isNumeric(),
+      check('destinationId', 'destinationId should be an integer').isNumeric(),
+      check('reason', 'Reason should be a minimum of 2 letters').isString().isLength({ min: 2 }),
+      check('startDate', 'Start date should be a valid date after today(YY-MM-DD) ').isAfter().isISO8601(),
+    ];
+  }
+
+  /**
+* Validate input
+* @static
+* @returns {object} errors
+*/
+  static profileUpdateRules() {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = d.getMonth();
+    const day = d.getDate();
+    const minAge = new Date(year - 16, month, day).toDateString();
+    return [
+      oneOf([
+        check('gender').isIn(['male', 'female']),
+      ], 'Gender should be either male or female'),
+      check('birthDate', 'Invalid Date of Birth(format: YYYY-MM-DD && Make sure you are above 16)').isBefore(minAge),
+      check('address', 'Address should be specified').isAlphanumeric(),
+      check('imageURL', 'PRofile image URL should be valid'),
+      check('department', 'department should be valid').isAlpha(),
+      check('managerId', 'PLease provide your line manager').isInt(),
+      check('bio', 'Please your bio is needed to complete your profile(at least 15 characters)').isLength({ min: 15 })
     ];
   }
 }

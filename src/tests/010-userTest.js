@@ -9,6 +9,14 @@ chai.should();
 let token;
 
 
+const { expect } = chai;
+
+const {
+  usersSignin, unknownUserUpdate, invalidManager, userInvalidImage
+} = mockData;
+let unverifiedUserToken, verifiedUserToken, trueToken;
+
+
 describe('Authentication test', () => {
   it('should be able to signup', (done) => {
     chai.request(app).post('/api/v1/auth/signup').send(mockData.users).end((err, res) => {
@@ -168,6 +176,136 @@ describe('User should signin', () => {
         res.should.have.status(400);
         res.body.should.have.property('message');
         done();
+      });
+  });
+});
+describe('User profile page settings', () => {
+  before((done) => {
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send({ email: 'jean@gmail.com', password: 'admin1224' })
+      .end((err, res) => {
+        trueToken = res.body.data;
+        done(err);
+      });
+  });
+  before((done) => {
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(usersSignin)
+      .end((err, res) => {
+        unverifiedUserToken = res.body.data;
+        done(err);
+      });
+  });
+  before((done) => {
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send({ email: 'test@email.com', password: 'admin1224' })
+      .end((err, res) => {
+        verifiedUserToken = res.body.data;
+        done(err);
+      });
+  });
+  it('it should not update user profile with empty fileds', (done) => {
+    chai.request(app)
+      .put('/api/v1/users/profile-settings')
+      .set('token', unverifiedUserToken)
+      .send({})
+      .end((err, res) => {
+        expect(res.status).eql(400);
+        expect(res.body.message[0]).eql('Gender should be either male or female');
+        expect(res.body.message[1]).eql('Invalid Date of Birth(format: YYYY-MM-DD && Make sure you are above 16)');
+        expect(res.body.message[2]).eql('Address should be specified');
+        expect(res.body.message[3]).eql('department should be valid');
+        expect(res.body.message[4]).eql('PLease provide your line manager');
+        expect(res.body.message[5]).eql('Please your bio is needed to complete your profile(at least 15 characters)');
+        done(err);
+      });
+  });
+  it('it should not update user profile with invalid filed', (done) => {
+    chai.request(app)
+      .put('/api/v1/users/profile-settings')
+      .set('token', unverifiedUserToken)
+      .send(userInvalidImage)
+      .end((err, res) => {
+        expect(res.status).eql(400);
+        expect(res.body.message).eql('Invalid image url');
+        done(err);
+      });
+  });
+  it('it should not update profile of unverified user', (done) => {
+    chai.request(app)
+      .put('/api/v1/users/profile-settings')
+      .set('token', unverifiedUserToken)
+      .send(unknownUserUpdate)
+      .end((err, res) => {
+        expect(res.status).eql(401);
+        expect(res.body.error).eql('Your email is not verified, please verify your email first');
+        done(err);
+      });
+  });
+  it('it should not update profile of unidentified user', (done) => {
+    chai.request(app)
+      .put('/api/v1/users/profile-settings')
+      .set('token', verifiedUserToken)
+      .send(unknownUserUpdate)
+      .end((err, res) => {
+        expect(res.status).eql(200);
+        expect(res.body.message).eql('Your profile updated successfully');
+        done(err);
+      });
+  });
+  it('it should not update user profile with unknown manager', (done) => {
+    chai.request(app)
+      .put('/api/v1/users/profile-settings')
+      .set('token', trueToken)
+      .send(invalidManager)
+      .end((err, res) => {
+        expect(res.status).eql(404);
+        expect(res.body.message).eql('Unknown line manager');
+        done(err);
+      });
+  });
+  it('it should update user profile successfully', (done) => {
+    chai.request(app)
+      .put('/api/v1/users/profile-settings')
+      .set('token', trueToken)
+      .send(unknownUserUpdate)
+      .end((err, res) => {
+        expect(res.status).eql(400);
+        expect(res.body.message).eql('Unable to update your profile');
+        done(err);
+      });
+  });
+  it('it should not update user profile without token', (done) => {
+    chai.request(app)
+      .put('/api/v1/users/profile-settings')
+      .send(unknownUserUpdate)
+      .end((err, res) => {
+        expect(res.status).eql(401);
+        expect(res.body.message).eql('Please, insert the token');
+        done(err);
+      });
+  });
+  it('it should not update user profile with invalid token', (done) => {
+    chai.request(app)
+      .put('/api/v1/users/profile-settings')
+      .set('token', 'trueToken')
+      .send(unknownUserUpdate)
+      .end((err, res) => {
+        expect(res.status).eql(401);
+        done(err);
+      });
+  });
+  it('it should display user profile', (done) => {
+    chai.request(app)
+      .get('/api/v1/users/view-profile')
+      .set('token', trueToken)
+      .end((err, res) => {
+        expect(res.status).eql(200);
+        expect(res.body).to.be.an('object');
+        done(err);
       });
   });
 });

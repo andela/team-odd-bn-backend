@@ -10,19 +10,27 @@ const mockData = {
     firstName: 'Yannick',
     lastName: 'Jamson',
     email: 'jamson@gmail.com',
-    password: passwordEnv
+    password: passwordEnv,
+    signupType: 'Barefoot',
+    isVerified: true
   },
   veryfyEmailUser: {
     id: 1,
     firstName: 'Eric',
     lastName: 'Nayo.',
     email: 'hezronchelimo.hc@gmail.com',
-    password: passwordEnv
+    password: passwordEnv,
+    signupType: 'Barefoot',
+    isVerified: false
 
   },
   usersSignin: {
     email: 'jamson@gmail.com',
     password: passwordEnv,
+  },
+  userCorrectInfo: {
+    email: 'demo@demo.com',
+    password: 'barefoot@Nomad123',
   },
   usersWrongInfo: {
     email: 'jamson@example.com',
@@ -92,6 +100,7 @@ const mockData = {
     name: 'kigali'
   },
   invalidToken: 'jfdgvfjfjdbfjbdjfbdjbfjdbfjdb',
+  socialToken: { access_token: 'xxx.xxx.xxx' },
   superAdmin: {
     email: process.env.SUPER_ADMIN_EMAIL,
     password: process.env.SUPER_ADMIN_REAL_PASSWORD
@@ -127,6 +136,36 @@ const mockData = {
     name: 'Kamccpala',
   },
 
+
+  unknownUserUpdate: {
+    gender: 'male',
+    birthDate: '1997-12-15',
+    address: 'Kigali',
+    imageURL: '/images/avatar.jpg',
+    department: 'IT',
+    managerId: 5,
+    bio: 'I have been a christian since 2014, Christ as my savior'
+  },
+  invalidManager: {
+    gender: 'male',
+    birthDate: '1997-12-15',
+    address: 'Kigali',
+    imageURL: '/images/avatar.jpg',
+    department: 'IT',
+    managerId: 2,
+    bio: 'I have been a christian since 2014, Christ as my savior'
+  },
+  userInvalidImage: {
+    gender: 'male',
+    birthDate: '1997-12-15',
+    preferedLanguage: 'English',
+    preferedCurrency: 'rwf',
+    address: 'Kigali',
+    imageURL: '/images/avatar.j',
+    department: 'IT',
+    managerId: 5,
+    bio: 'I have been a christian since 2014, Christ as my savior'
+  }
 };
 
 export const superAdminToken = AuthenticateToken.signToken(mockData.newSuperAdmin);
