@@ -26,10 +26,9 @@ class ControllerHelper {
       const newTrip = await tripRequests.create({
         userId, statusId: 1, tripTypeId
       });
-      const request = await tripRequests.findOne({ where: { userId } });
       itinerary.forEach(async (item) => {
         await trips.create({
-          tripRequestId: request.dataValues.id,
+          tripRequestId: newTrip.dataValues.id,
           originId: item.originId,
           destinationId: item.destinationId,
           reason: item.reason,

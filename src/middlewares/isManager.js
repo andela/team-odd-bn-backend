@@ -9,9 +9,8 @@ const isManager = async (req, res, next) => {
       roleId: 6,
     }
   });
-
-  if (!manager) { Customize.errorMessage(req, res, 'Unknown line manager', 404); }
-  next();
+  if (manager) { return next(); }
+  return Customize.errorMessage(req, res, 'Unknown line manager', 404);
 };
 
 export default isManager;

@@ -9,7 +9,6 @@ chai.use(chaiHttp);
 const { expect } = chai;
 
 let token;
-
 describe('Return Trip Route Tests', () => {
   before((done) => {
     chai.request(app)
@@ -21,6 +20,7 @@ describe('Return Trip Route Tests', () => {
         done();
       });
   });
+
   it('it should create a new trip ', (done) => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')

@@ -14,6 +14,26 @@ const mockData = {
     signupType: 'Barefoot',
     isVerified: true
   },
+  usersUnverifiedSignup: {
+    firstName: 'Yannick',
+    lastName: 'Jamson',
+    email: 'jaon@gmail.com',
+    password: passwordEnv,
+    signupType: 'Barefoot',
+  },
+  users2UnverifiedSignup: {
+    firstName: 'Yannick',
+    lastName: 'Jamson',
+    email: 'jon@gmail.com',
+    password: passwordEnv,
+    signupType: 'Barefoot',
+  },
+  usersUnverifiedSignin: {
+    firstName: 'Yannick',
+    lastName: 'Jamson',
+    email: 'jaon@gmail.com',
+    password: passwordEnv,
+  },
   veryfyEmailUser: {
     id: 1,
     firstName: 'Eric',

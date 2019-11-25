@@ -1,5 +1,5 @@
 import Customize from '../helpers/Customize';
-import { tripRequests, users } from '../database/models';
+import { tripRequests, users, trips } from '../database/models';
 import ControllerHelper from '../helpers/ControllerHelper';
 import emailHelper from '../helpers/EmailHelper';
 
@@ -52,7 +52,7 @@ class TripController {
    * @static
    * @param {object} req request object
    * @param {object} res response object
-   * @memberof UserController
+   * @memberof TripController
    * @returns {object} data
    */
   static async approveTrip(req, res) {
@@ -65,6 +65,28 @@ class TripController {
         }
       });
       return Customize.successMessage(req, res, 'Your request has been approved', '', 201);
+    } catch (err) {
+      return Customize.errorMessage(req, res, err.message, 500);
+    }
+  }
+
+  /**
+   * A user should be able to get all the requests he/she has made over time
+   * @static
+   * @param {object} req request object
+   * @param {object} res response object
+   * @memberof TripController
+   * @returns {object} data
+   */
+  static async getUserRequests(req, res) {
+    try {
+      const requests = await trips.findAll({
+        include: [{
+          model: tripRequests,
+          where: { userId: req.user.id }
+        }],
+      });
+      return Customize.successMessage(req, res, 'succesfully fetched all  user\'s requests', requests, 200);
     } catch (err) {
       return Customize.errorMessage(req, res, err.message, 500);
     }

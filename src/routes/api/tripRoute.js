@@ -5,7 +5,7 @@ import ValidateTrip from '../../middlewares/ValidateTrip';
 import Validate from '../../middlewares/Validate';
 import checkInputDataError from '../../middlewares/checkInputDataError';
 import Exists from '../../middlewares/Exists';
-
+import isUserVerified from '../../middlewares/isUserVerified';
 
 const tripRouter = express.Router();
 const { verifyToken } = AuthenticateToken;
@@ -239,4 +239,32 @@ tripRouter.post('/twoWay',
  *
  */
 
+tripRouter.get(
+  '/',
+  AuthenticateToken.verifyToken,
+  isUserVerified,
+  TripController.getUserRequests
+);
+/**
+ * @swagger
+ *
+ * /trips/:id:
+ *    get:
+ *      summary: Available trip requests
+ *      tags: [Trip]
+ *      parameters:
+ *        - name: token
+ *          in: header
+ *          description: enter token
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        "200":
+ *          description: Trip requests fetched successfuly
+ *        "401":
+ *          description: No token provided
+ *        "404":
+ *          description: Trip requests are not found
+ */
 export default tripRouter;
