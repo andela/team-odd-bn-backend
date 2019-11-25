@@ -1,10 +1,9 @@
 import chaiHttp from 'chai-http';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import { describe, it } from 'mocha';
-import profile from '../mock/googleProfile';
-import UserController from '../../controllers/UserController';
-import socialUser from '../mock/mockData';
+import profile from './mock/googleProfile';
+import UserController from '../controllers/UserController';
+import socialUser from './mock/mockData';
 
 
 const chai = require('chai');

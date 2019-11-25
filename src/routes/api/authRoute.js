@@ -5,7 +5,8 @@ import Validate from '../../middlewares/Validate';
 import validateCredentials from '../../middlewares/validateCredentials';
 import Middlewares from '../../middlewares/ForgotPasswordMiddlewares';
 import AuthenticateToken from '../../helpers/AuthenticateToken';
-import checkInputDataError from '../../helpers/checkInputDataError';
+import Conflict from '../../middlewares/Conflict';
+import checkInputDataError from '../../middlewares/checkInputDataError';
 
 
 const authRouter = express.Router();
@@ -23,7 +24,13 @@ const {
   resendEmailController,
 } = UserController;
 
-authRouter.post('/signup', Validate.signupRules(), checkInputDataError, isUserExist, UserController.signUp);
+authRouter.post(
+  '/signup',
+  Validate.signupRules(),
+  checkInputDataError,
+  isUserExist,
+  UserController.signUp
+);
 
 /**
  * @swagger
@@ -112,7 +119,11 @@ authRouter
 *
 */
 
-authRouter.get('/verify-email/:id/:token', AuthenticateToken.verifyToken, verifyEmailController);
+authRouter.get(
+  '/verify-email/:id/:token',
+  AuthenticateToken.verifyToken,
+  verifyEmailController
+);
 /**
  * @swagger
  *
@@ -127,8 +138,12 @@ authRouter.get('/verify-email/:id/:token', AuthenticateToken.verifyToken, verify
  *          description: 'A response message'
 */
 
-authRouter.post('/forgot-password', Middlewares.forgotPasswordRules(), checkForgotPasswordMiddleware, forgotPasswordController);
-
+authRouter.post(
+  '/forgot-password',
+  Middlewares.forgotPasswordRules(),
+  checkForgotPasswordMiddleware,
+  forgotPasswordController
+);
 /**
  * @swagger
  * /auth/forgot-password:
@@ -151,7 +166,11 @@ authRouter.post('/forgot-password', Middlewares.forgotPasswordRules(), checkForg
  *
  */
 
-authRouter.get('/:id/resend-email', resendEmailController);
+authRouter.get(
+  '/:id/resend-email',
+  Conflict.isUsersConflict,
+  resendEmailController
+);
 /**
  * @swagger
  *
@@ -175,8 +194,14 @@ authRouter.get('/:id/resend-email', resendEmailController);
  *         - 'email'
  *
  */
-authRouter.patch('/reset-password/:token', decodeTokenMiddleware, Middlewares.resetPasswordRules(), checkResetPasswordMiddleware, resetPasswordController);
 
+authRouter.patch(
+  '/reset-password/:token',
+  decodeTokenMiddleware,
+  Middlewares.resetPasswordRules(),
+  checkResetPasswordMiddleware,
+  resetPasswordController
+);
 /**
  * @swagger
  *

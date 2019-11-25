@@ -1,27 +1,26 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import dotenv from 'dotenv';
-import { describe, it } from 'mocha';
-import AuthenticateToken from '../helpers/AuthenticateToken';
 import app from '../index';
 import mockData from './mock/mockData';
 
-const user = mockData.veryfyEmailUser;
-
-const token = AuthenticateToken.signToken(user);
 chai.use(chaiHttp);
 chai.should();
 
-dotenv.config();
+let token;
 
-const {
-  ...data
-} = mockData.users;
 
 describe('Authentication test', () => {
   it('should be able to signup', (done) => {
-    chai.request(app).post('/api/v1/auth/signup').send(data).end((err, res) => {
+    chai.request(app).post('/api/v1/auth/signup').send(mockData.users).end((err, res) => {
       res.should.have.status(201);
+      res.body.should.be.an('object');
+      token = res.body.data;
+      done();
+    });
+  });
+  it('Test verify email route', (done) => {
+    chai.request(app).get(`/api/v1/auth/verify-email/2/${token}`).end((err, res) => {
+      res.should.have.status(200);
       res.body.should.be.an('object');
       done();
     });
@@ -41,7 +40,7 @@ describe('Authentication test', () => {
     });
   });
   it('should not be able to signup when email already exist', (done) => {
-    chai.request(app).post('/api/v1/auth/signup').send(data).end((err, res) => {
+    chai.request(app).post('/api/v1/auth/signup').send(mockData.users).end((err, res) => {
       res.should.have.status(409);
       res.body.should.be.an('object');
       done();
@@ -54,13 +53,6 @@ describe('Authentication test', () => {
     } = mockData.users;
     chai.request(app).post('/api/v1/auth/signup').send(da).end((err, res) => {
       res.should.have.status(400);
-      res.body.should.be.an('object');
-      done();
-    });
-  });
-  it('Test verify email route', (done) => {
-    chai.request(app).get(`/api/v1/auth/verify-email/1/${token}`).end((err, res) => {
-      res.should.have.status(200);
       res.body.should.be.an('object');
       done();
     });
@@ -114,7 +106,7 @@ describe('Authentication test', () => {
   });
   it('Test resend email route with invalid id', (done) => {
     chai.request(app).get('/api/v1/auth/453/resend-email').end((err, res) => {
-      res.should.have.status(400);
+      res.should.have.status(404);
       res.body.should.be.an('object');
       done();
     });

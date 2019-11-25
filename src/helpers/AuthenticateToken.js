@@ -16,8 +16,7 @@ export default class AuthenticateToken {
     * @returns {object} signToken
     */
   static signToken(data) {
-    const { lastName, firstName, ...newData } = data;
-    const token = jwt.sign(newData, process.env.JWT_KEY, { expiresIn: '1W' });
+    const token = jwt.sign(data, process.env.JWT_KEY);
     return token;
   }
 
@@ -36,12 +35,15 @@ export default class AuthenticateToken {
     if (!token) {
       return Customize.errorMessage(req, res, 'Please, insert the token', 401);
     }
-    jwt.verify(token, process.env.JWT_KEY, (err, result) => {
-      if (err) {
-        return Customize.errorMessage(req, res, err, 401);
+    jwt.verify(
+      token, process.env.JWT_KEY,
+      (err, result) => {
+        if (err) {
+          return Customize.errorMessage(req, res, err, 401);
+        }
+        req.user = result;
+        next();
       }
-      req.user = result;
-      next();
-    });
+    );
   }
 }

@@ -1,16 +1,24 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../index';
-import AuthenticateToken from '../helpers/AuthenticateToken';
 import mockData from './mock/mockData';
 
 
 chai.use(chaiHttp);
 const { expect } = chai;
+let token;
 
-
-const userToken = AuthenticateToken.signToken(mockData.aUser);
 describe('Forgot password', () => {
+  before((done) => {
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(mockData.usersSignin)
+      .end((err, res) => {
+        token = res.body.data;
+
+        done();
+      });
+  });
   it('it should not send a reset password email if email does not follow the correct format', (done) => {
     chai.request(app)
       .post('/api/v1/auth/forgot-password')
@@ -35,7 +43,7 @@ describe('Forgot password', () => {
 
   it('it should not reset password whose password and confirm password do not match', (done) => {
     chai.request(app)
-      .patch(`/api/v1/auth/reset-password/${userToken}`)
+      .patch(`/api/v1/auth/reset-password/${token}`)
       .send(mockData.passwordDontMatch)
       .end((err, res) => {
         expect(res.status).to.equal(400);
@@ -46,7 +54,7 @@ describe('Forgot password', () => {
 
   it('it should reset password whose password and confirm password match', (done) => {
     chai.request(app)
-      .patch(`/api/v1/auth/reset-password/${userToken}`)
+      .patch(`/api/v1/auth/reset-password/${token}`)
       .send(mockData.passwordsMatch)
       .end((err, res) => {
         expect(res.status).to.equal(200);
@@ -57,7 +65,7 @@ describe('Forgot password', () => {
 
   it('it should reset password with empty password field', (done) => {
     chai.request(app)
-      .patch(`/api/v1/auth/reset-password/${userToken}`)
+      .patch(`/api/v1/auth/reset-password/${token}`)
       .send(mockData.anyEmptyPasswordField)
       .end((err, res) => {
         expect(res.status).to.equal(400);

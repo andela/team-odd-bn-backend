@@ -7,6 +7,7 @@ import emailHelper from '../helpers/EmailHelper';
 import AuthenticateToken from '../helpers/AuthenticateToken';
 import UserService from '../services/UserService';
 import passwordHelper from '../helpers/resetPasswordEmail';
+import ControllerHelper from '../helpers/ControllerHelper';
 
 const { hashPassword } = HashPassword;
 const { getAUser } = UserService;
@@ -20,7 +21,7 @@ class UserController {
   /**
    * User can be able to sign up
    * @static
-   * @param {object} req request object
+   * @param {object} req  request object
    * @param {object} res response object
    * @memberof UserController
    * @returns {object} data
@@ -38,7 +39,9 @@ class UserController {
         firstName,
         lastName,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        isVerified: false,
+        signupType: 'Barefoot'
       });
       const {
         password,
@@ -77,12 +80,12 @@ class UserController {
      * @returns {Object} response
      */
   static async resendEmailController(req, res) {
-    const user = await users.findOne({ where: { id: req.params.id } });
-    if (!user) {
-      return Customize.errorMessage(req, res, 'Invalid ID', 400);
+    try {
+      emailHelper.verifyEmailHelper(req, req.row);
+      return Customize.successMessage(req, res, 'An email has been sent to you.', '', 200);
+    } catch (err) {
+      return Customize.errorMessage(req, res, err.message, 500);
     }
-    emailHelper.verifyEmailHelper(req, user.dataValues);
-    return Customize.successMessage(req, res, 'An email has been sent to you.', '', 200);
   }
 
   /**
@@ -109,34 +112,7 @@ class UserController {
      * @returns {object} object
      */
   static async facebookCallBack(accessToken, refreshToken, profile, done) {
-    try {
-      const data = {
-        id: profile.id,
-        firstName: profile.name.givenName,
-        lastName: profile.name.familyName,
-        email: profile.emails[0].value,
-        signupType: 'facebook',
-        isVerified: true
-      };
-      const {
-        email, firstName, lastName, signupType, isVerified
-      } = data;
-
-      users.findOrCreate({
-        where: { email },
-        defaults: {
-          firstName,
-          lastName,
-          email,
-          password: null,
-          signupType,
-          isVerified
-        }
-      });
-      done(null, data);
-    } catch (error) {
-      done(error, false, error.message);
-    }
+    ControllerHelper.socialCallBack(accessToken, refreshToken, profile, 'facebook', done);
   }
 
   /**
@@ -148,34 +124,7 @@ class UserController {
    * @returns {object} object
    */
   static async googleCallBack(accessToken, refreshToken, profile, done) {
-    try {
-      const data = {
-        id: profile.id,
-        firstName: profile.name.givenName,
-        lastName: profile.name.familyName,
-        email: profile.emails[0].value,
-        signupType: 'google',
-        isVerified: true
-      };
-      const {
-        email, firstName, lastName, signupType, isVerified
-      } = data;
-
-      users.findOrCreate({
-        where: { email },
-        defaults: {
-          firstName,
-          lastName,
-          email,
-          password: null,
-          signupType,
-          isVerified
-        }
-      });
-      done(null, data);
-    } catch (error) {
-      done(error, false, error.message);
-    }
+    ControllerHelper.socialCallBack(accessToken, refreshToken, profile, 'google', done);
   }
 
   /**
@@ -185,14 +134,7 @@ class UserController {
    * @returns {object} object
    */
   static OAuthfacebook(req, res) {
-    const token = AuthenticateToken.signToken(req.user);
-    const {
-      id, email, firstName, lastName, signupType, isVerified
-    } = req.user;
-    const data = {
-      id, email, firstName, lastName, signupType, isVerified, token
-    };
-    return Customize.successMessage(req, res, 'Logged in with facebook successfully', data, HttpStatus.OK);
+    ControllerHelper.OAuthSocial(req, res, 'Logged in with facebook successfully');
   }
 
   /**
@@ -202,14 +144,7 @@ class UserController {
   * @returns {object} object
   */
   static OAuthgoogle(req, res) {
-    const token = AuthenticateToken.signToken(req.user);
-    const {
-      id, email, firstName, lastName, signupType, isVerified
-    } = req.user;
-    const data = {
-      id, email, firstName, lastName, signupType, isVerified, token
-    };
-    return Customize.successMessage(req, res, 'Logged in with google successfully', data, HttpStatus.OK);
+    ControllerHelper.OAuthSocial(req, res, 'Logged in with google successfully');
   }
 
   /**

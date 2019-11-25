@@ -32,20 +32,52 @@ class Validate {
   }
 
   /**
+  * Validate input
+  * @static
+  * @returns {object} errors
+  */
+  static requestMultiTripRules() {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = d.getMonth();
+    const day = d.getDate();
+    const correctDate = new Date(year, month, day).toDateString();
+    return [
+      check('itinerary.*.startDate', 'Invalid Date(format: YYYY-MM-DD)').isAfter(correctDate),
+      check('itinerary.*.returnDate', 'Invalid Date(format: YYYY-MM-DD)').isAfter(correctDate),
+      check('itinerary.*.originId', 'originId should be an integer').isNumeric(),
+      check('itinerary.*.destinationId', 'destinationId should be an integer').isNumeric(),
+      check('itinerary.*.reason', 'reason should be a minimum of 2 letters').isString().isLength({ min: 2 }),
+    ];
+  }
+
+  /**
+  * Validate input
+  * @static
+  * @returns {object} errors
+  */
+  static locationRules() {
+    return [
+      check('name', 'name should be a minimum of 2 letters').isString().isLength({ min: 2 }),
+    ];
+  }
+
+  /**
     * Validate input
     * @static
     * @returns {object} errors
   */
   static requestOnewayTripRules() {
-    const dates = new Date();
-    const year = dates.getFullYear();
-    const month = dates.getMonth();
-    const day = dates.getDate();
-    const startDates = new Date(year - 0, month, day).toDateString();
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = d.getMonth();
+    const day = d.getDate();
+    const correctDate = new Date(year, month, day).toDateString();
     return [
-      check('city', 'city should be valid').isInt(),
+      check('originId', 'originId should be valid').isInt(),
+      check('destinationId', 'destinationId should be valid').isInt(),
       check('reason', 'reason should be characters').isLength({ min: 2 }),
-      check('startDate', 'date should be validate like in this format(YYYY-DD--MM)').isBefore(startDates)
+      check('startDate', 'Invalid Date(format: YYYY-MM-DD)').isAfter(correctDate),
     ];
   }
 
@@ -73,20 +105,6 @@ class Validate {
       check('reason', 'Reason should be a minimum of 2 letters').isString().isLength({ min: 2 }),
       check('startDate', 'Start date should be a valid date after today(YY-MM-DD) ').isAfter().isISO8601(),
       check('returnDate', 'returnDate must be valid date after today(YY-MM-DD) ').isAfter().isISO8601(),
-    ];
-  }
-
-  /**
-    * Validate input
-    * @static
-    * @returns {object} errors
-    */
-  static oneWayTripRules() {
-    return [
-      check('originId', 'originId should be an integer').isNumeric(),
-      check('destinationId', 'destinationId should be an integer').isNumeric(),
-      check('reason', 'Reason should be a minimum of 2 letters').isString().isLength({ min: 2 }),
-      check('startDate', 'Start date should be a valid date after today(YY-MM-DD) ').isAfter().isISO8601(),
     ];
   }
 }

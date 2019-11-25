@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import AuthenticateToken from './AuthenticateToken';
 
 dotenv.config();
-const { EMAIL_ADDRESS } = process.env;
+const { EMAIL_ADDRESS, MANAGER } = process.env;
 
 /**
  * @export
@@ -102,7 +102,7 @@ class EmailTemplates {
       from: EMAIL_ADDRESS,
       subject: 'Reset Password Link',
       html: `<h4>Hi, ${user.firstName},</h4>
-    <p>You requested for a password reset, kindly use this <a href="${appUrl}/api/users/reset-password/${token}">link</a> to reset your password</p>`
+    <p>You requested for a password reset, kindly use this <a href="${appUrl}/api/v1/auth/reset-password/${token}">link</a> to reset your password</p>`
     };
   }
 
@@ -119,6 +119,39 @@ class EmailTemplates {
       subject: 'Password Reset Successful',
       html: `<h4>Hi, ${user.firstName},</h4>
      <p>Your password has been successfully reset!</p>`
+    };
+  }
+
+  /**
+   * register a new
+   * @static
+   * @param {Object} req the template to use
+   * @param {Object} email the template to use
+   * @returns {Object} sendEmail
+   */
+  static approveEmailTemplate(req, email) {
+    return {
+      to: email,
+      from: EMAIL_ADDRESS,
+      subject: 'Trip request',
+      html: `<h4>Hi, ${MANAGER},</h4>
+     <p>${req.user.firstName} has made a multi trip request, the reason for the request is ${req.body.reason}</p>`
+    };
+  }
+
+  /**
+   * register a new
+   * @static
+   * @param {Object} user the template to use
+   * @returns {Object} sendEmail
+   */
+  static approvedEmailTemplate(user) {
+    return {
+      to: user.email,
+      from: EMAIL_ADDRESS,
+      subject: 'Trip request approved',
+      html: `<h4>Hi, ${user.firstName},</h4>
+     <p>Your trip request has been approved</p>`
     };
   }
 }

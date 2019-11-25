@@ -1,21 +1,31 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../index';
-import AuthenticateToken from '../helpers/AuthenticateToken';
 import mockData from './mock/tripMockData';
+import MockData from './mock/mockData';
 
 
 chai.use(chaiHttp);
 const { expect } = chai;
 
-const userToken = AuthenticateToken.signToken(mockData.aUser);
+let token;
 
 describe('Return Trip Route Tests', () => {
+  before((done) => {
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(MockData.usersSignin)
+      .end((err, res) => {
+        token = res.body.data;
+        res.should.have.status(200);
+        done();
+      });
+  });
   it('it should create a new trip ', (done) => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
       .send(mockData.correctTrip)
-      .set('token', userToken)
+      .set('token', token)
       .end((err, res) => {
         expect(res.status).to.equal(201);
         expect(res.body).to.be.a('object');
@@ -26,7 +36,7 @@ describe('Return Trip Route Tests', () => {
   it('it should not create a trip if originId does not follow the correct format', (done) => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
-      .set('token', userToken)
+      .set('token', token)
       .send(mockData.wrongOriginIdFormat)
       .end((err, res) => {
         expect(res.status).to.equal(400);
@@ -39,7 +49,7 @@ describe('Return Trip Route Tests', () => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
       .send(mockData.wrongDestinationIdFormat)
-      .set('token', userToken)
+      .set('token', token)
       .end((err, res) => {
         expect(res.status).to.equal(400);
         expect(res.body).to.be.a('object');
@@ -51,7 +61,7 @@ describe('Return Trip Route Tests', () => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
       .send(mockData.wrongReasonIdFormat)
-      .set('token', userToken)
+      .set('token', token)
       .end((err, res) => {
         expect(res.status).to.equal(400);
         expect(res.body).to.be.a('object');
@@ -63,7 +73,7 @@ describe('Return Trip Route Tests', () => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
       .send(mockData.wrongTripTypeIdFormat)
-      .set('token', userToken)
+      .set('token', token)
       .end((err, res) => {
         expect(res.status).to.equal(400);
         expect(res.body).to.be.a('object');
@@ -75,7 +85,7 @@ describe('Return Trip Route Tests', () => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
       .send(mockData.wrongStartDateFormat)
-      .set('token', userToken)
+      .set('token', token)
       .end((err, res) => {
         expect(res.status).to.equal(400);
         expect(res.body).to.be.a('object');
@@ -87,7 +97,7 @@ describe('Return Trip Route Tests', () => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
       .send(mockData.wrongReturnDateFormat)
-      .set('token', userToken)
+      .set('token', token)
       .end((err, res) => {
         expect(res.status).to.equal(400);
         expect(res.body).to.be.a('object');
@@ -99,7 +109,7 @@ describe('Return Trip Route Tests', () => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
       .send(mockData.pastStartDate)
-      .set('token', userToken)
+      .set('token', token)
       .end((err, res) => {
         expect(res.status).to.equal(400);
         expect(res.body).to.be.a('object');
@@ -111,7 +121,7 @@ describe('Return Trip Route Tests', () => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
       .send(mockData.wrongTripTypeId)
-      .set('token', userToken)
+      .set('token', token)
       .end((err, res) => {
         expect(res.status).to.equal(400);
         expect(res.body).to.be.a('object');
@@ -123,7 +133,7 @@ describe('Return Trip Route Tests', () => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
       .send(mockData.misisngOriginId)
-      .set('token', userToken)
+      .set('token', token)
       .end((err, res) => {
         expect(res.status).to.equal(400);
         expect(res.body).to.be.a('object');
@@ -135,7 +145,7 @@ describe('Return Trip Route Tests', () => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
       .send(mockData.correctTrip)
-      .set('token', userToken)
+      .set('token', token)
       .end((err, res) => {
         expect(res.status).to.equal(409);
         expect(res.body).to.be.a('object');
@@ -170,7 +180,7 @@ describe('Return Trip Route Tests', () => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
       .send(mockData.earlyReturnDate)
-      .set('token', userToken)
+      .set('token', token)
       .end((err, res) => {
         expect(res.status).to.equal(400);
         expect(res.body).to.be.a('object');

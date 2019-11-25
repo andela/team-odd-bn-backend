@@ -13,18 +13,28 @@ module.exports = {
         references:{
           model:'users',
           key:'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       tripTypeId: {
         type: Sequelize.INTEGER,
         references:{
           model:'tripTypes',
           key:'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       statusId: {
         type: Sequelize.INTEGER,
-        defaultValue: 1  
+        references:{
+          model:'status',
+          key:'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        defaultValue: 1 , 
       },
       createdAt: {
         allowNull: false,

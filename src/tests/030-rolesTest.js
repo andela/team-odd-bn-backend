@@ -1,18 +1,27 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import { describe, it } from 'mocha';
 import dotenv from 'dotenv';
 import app from '../index';
-import mockData, { superAdminToken } from './mock/mockData';
+import mockData from './mock/mockData';
 
 
 chai.use(chaiHttp);
 chai.should();
 
 dotenv.config();
-
+let superAdminToken;
 
 describe('Super admin should be able to assign role', () => {
+  before((done) => {
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(mockData.newSuperAdminLogin)
+      .end((err, res) => {
+        superAdminToken = res.body.data;
+
+        done();
+      });
+  });
   it('Create new user', (done) => {
     chai.request(app)
       .post('/api/v1/auth/signup')
