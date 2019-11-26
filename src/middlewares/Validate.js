@@ -145,5 +145,42 @@ class Validate {
       check('bio', 'Please your bio is needed to complete your profile(at least 15 characters)').isLength({ min: 15 })
     ];
   }
+
+  /**
+  * Validate input
+  * @static
+  * @returns {object} errors
+  */
+  static isIDInteger() {
+    return [
+      check('tripRequestId', 'ID should be an integer').isInt(),
+    ];
+  }
+
+  /**
+    * Validate input
+    * @static
+    * @returns {object} errors
+  */
+  static editRequest() {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = d.getMonth();
+    const day = d.getDate();
+    const correctDate = new Date(year, month, day).toDateString();
+    return [
+      check('itinerary.*.startDate', 'Invalid Date(format: YYYY-MM-DD)').isAfter(correctDate).optional(),
+      check('itinerary.*.returnDate', 'Invalid Date(format: YYYY-MM-DD)').isAfter(correctDate).optional(),
+      check('itinerary.*.originId', 'originId should be an integer').isNumeric().optional(),
+      check('itinerary.*.destinationId', 'destinationId should be an integer').isNumeric().optional(),
+      check('itinerary.*.reason', 'reason should be a minimum of 2 letters').isString().isLength({ min: 2 }).optional(),
+
+      check('originId', 'originId should be an integer').isNumeric().optional(),
+      check('destinationId', 'destinationId should be an integer').isNumeric().optional(),
+      check('reason', 'Reason should be a minimum of 2 letters').isString().isLength({ min: 2 }).optional(),
+      check('startDate', 'Start date should be a valid date after today(YY-MM-DD) ').isAfter().isISO8601().optional(),
+      check('returnDate', 'returnDate must be valid date after today(YY-MM-DD) ').isAfter().isISO8601().optional(),
+    ];
+  }
 }
 export default Validate;

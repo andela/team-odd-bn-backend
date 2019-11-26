@@ -301,7 +301,39 @@ const tripMockData = {
   },
   invalidToken: 'jfdgvfjfjdbfjbdjfbdjbfjdbfjdb',
 
+  newMultiCityData: {
+    itinerary: [
+      {
+        originId: 3,
+        destinationId: 5,
+        startDate: '2020-01-20',
+        returnDate: '2021-01-10',
+        reason: 'edit me multicity 1'
+      },
+      {
+        originId: 4,
+        destinationId: 3,
+        startDate: '2022-01-20',
+        returnDate: '2023-01-10',
+        reason: 'edit me multicity 2'
+      },
+    ]
+  },
+  newOneWayTrip: {
+    originId: 3,
+    destinationId: 4,
+    startDate: '2021-11-20',
+    returnDate: '2022-01-10',
+    reason: 'edit me one-way trip'
+  },
 
+  editNewOneWay: {
+    originId: 1,
+    destinationId: 4,
+    startDate: '2022-11-20',
+    returnDate: '2023-01-10',
+    reason: 'edit me one-way trip'
+  }
 };
 
 export default tripMockData;
