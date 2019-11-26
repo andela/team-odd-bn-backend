@@ -52,7 +52,7 @@ class TripController {
    * @static
    * @param {object} req request object
    * @param {object} res response object
-   * @memberof UserController
+   * @memberof TripController
    * @returns {object} data
    */
   static async approveTrip(req, res) {
@@ -68,6 +68,21 @@ class TripController {
     } catch (err) {
       return Customize.errorMessage(req, res, err.message, 500);
     }
+  }
+
+  /**
+   * Manager should be able to accept a trip request
+   * @static
+   * @param {object} req request object
+   * @param {object} res response object
+   * @memberof TripController
+   * @returns {object} data
+   */
+  static async acceptOrRejectRequests(req, res) {
+    const { reason } = req.body;
+    return (req.query.status === 'reject')
+      ? Customize.successMessage(req, res, 'this request has successfully rejected...', { reason }, 200)
+      : Customize.successMessage(req, res, 'this request has successfully accepted...', { reason }, 200);
   }
 }
 

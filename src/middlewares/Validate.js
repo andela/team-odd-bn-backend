@@ -145,5 +145,20 @@ class Validate {
       check('bio', 'Please your bio is needed to complete your profile(at least 15 characters)').isLength({ min: 15 })
     ];
   }
+
+  /**
+    * Validate reason for approval or rejection
+    * @static
+    * @returns {object} errors
+    */
+  static approveOrRejectRequest() {
+    return [
+      oneOf([
+        check('status').isIn(['accept', 'reject']),
+      ], 'status should be either reject or accept'),
+      check('tripRequestId', 'trip request id should be an integer').isNumeric(),
+      check('reason', 'Reason should be a minimum of 2 letters').isString().isLength({ min: 2 }),
+    ];
+  }
 }
 export default Validate;

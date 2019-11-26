@@ -3,7 +3,7 @@ import AuthenticateToken from '../../helpers/AuthenticateToken';
 
 dotenv.config();
 
-const { passwordEnv } = process.env;
+const { passwordEnv, MANAGERPASSWORD, PASSWORDFORALL } = process.env;
 
 const mockData = {
   users: {
@@ -165,6 +165,17 @@ const mockData = {
     department: 'IT',
     managerId: 5,
     bio: 'I have been a christian since 2014, Christ as my savior'
+  },
+  managersUser: {
+    email: 'maiyo.brian@andela.com',
+    password: MANAGERPASSWORD
+  },
+  userMakeTrip: {
+    email: 'demo@gmail.com',
+    password: PASSWORDFORALL
+  },
+  approveRequest: {
+    reason: 'yes we agree with your reason'
   }
 };
 

@@ -5,12 +5,23 @@ import ValidateTrip from '../../middlewares/ValidateTrip';
 import Validate from '../../middlewares/Validate';
 import checkInputDataError from '../../middlewares/checkInputDataError';
 import Exists from '../../middlewares/Exists';
+import {
+  isManagerAccess,
+  validateAcceptOrReject
+} from '../../middlewares/approveOrReject';
+import isManagerRequest from '../../middlewares/isBelongsToManager';
 
 
 const tripRouter = express.Router();
-const { verifyToken } = AuthenticateToken;
+const {
+  verifyToken
+} = AuthenticateToken;
 
-const { returnTripController, OneWayTripController } = TripController;
+const {
+  returnTripController,
+  OneWayTripController,
+  acceptOrRejectRequests
+} = TripController;
 
 tripRouter.post('/oneway',
   verifyToken,
@@ -239,4 +250,72 @@ tripRouter.post('/twoWay',
  *
  */
 
+tripRouter.patch('/:tripRequestId', verifyToken, Validate.approveOrRejectRequest(), checkInputDataError, Exists.isTripRequestExist, isManagerRequest, isManagerAccess, validateAcceptOrReject, acceptOrRejectRequests);
+/**
+ * @swagger
+ *
+ * /trips/{tripRequestId}?status=reject:
+ *    patch:
+ *      summary: Manager can reject a trip request
+ *      tags: [Trip]
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Trip'
+ *      parameters:
+ *        - name: tripRequestId
+ *          in: path
+ *          description: Please enter the valid status
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        "200":
+ *          description: A user schema
+ *        "403":
+ *          description: A user schema
+ *        "409":
+ *          description: A user schema
+ *        "404":
+ *          description: A user schema
+ *
+ * /trips/{tripRequestId}?status=accept:
+ *    patch:
+ *      summary: Manager can reject a trip request
+ *      tags: [Trip]
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Trip'
+ *      parameters:
+ *        - name: tripRequestId
+ *          in: path
+ *          description: Please enter the valid status
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        "200":
+ *          description: A user schema
+ *        "403":
+ *          description: A user schema
+ *        "409":
+ *          description: A user schema
+ *        "404":
+ *          description: A user schema
+ *
+ * components:
+ *    schemas:
+ *      Trip:
+ *        type: object
+ *        required:
+ *          - reason
+ *        properties:
+ *          reason:
+ *            type: string
+ */
 export default tripRouter;

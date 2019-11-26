@@ -7,7 +7,7 @@ module.exports = {
         firstName: 'John',
         lastName: 'Doe',
         email: 'demo@gmail.com',
-        password: '$2b$10$Q9H0gYzslg.oIvqoiWBEfesJoe.HTQT0Ezg5itN/h0a5Mf9gxWWvq',
+        password: '$2b$10$fZ7o3DAOl6nRk/nXJ.Fe1.DHmh9q5rByeodydnM22nmtIKBpw07yW',
         roleId: 3,
         isVerified: true,
         signupType:'default',
