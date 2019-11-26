@@ -14,7 +14,7 @@ const { expect } = chai;
 const {
   unknownUserUpdate, invalidManager, userInvalidImage
 } = mockData;
-let unverifiedUserToken, verifiedUserToken, trueToken;
+let unverifiedUserToken, trueToken;
 
 
 describe('Authentication test', () => {
@@ -183,7 +183,7 @@ describe('User profile page settings', () => {
   before((done) => {
     chai.request(app)
       .post('/api/v1/auth/signin')
-      .send({ email: 'jean@gmail.com', password: 'admin1224' })
+      .send({ email: 'jean@gmail.com', password: 'Simulation1$' })
       .end((err, res) => {
         trueToken = res.body.data;
         done(err);
@@ -198,15 +198,7 @@ describe('User profile page settings', () => {
         done(err);
       });
   });
-  before((done) => {
-    chai.request(app)
-      .post('/api/v1/auth/signin')
-      .send({ email: 'test@email.com', password: 'admin1224' })
-      .end((err, res) => {
-        verifiedUserToken = res.body.data;
-        done(err);
-      });
-  });
+
   it('it should not update user profile with empty fileds', (done) => {
     chai.request(app)
       .put('/api/v1/users/profile-settings')
@@ -309,4 +301,3 @@ describe('User profile page settings', () => {
       });
   });
 });
-

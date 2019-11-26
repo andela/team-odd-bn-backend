@@ -12,7 +12,6 @@ import ControllerHelper from '../helpers/ControllerHelper';
 const { hashPassword } = HashPassword;
 const { getAUser } = UserService;
 dotenv.config();
-
 /**
  * @exports
  * @class UserController
@@ -273,7 +272,7 @@ class UserController {
         Customize.errorMessage(req, res, 'Unable to update your profile', HttpStatus.BAD_REQUEST);
       }
     } catch (e) {
-      Customize.errorMessage(req, res, e, HttpStatus.INTERNAL_SERVER_ERROR);
+      Customize.errorMessage(req, res, 'Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

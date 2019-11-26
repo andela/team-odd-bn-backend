@@ -3,14 +3,14 @@ import AuthenticateToken from '../../helpers/AuthenticateToken';
 
 dotenv.config();
 
-const { passwordEnv, passwordEnv1 } = process.env;
+const { PASSWORD_ENV } = process.env;
 
 const mockData = {
   users: {
     firstName: 'Yannick',
     lastName: 'Jamson',
     email: 'jamson@gmail.com',
-    password: passwordEnv,
+    password: PASSWORD_ENV,
     signupType: 'Barefoot',
     isVerified: true
   },
@@ -18,55 +18,55 @@ const mockData = {
     firstName: 'Yannick',
     lastName: 'Jamson',
     email: 'jaon@gmail.com',
-    password: passwordEnv,
+    password: PASSWORD_ENV,
     signupType: 'Barefoot',
   },
   users2UnverifiedSignup: {
     firstName: 'Yannick',
     lastName: 'Jamson',
     email: 'jon@gmail.com',
-    password: passwordEnv,
+    password: PASSWORD_ENV,
     signupType: 'Barefoot',
   },
   usersUnverifiedSignin: {
     firstName: 'Yannick',
     lastName: 'Jamson',
     email: 'jaon@gmail.com',
-    password: passwordEnv,
+    password: PASSWORD_ENV,
   },
   veryfyEmailUser: {
     id: 1,
     firstName: 'Eric',
     lastName: 'Nayo.',
     email: 'hezronchelimo.hc@gmail.com',
-    password: passwordEnv,
+    password: PASSWORD_ENV,
     signupType: 'Barefoot',
     isVerified: false
   },
   usersSignin: {
     email: 'jamson@gmail.com',
-    password: passwordEnv,
+    password: PASSWORD_ENV,
   },
   testUser: {
     email: 'test@email.com',
-    password: 'admin1224',
+    password: PASSWORD_ENV,
   },
   isManager: {
     email: 'manager.email@gmail.com',
-    password: 'admin1234',
+    password: PASSWORD_ENV,
   },
 
   wrongManager: {
     email: 'demo@gmail.com',
-    password: 'barefoot@Nomad123',
+    password: PASSWORD_ENV,
   },
   userCorrectInfo: {
     email: 'demo@demo.com',
-    password: 'barefoot@Nomad123',
+    password: PASSWORD_ENV,
   },
   usersWrongInfo: {
     email: 'jamson@example.com',
-    password: passwordEnv,
+    password: PASSWORD_ENV,
   },
   usersAccountNotMatch: {
     email: 'jamson@gmail.com',
@@ -90,11 +90,11 @@ const mockData = {
   },
   user1: {
     email: 'jean@gmail.com',
-    password: 'admin1224'
+    password: PASSWORD_ENV
   },
   user2: {
     email: 'manager.email@gmail.com',
-    password: 'admin1234'
+    password: PASSWORD_ENV
   },
   wrongEmailFormat: {
     email: 'demo.com',
@@ -149,7 +149,7 @@ const mockData = {
     firstName: 'Eric',
     lastName: 'Testman',
     email: 'eric@gmail.com',
-    password: passwordEnv
+    password: PASSWORD_ENV
   },
   fekeEmail: {
     email: 'bad@email.feke'
@@ -159,7 +159,7 @@ const mockData = {
   },
   newSuperAdminLogin: {
     email: 'admin@gmail.com',
-    password: 'admin1234'
+    password: PASSWORD_ENV
   },
   newSuperAdmin: {
     id: 4,
@@ -167,7 +167,7 @@ const mockData = {
     lastName: 'admin',
     roleId: 1,
     email: 'admin@gmail.com',
-    password: passwordEnv
+    password: PASSWORD_ENV
   },
   locationData: {
     name: 'Naiccrobi',
@@ -212,10 +212,21 @@ const mockData = {
     lastName: 'admin',
     roleId: 1,
     email: 'admin@gmail.com',
-    password: passwordEnv1
+    password: PASSWORD_ENV
   }),
   userComment:
-  { comment: 'Everyone in the company should request for this trip' }
+  { comment: 'Everyone in the company should request for this trip' },
+  managersUser: {
+    email: 'manager.email@gmail.com',
+    password: PASSWORD_ENV
+  },
+  userMakeTrip: {
+    email: 'demo@gmail.com',
+    password: PASSWORD_ENV
+  },
+  approveRequest: {
+    reason: 'yes we agree with your reason'
+  }
 };
 
 export default mockData;

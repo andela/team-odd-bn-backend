@@ -7,12 +7,14 @@ import checkInputDataError from '../../middlewares/checkInputDataError';
 import Exists from '../../middlewares/Exists';
 import Conflict from '../../middlewares/Conflict';
 import isUserVerified from '../../middlewares/isUserVerified';
-import { IsOwnerOfTrip, IsTripApproved } from '../../middlewares/findUsers';
-import TripMiddleware from '../../middlewares/TripMiddlewares';
+import { IsOwnerOfTrip, IsTripApproved, isManagerHasAccess, isManagerOwnsRequest } from '../../middlewares/findUsers';
 import VerifyUserRoles from '../../middlewares/VerifyUserRoles';
+import operateAcceptOrReject from '../../middlewares/approveOrReject';
 
 const tripRouter = express.Router();
-const { verifyToken } = AuthenticateToken;
+const {
+  verifyToken
+} = AuthenticateToken;
 
 const {
   returnTripController,
@@ -21,22 +23,10 @@ const {
   getRequestsByManager
 } = TripController;
 const { isTripRequestFound } = Conflict;
-const { getLineManager } = TripMiddleware;
+const {
+  acceptOrRejectRequestsController
+} = TripController;
 
-tripRouter
-  .post(
-    '/oneway',
-    verifyToken,
-    Validate.requestOnewayTripRules(),
-    checkInputDataError,
-    getLineManager,
-    ValidateTrip.checkIfOriginDestinationExists,
-    ValidateTrip.checkIfOriginSameAsDestination,
-    ValidateTrip.checkMultiCityForSimilarRequests,
-    ValidateTrip.checkForSimilarRequests,
-    ValidateTrip.checkForSimilarRequestsDateRange,
-    OneWayTripController
-  );
 
 /**
  * @swagger
@@ -92,20 +82,7 @@ tripRouter
     OneWayTripController
   );
 
-tripRouter
-  .post(
-    '/multicity',
-    AuthenticateToken.verifyToken,
-    Validate.requestMultiTripRules(),
-    checkInputDataError,
-    getLineManager,
-    ValidateTrip.checkIfOriginDestinationExists,
-    ValidateTrip.checkIfOriginSameAsDestination,
-    ValidateTrip.checkMultiCityForSimilarRequests,
-    ValidateTrip.checkForSimilarRequests,
-    ValidateTrip.checkForSimilarRequestsDateRange,
-    TripController.requestTrip
-  );
+
 /**
  * @swagger
  *
@@ -183,36 +160,6 @@ tripRouter
     TripController.requestTrip
   );
 
-
-/**
- * @swagger
- *
- * /trips/:id/approval:
- *    patch:
- *      summary: A manager should be able to approve requests
- *      tags: [Trip]
- *      parameters:
- *        - name: token
- *          in: header
- *          required: true
- *          description: user token
- *          schema:
- *              type: string
- *          example: XXXXXXXX.XXXXXXXXXX.XXXXXXX
- *          minimum: 1
- *      requestBody:
- *        required: false
- *      responses:
- *        "201":
- *          Request approved
- *
- */
-
-tripRouter
-  .patch(
-    '/:id/approval', Exists.isRequestExist,
-    TripController.approveTrip
-  );
 
 tripRouter
   .post(
@@ -348,6 +295,9 @@ tripRouter.get(
  * /trips/edit/{tripRequestId}:
  *    put:
  *      summary: User should be able to edit trip
+ * /trips/{tripRequestId}?status=reject:
+ *    patch:
+ *      summary: Manager can reject a trip request
  *      tags: [Trip]
  *      requestBody:
  *        required: true
@@ -398,5 +348,82 @@ tripRouter
     editTrip
   );
 
+
+/**
+ * @swagger
+ *
+ * /trips/{tripRequestId}?status=reject:
+ *    patch:
+ *      summary: Manager can reject a trip request
+ *      tags: [Trip]
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Trip'
+ *      parameters:
+ *        - name: tripRequestId
+ *          in: path
+ *          description: Please enter the valid status
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        "200":
+ *          description: A user schema
+ *        "403":
+ *          description: A user schema
+ *        "409":
+ *          description: A user schema
+ *        "404":
+ *          description: A user schema
+ *
+ * /trips/{tripRequestId}?status=accept:
+ *    patch:
+ *      summary: Manager can reject a trip request
+ *      tags: [Trip]
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Trip'
+ *      parameters:
+ *        - name: tripRequestId
+ *          in: path
+ *          description: Please enter the valid status
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        "200":
+ *          description: A user schema
+ *        "403":
+ *          description: A user schema
+ *        "409":
+ *          description: A user schema
+ *        "404":
+ *          description: A user schema
+ *
+ * components:
+ *    schemas:
+ *      Trip:
+ *        type: object
+ *        required:
+ *          - reason
+ *        properties:
+ *          reason:
+ *            type: string
+ */
+
+tripRouter
+  .patch(
+    '/:tripRequestId',
+    verifyToken, Validate.approveOrRejectRequest(),
+    checkInputDataError, Exists.isTripRequestExist,
+    isManagerOwnsRequest, isManagerHasAccess,
+    operateAcceptOrReject, acceptOrRejectRequestsController
+  );
 
 export default tripRouter;
