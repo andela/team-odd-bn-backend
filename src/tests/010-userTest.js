@@ -223,7 +223,7 @@ describe('User profile page settings', () => {
         done(err);
       });
   });
-  it('it should not update user profile with invalid filed', (done) => {
+  it('it should not update user profile with invalid image', (done) => {
     chai.request(app)
       .put('/api/v1/users/profile-settings')
       .set('token', unverifiedUserToken)
@@ -245,7 +245,7 @@ describe('User profile page settings', () => {
         done(err);
       });
   });
-  it('it should not update profile of unidentified user', (done) => {
+  it('it should update user profile successfully', (done) => {
     chai.request(app)
       .put('/api/v1/users/profile-settings')
       .set('token', verifiedUserToken)

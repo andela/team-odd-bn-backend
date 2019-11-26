@@ -1,5 +1,6 @@
-import { users } from '../database/models';
 import Customize from '../helpers/Customize';
+import { users, tripRequests } from '../database/models';
+import CommonQueries from '../services/CommonQueries';
 
 const findOneUser = async (req, res, next) => {
   const { email } = req.body;
@@ -26,4 +27,28 @@ export const IsTripApproved = async (req, res, next) => {
 };
 
 
+export const commentAccess = async (req, res, next) => {
+  const { id } = req.user;
+  const { tripRequestId } = req.params;
+  const userObj = {
+    where: {
+      id,
+      roleId: 6,
+    }
+  };
+  const tripObj = {
+    where: {
+      id: tripRequestId,
+      userId: id,
+    }
+  };
+  const isManager = await CommonQueries.findOne(users, userObj);
+
+  const isRequester = await CommonQueries.findOne(tripRequests, tripObj);
+
+  if (isManager || isRequester) {
+    return next();
+  }
+  return Customize.errorMessage(req, res, 'You should be either a requester or a manager', 403);
+};
 export default findOneUser;

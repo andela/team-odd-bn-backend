@@ -58,7 +58,26 @@ passport.serializeUser((user, done) => {
  *          access_token:
  *            type: string
  *        example:
- *           access_token: xx-xx-xx
+ *           access_token: xxxxxxxxx.xxxxxxxxx.xxxxxxxxxx
+ *      Comment:
+ *        type: object
+ *        required:
+ *          - comment
+ *        properties:
+ *          comment:
+ *            type: string
+ *        example:
+ *           comment: This is a simple comment
+ *      Token:
+ *        type: string
+ *        required:
+ *          - token
+ *        example: xxxxxxxxx.xxxxxxxxx.xxxxxxxxxx
+ *        minimum: 1
+ *      tripRequestId:
+ *        type: integer
+*        example: 1
+*        minimum: 1
  *
  */
 

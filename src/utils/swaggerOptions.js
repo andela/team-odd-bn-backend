@@ -45,7 +45,8 @@ const options = {
     path.resolve(__dirname, '../routes/api/tripRoute.js'),
     path.resolve(__dirname, '../routes/api/roleRoute.js'),
     path.resolve(__dirname, '../routes/api/locationRoute.js'),
-    path.resolve(__dirname, '../routes/api/userRoute.js')
+    path.resolve(__dirname, '../routes/api/userRoute.js'),
+    path.resolve(__dirname, '../routes/api/commentRoute.js')
   ]
 };
 export default options;
