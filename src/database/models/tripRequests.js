@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
        {onUpdate: 'cascade'});
     tripRequests.hasMany(
       models.trips,
-       {foreignKey: 'id'},
+       {targetKey: 'tripRequestId'},
        { onDelete: 'cascade'},
        {onUpdate: 'cascade'});
   };

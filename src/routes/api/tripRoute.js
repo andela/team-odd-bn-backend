@@ -8,13 +8,35 @@ import Exists from '../../middlewares/Exists';
 import Conflict from '../../middlewares/Conflict';
 import isUserVerified from '../../middlewares/isUserVerified';
 import { IsOwnerOfTrip, IsTripApproved } from '../../middlewares/findUsers';
+import TripMiddleware from '../../middlewares/TripMiddlewares';
+import VerifyUserRoles from '../../middlewares/VerifyUserRoles';
 
 const tripRouter = express.Router();
 const { verifyToken } = AuthenticateToken;
 
-const { returnTripController, OneWayTripController, editTrip } = TripController;
+const {
+  returnTripController,
+  OneWayTripController,
+  editTrip,
+  getRequestsByManager
+} = TripController;
 const { isTripRequestFound } = Conflict;
+const { getLineManager } = TripMiddleware;
 
+tripRouter
+  .post(
+    '/oneway',
+    verifyToken,
+    Validate.requestOnewayTripRules(),
+    checkInputDataError,
+    getLineManager,
+    ValidateTrip.checkIfOriginDestinationExists,
+    ValidateTrip.checkIfOriginSameAsDestination,
+    ValidateTrip.checkMultiCityForSimilarRequests,
+    ValidateTrip.checkForSimilarRequests,
+    ValidateTrip.checkForSimilarRequestsDateRange,
+    OneWayTripController
+  );
 
 /**
  * @swagger
@@ -70,7 +92,20 @@ tripRouter
     OneWayTripController
   );
 
-
+tripRouter
+  .post(
+    '/multicity',
+    AuthenticateToken.verifyToken,
+    Validate.requestMultiTripRules(),
+    checkInputDataError,
+    getLineManager,
+    ValidateTrip.checkIfOriginDestinationExists,
+    ValidateTrip.checkIfOriginSameAsDestination,
+    ValidateTrip.checkMultiCityForSimilarRequests,
+    ValidateTrip.checkForSimilarRequests,
+    ValidateTrip.checkForSimilarRequestsDateRange,
+    TripController.requestTrip
+  );
 /**
  * @swagger
  *
@@ -134,18 +169,19 @@ tripRouter
  *
  */
 
-tripRouter.post(
-  '/multicity',
-  AuthenticateToken.verifyToken,
-  Validate.requestMultiTripRules(),
-  checkInputDataError,
-  ValidateTrip.checkIfOriginDestinationExists,
-  ValidateTrip.checkIfOriginSameAsDestination,
-  ValidateTrip.checkMultiCityForSimilarRequests,
-  ValidateTrip.checkForSimilarRequests,
-  ValidateTrip.checkForSimilarRequestsDateRange,
-  TripController.requestTrip
-);
+tripRouter
+  .post(
+    '/multicity',
+    AuthenticateToken.verifyToken,
+    Validate.requestMultiTripRules(),
+    checkInputDataError,
+    ValidateTrip.checkIfOriginDestinationExists,
+    ValidateTrip.checkIfOriginSameAsDestination,
+    ValidateTrip.checkMultiCityForSimilarRequests,
+    ValidateTrip.checkForSimilarRequests,
+    ValidateTrip.checkForSimilarRequestsDateRange,
+    TripController.requestTrip
+  );
 
 
 /**
@@ -178,6 +214,19 @@ tripRouter
     TripController.approveTrip
   );
 
+tripRouter
+  .post(
+    '/twoWay',
+    verifyToken,
+    Validate.twoWayTripRules(),
+    checkInputDataError,
+    ValidateTrip.checkIfOriginDestinationExists,
+    ValidateTrip.checkIfOriginSameAsDestination,
+    ValidateTrip.checkMultiCityForSimilarRequests,
+    ValidateTrip.checkForSimilarRequests,
+    ValidateTrip.checkForSimilarRequestsDateRange,
+    returnTripController
+  );
 
 /**
  * @swagger
@@ -251,6 +300,12 @@ tripRouter
     ValidateTrip.checkForSimilarRequestsDateRange,
     returnTripController
   );
+tripRouter.get(
+  '/requests',
+  verifyToken,
+  VerifyUserRoles.isManager,
+  getRequestsByManager
+);
 
 /**
  * @swagger
@@ -258,6 +313,9 @@ tripRouter
  * /trips/:id:
  *    get:
  *      summary: Available trip requests
+ * /trips/requests:
+ *    get:
+ *      summary: Available requests to manager for approval
  *      tags: [Trip]
  *      parameters:
  *        - name: token

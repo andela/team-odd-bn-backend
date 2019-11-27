@@ -1,4 +1,4 @@
-import { tripRequests, trips } from '../database/models';
+import { tripRequests, trips, userProfile, users } from '../database/models';
 import CommonQueries from './CommonQueries';
 
 /**
@@ -36,7 +36,6 @@ class TripService {
 
     const getTripsIds = await CommonQueries.findAll(trips, findAllObjQuery);
     await CommonQueries.update(tripRequests, updateStatusQuery);
-
     itinerary.forEach(async (item, index) => {
       const tripId = getTripsIds[index].dataValues.id;
       await trips.update(
@@ -53,6 +52,39 @@ class TripService {
       );
     });
     return itinerary;
+  }
+
+  /**
+   * Manager should be able to view approvals
+   * @static
+   * @param {object}id object
+   * @memberof TripService
+   * @returns {object} trip requests of requesters that report to manager
+   */
+  static async availtripRequestsToManager(id) {
+    return userProfile.findAll({
+      where: { managerId: id },
+      attributes: ['id', 'userId'],
+      include: [
+        {
+          model: users,
+          attributes: ['id', 'firstName', 'lastName'],
+          as: 'user',
+          include: [
+            {
+              model: tripRequests,
+              where: { statusId: 1 },
+              attributes: ['id', 'tripTypeId', 'statusId'],
+              include: [
+                {
+                  model: trips
+                }
+              ]
+            }
+          ],
+        }
+      ],
+    });
   }
 }
 

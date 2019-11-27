@@ -1,35 +1,28 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import dotenv from 'dotenv';
 import app from '../index';
-import mockData from './mock/tripMockData';
-import MockData from './mock/mockData';
-
+import tripMockData from './mock/tripMockData';
+import mockData from './mock/mockData';
 
 chai.use(chaiHttp);
+chai.should();
 const { expect } = chai;
 
+dotenv.config();
+
 let token;
-describe('Return Trip Route Tests', () => {
+
+
+describe('Return trip tests', () => {
   before((done) => {
     chai.request(app)
       .post('/api/v1/auth/signin')
-      .send(MockData.usersSignin)
+      .send(mockData.usersSignin)
       .end((err, res) => {
         token = res.body.data;
-        res.should.have.status(200);
-        done();
-      });
-  });
 
-  it('it should create a new trip ', (done) => {
-    chai.request(app)
-      .post('/api/v1/trips/twoWay')
-      .send(mockData.correctTrip)
-      .set('token', token)
-      .end((err, res) => {
-        expect(res.status).to.equal(201);
-        expect(res.body).to.be.a('object');
-        done(err);
+        done();
       });
   });
 
@@ -44,7 +37,6 @@ describe('Return Trip Route Tests', () => {
         done(err);
       });
   });
-
   it('it should not create a trip if destinationId does not follow the correct format', (done) => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
@@ -56,7 +48,6 @@ describe('Return Trip Route Tests', () => {
         done(err);
       });
   });
-
   it('it should not create a trip if reason does not follow the correct format', (done) => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
@@ -68,7 +59,6 @@ describe('Return Trip Route Tests', () => {
         done(err);
       });
   });
-
   it('it should not create a trip if tripTypeId does not follow the correct format', (done) => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
@@ -80,7 +70,6 @@ describe('Return Trip Route Tests', () => {
         done(err);
       });
   });
-
   it('it should not create a trip if startDate does not follow the correct format', (done) => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
@@ -92,7 +81,6 @@ describe('Return Trip Route Tests', () => {
         done(err);
       });
   });
-
   it('it should not create a trip if returnDate does not follow the correct format', (done) => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
@@ -104,7 +92,6 @@ describe('Return Trip Route Tests', () => {
         done(err);
       });
   });
-
   it('it should not create a trip if startDate is in the past', (done) => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
@@ -116,7 +103,6 @@ describe('Return Trip Route Tests', () => {
         done(err);
       });
   });
-
   it('it should not create a trip if tripTypeId does not exist', (done) => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
@@ -128,7 +114,6 @@ describe('Return Trip Route Tests', () => {
         done(err);
       });
   });
-
   it('it should not create a trip if originId is missing', (done) => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
@@ -140,11 +125,21 @@ describe('Return Trip Route Tests', () => {
         done(err);
       });
   });
-
+  it('it should create a return trip', (done) => {
+    chai.request(app)
+      .post('/api/v1/trips/twoWay')
+      .send(tripMockData.correctTrip)
+      .set('token', token)
+      .end((err, res) => {
+        expect(res.status).to.equal(201);
+        expect(res.body).to.be.a('object');
+        done(err);
+      });
+  });
   it('it should not create a trip if trip exists', (done) => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
-      .send(mockData.correctTrip)
+      .send(tripMockData.correctTrip)
       .set('token', token)
       .end((err, res) => {
         expect(res.status).to.equal(409);
@@ -152,19 +147,17 @@ describe('Return Trip Route Tests', () => {
         done(err);
       });
   });
-
   it('it should not create a trip if token is invalid', (done) => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
-      .send(mockData.correctTrip)
-      .set('token', mockData.wrongToken)
+      .set('token', tripMockData.wrongToken)
+      .send(tripMockData.correctTrip)
       .end((err, res) => {
         expect(res.status).to.equal(401);
         expect(res.body).to.be.a('object');
         done(err);
       });
   });
-
   it('it should not create a trip if token is missing', (done) => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')
@@ -175,7 +168,6 @@ describe('Return Trip Route Tests', () => {
         done(err);
       });
   });
-
   it('it should not create a trip if the return date is after the start date', (done) => {
     chai.request(app)
       .post('/api/v1/trips/twoWay')

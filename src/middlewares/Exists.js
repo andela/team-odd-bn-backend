@@ -1,6 +1,6 @@
 import DataEngine from './DataEngine';
-import { tripRequests } from '../database/models';
-
+import { tripRequests, userProfile } from '../database/models';
+import Customize from '../helpers/Customize';
 /**
  * @export
  * @class Exists
@@ -45,7 +45,27 @@ class Exists {
       'The trip request doen\'t exist'
     );
   }
+
+
+  /**
+    * check is the request exist
+    * @static
+    * @param {object} req request object
+    * @param {object} res response object
+    * @param {object} next next
+    * @memberof Exists
+    * @returns {object} data
+    */
+  static async getLineManager(req, res, next) {
+    // const { managerId } = req.body;
+    const { id } = req.user;
+    const userIdProfile = await userProfile.findOne({ where: { userId: id } });
+    if (!userIdProfile.managerId) {
+      return Customize.errorMessage(req, res, 'Please update your line manager', 404);
+    }
+    const { managerId } = userProfile;
+    req.body.managerId = managerId;
+    return next();
+  }
 }
-
-
 export default Exists;

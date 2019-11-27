@@ -3,7 +3,7 @@ import AuthenticateToken from '../../helpers/AuthenticateToken';
 
 dotenv.config();
 
-const { passwordEnv } = process.env;
+const { passwordEnv, passwordEnv1 } = process.env;
 
 const mockData = {
   users: {
@@ -42,11 +42,23 @@ const mockData = {
     password: passwordEnv,
     signupType: 'Barefoot',
     isVerified: false
-
   },
   usersSignin: {
     email: 'jamson@gmail.com',
     password: passwordEnv,
+  },
+  testUser: {
+    email: 'test@email.com',
+    password: 'admin1224',
+  },
+  isManager: {
+    email: 'manager.email@gmail.com',
+    password: 'admin1234',
+  },
+
+  wrongManager: {
+    email: 'demo@gmail.com',
+    password: 'barefoot@Nomad123',
   },
   userCorrectInfo: {
     email: 'demo@demo.com',
@@ -171,7 +183,7 @@ const mockData = {
     address: 'Kigali',
     imageURL: '/images/avatar.jpg',
     department: 'IT',
-    managerId: 5,
+    managerId: 6,
     bio: 'I have been a christian since 2014, Christ as my savior'
   },
   invalidManager: {
@@ -200,7 +212,7 @@ const mockData = {
     lastName: 'admin',
     roleId: 1,
     email: 'admin@gmail.com',
-    password: passwordEnv
+    password: passwordEnv1
   }),
   userComment:
   { comment: 'Everyone in the company should request for this trip' }

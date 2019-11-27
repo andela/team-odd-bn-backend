@@ -5,14 +5,25 @@ import tripMockData from './mock/tripMockData';
 
 const { expect } = chai;
 
-let trueToken, userToken, superToken, tripId;
+
+let userToken, superToken, tripId, managerToken;
 describe('User/manager should be able to post/get comments', () => {
   before((done) => {
     chai.request(app)
       .post('/api/v1/auth/signin')
-      .send(mockData.user2)
+      .send(mockData.isManager)
       .end((err, res) => {
-        trueToken = res.body.data;
+        managerToken = res.body.data;
+        done(err);
+      });
+  });
+  before((done) => {
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(mockData.testUser)
+      .end((err, res) => {
+        userToken = res.body.data;
+
         done(err);
       });
   });
@@ -27,27 +38,28 @@ describe('User/manager should be able to post/get comments', () => {
   });
   before((done) => {
     chai.request(app)
+      .put('/api/v1/users/profile-settings')
+      .set('token', userToken)
+      .send(mockData.unknownUserUpdate)
+      .end((err) => {
+        done(err);
+      });
+  });
+  before((done) => {
+    chai.request(app)
       .post('/api/v1/trips/oneway')
-      .set('token', superToken)
+      .set('token', userToken)
       .send(tripMockData.oneWaytrip)
       .end((err, res) => {
         tripId = res.body.data.id;
         done(err);
       });
   });
-  before((done) => {
-    chai.request(app)
-      .post('/api/v1/auth/signin')
-      .send(mockData.user1)
-      .end((err, res) => {
-        userToken = res.body.data;
-        done(err);
-      });
-  });
+
   it('It should post a comment successfully', (done) => {
     chai.request(app)
       .post('/api/v1/trips/1/comment')
-      .set('token', trueToken)
+      .set('token', managerToken)
       .send(mockData.userComment)
       .end((err, res) => {
         expect(res.status).eql(201);
@@ -59,7 +71,7 @@ describe('User/manager should be able to post/get comments', () => {
   it('It should not post empty comment', (done) => {
     chai.request(app)
       .post('/api/v1/trips/1/comment')
-      .set('token', trueToken)
+      .set('token', managerToken)
       .end((err, res) => {
         expect(res.status).eql(400);
         expect(res.body.message[0]).eql('Comment should be of at least two characters');
@@ -69,7 +81,7 @@ describe('User/manager should be able to post/get comments', () => {
   it('It should not post empty comment unless the commenter is requester/manager', (done) => {
     chai.request(app)
       .post('/api/v1/trips/1/comment')
-      .set('token', userToken)
+      .set('token', superToken)
       .send(mockData.userComment)
       .end((err, res) => {
         expect(res.status).eql(403);
@@ -80,7 +92,7 @@ describe('User/manager should be able to post/get comments', () => {
   it('It should not post comment with invalid trip Id', (done) => {
     chai.request(app)
       .post('/api/v1/trips/d/comment')
-      .set('token', trueToken)
+      .set('token', managerToken)
       .send(mockData.userComment)
       .end((err, res) => {
         expect(res.status).eql(400);
@@ -91,7 +103,7 @@ describe('User/manager should be able to post/get comments', () => {
   it('It should get comments of a specific trip successfully', (done) => {
     chai.request(app)
       .get('/api/v1/trips/1/comments')
-      .set('token', trueToken)
+      .set('token', managerToken)
       .end((err, res) => {
         expect(res.status).eql(200);
         expect(res.body.message).eql('All comments about this trip request have been retrieved successfuly!');
@@ -101,7 +113,7 @@ describe('User/manager should be able to post/get comments', () => {
   it('It should get 0 comments of a specific trip', (done) => {
     chai.request(app)
       .get(`/api/v1/trips/${tripId}/comments`)
-      .set('token', superToken)
+      .set('token', userToken)
       .end((err, res) => {
         expect(res.status).eql(200);
         expect(res.body.message).eql('No comments for this trip yet!');
@@ -111,7 +123,7 @@ describe('User/manager should be able to post/get comments', () => {
   it('It should not get comment unless the commenter is requester/manager', (done) => {
     chai.request(app)
       .get(`/api/v1/trips/${tripId}/comments`)
-      .set('token', userToken)
+      .set('token', superToken)
       .end((err, res) => {
         expect(res.status).eql(403);
         expect(res.body.message).eql('You should be either a requester or a manager');
@@ -121,7 +133,7 @@ describe('User/manager should be able to post/get comments', () => {
   it('It should not get comment with invalid trip Id', (done) => {
     chai.request(app)
       .get('/api/v1/trips/d/comments')
-      .set('token', trueToken)
+      .set('token', managerToken)
       .send(mockData.userComment)
       .end((err, res) => {
         expect(res.status).eql(400);

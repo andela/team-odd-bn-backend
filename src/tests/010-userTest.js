@@ -27,7 +27,7 @@ describe('Authentication test', () => {
     });
   });
   it('Test verify email route', (done) => {
-    chai.request(app).get(`/api/v1/auth/verify-email/7/${token}`).end((err, res) => {
+    chai.request(app).get(`/api/v1/auth/verify-email/8/${token}`).end((err, res) => {
       res.should.have.status(200);
       res.body.should.be.an('object');
       done();
@@ -223,7 +223,7 @@ describe('User profile page settings', () => {
         done(err);
       });
   });
-  it('it should not update user profile with invalid image', (done) => {
+  it('it should not update user profile with invalid filed', (done) => {
     chai.request(app)
       .put('/api/v1/users/profile-settings')
       .set('token', unverifiedUserToken)
@@ -245,10 +245,10 @@ describe('User profile page settings', () => {
         done(err);
       });
   });
-  it('it should update user profile successfully', (done) => {
+  it('it should not update profile of unidentified user', (done) => {
     chai.request(app)
       .put('/api/v1/users/profile-settings')
-      .set('token', verifiedUserToken)
+      .set('token', token)
       .send(unknownUserUpdate)
       .end((err, res) => {
         expect(res.status).eql(200);
@@ -309,3 +309,4 @@ describe('User profile page settings', () => {
       });
   });
 });
+

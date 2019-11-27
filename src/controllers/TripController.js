@@ -4,6 +4,8 @@ import ControllerHelper from '../helpers/ControllerHelper';
 import emailHelper from '../helpers/EmailHelper';
 import TripService from '../services/TripService';
 
+const { availtripRequestsToManager } = TripService;
+
 /**
  * @export
  * @class TripController
@@ -109,6 +111,28 @@ class TripController {
       return Customize.errorMessage(req, res, err.message, 500);
     }
   }
-}
 
+  /**
+   * Manager should be able to view requests for approvals
+   * @static
+   * @param {object} req request object
+   * @param {object} res response object
+   * @memberof TripController
+   * @returns {object} data
+   * @description PATCH api/v1/trips/requests
+   */
+  static async getRequestsByManager(req, res) {
+    const { id } = req.user;
+
+    try {
+      const result = await availtripRequestsToManager(id);
+      if (result.length === 0) {
+        return Customize.errorMessage(req, res, 'No trip requests are available for review', 404);
+      }
+      return Customize.successMessage(req, res, 'Requests fetched successfully', result, 200);
+    } catch (error) {
+      return Customize.errorMessage(req, res, 'Oops! internal server error', 500);
+    }
+  }
+}
 export default TripController;
