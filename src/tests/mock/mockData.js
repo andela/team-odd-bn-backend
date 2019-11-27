@@ -143,7 +143,7 @@ const mockData = {
   socialToken: { access_token: 'xxx.xxx.xxx' },
   superAdmin: {
     email: process.env.SUPER_ADMIN_EMAIL,
-    password: process.env.SUPER_ADMIN_REAL_PASSWORD
+    password: PASSWORD_ENV
   },
   assignNewUser: {
     firstName: 'Eric',

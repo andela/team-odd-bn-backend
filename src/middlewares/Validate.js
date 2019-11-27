@@ -15,7 +15,7 @@ class Validate {
       check('firstName', 'first name should be valid').isAlpha(),
       check('lastName', 'last name should be valid').isAlpha(),
       check('email', 'email should be valid').trim().isEmail(),
-      check('password', 'minimum password length is 6').isLength({ min: 6 }),
+      check('password', 'A valid password should have a character, number, UPPERC CASE letter and a lower case letter and should be longer than 8').matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/, 'i')
     ];
   }
 
@@ -27,7 +27,7 @@ class Validate {
   static signinRules() {
     return [
       check('email', 'email should be valid').trim().isEmail(),
-      check('password', 'minimum password length is 6').isLength({ min: 6 }),
+      check('password', 'A valid password should have a character, number, UPPERC CASE letter and a lower case letter and should be longer than 8').matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/, 'i')
     ];
   }
 
