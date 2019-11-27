@@ -40,7 +40,7 @@ module.exports = {
         firstName: 'Mary',
         lastName: 'Doe',
         email: 'marydoe@gmail.com',
-        password: 'Merry@12345',
+        password: '$2b$10$fZ7o3DAOl6nRk/nXJ.Fe1.DHmh9q5rByeodydnM22nmtIKBpw07yW',
         signupType: 'Barefoot',
         roleId: 3,
         isVerified: true,
