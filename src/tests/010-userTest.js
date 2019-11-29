@@ -12,7 +12,7 @@ let token;
 const { expect } = chai;
 
 const {
-  usersSignin, unknownUserUpdate, invalidManager, userInvalidImage
+  unknownUserUpdate, invalidManager, userInvalidImage
 } = mockData;
 let unverifiedUserToken, verifiedUserToken, trueToken;
 
@@ -27,7 +27,7 @@ describe('Authentication test', () => {
     });
   });
   it('Test verify email route', (done) => {
-    chai.request(app).get(`/api/v1/auth/verify-email/2/${token}`).end((err, res) => {
+    chai.request(app).get(`/api/v1/auth/verify-email/7/${token}`).end((err, res) => {
       res.should.have.status(200);
       res.body.should.be.an('object');
       done();
@@ -191,8 +191,8 @@ describe('User profile page settings', () => {
   });
   before((done) => {
     chai.request(app)
-      .post('/api/v1/auth/signin')
-      .send(usersSignin)
+      .post('/api/v1/auth/signup')
+      .send(mockData.usersUnverifiedSignup)
       .end((err, res) => {
         unverifiedUserToken = res.body.data;
         done(err);

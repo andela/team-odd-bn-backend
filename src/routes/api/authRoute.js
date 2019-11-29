@@ -8,7 +8,6 @@ import AuthenticateToken from '../../helpers/AuthenticateToken';
 import Conflict from '../../middlewares/Conflict';
 import checkInputDataError from '../../middlewares/checkInputDataError';
 
-
 const authRouter = express.Router();
 
 const {

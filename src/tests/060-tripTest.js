@@ -5,13 +5,13 @@ import app from '../index';
 import tripMockData from './mock/tripMockData';
 import mockData from './mock/mockData';
 
-
 chai.use(chaiHttp);
 chai.should();
 
 dotenv.config();
-
+const { expect } = chai;
 let token;
+let unverifiedUserToken;
 
 
 describe('Request One way trip test', () => {
@@ -165,7 +165,7 @@ describe('Request One way trip test', () => {
         done();
       });
   });
-  
+
   it('should not be able to post multicity trip request with invalid Date format', (done) => {
     chai.request(app).post('/api/v1/trips/multicity')
       .set('token', token)
@@ -210,6 +210,54 @@ describe('Request One way trip test', () => {
       .end((err, res) => {
         res.should.have.status(404);
         res.body.should.be.an('object');
+        done();
+      });
+  });
+});
+describe('Get requests', () => {
+  before((done) => {
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(mockData.usersSignin)
+      .end((err, res) => {
+        token = res.body.data;
+
+        done();
+      });
+  });
+  before((done) => {
+    chai.request(app)
+      .post('/api/v1/auth/signup')
+      .send(mockData.users2UnverifiedSignup)
+      .end((err, res) => {
+        unverifiedUserToken = res.body.data;
+        done(err);
+      });
+  });
+  it('A user should be able to get his/her trip requests', (done) => {
+    chai.request(app).get('/api/v1/trips/')
+      .set('token', token)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.data.should.be.an('array');
+        expect(res.body.message).eql('succesfully fetched all  user\'s requests');
+        done();
+      });
+  });
+  it('A user should be not able to get his/her trip requests if not verified', (done) => {
+    chai.request(app).get('/api/v1/trips/')
+      .set('token', unverifiedUserToken)
+      .end((err, res) => {
+        res.should.have.status(401);
+        expect(res.body.error).eql('Your email is not verified, please verify your email first');
+        done();
+      });
+  });
+  it('A user should not be able to get his/her trip requests whwn token is not provided', (done) => {
+    chai.request(app).get('/api/v1/trips/')
+      .end((err, res) => {
+        res.should.have.status(401);
+        expect(res.body.message).eql('Please, insert the token');
         done();
       });
   });
