@@ -273,8 +273,6 @@ class UserController {
         Customize.errorMessage(req, res, 'Unable to update your profile', HttpStatus.BAD_REQUEST);
       }
     } catch (e) {
-      console.log(e);
-
       Customize.errorMessage(req, res, e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -300,9 +298,9 @@ class UserController {
         where: { userId: id },
       });
 
-      Customize.successMessage(req, res, 'User profile retrieved successfully', userData, HttpStatus.OK);
+      return Customize.successMessage(req, res, 'User profile retrieved successfully', userData, HttpStatus.OK);
     } catch (e) {
-      Customize.errorMessage(req, res, 'Server error', HttpStatus.INTERNAL_SERVER_ERROR);
+      return Customize.errorMessage(req, res, 'Server error', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

@@ -176,7 +176,7 @@ export default class ValidateTrip {
     });
 
     if (object.object) {
-      return Customize.errorMessage(req, res, 'Similar request exist', 409);
+      return Customize.errorMessage(req, res, 'Similar trip exists within this range.', 409);
     }
 
     next();

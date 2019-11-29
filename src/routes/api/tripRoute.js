@@ -5,23 +5,15 @@ import ValidateTrip from '../../middlewares/ValidateTrip';
 import Validate from '../../middlewares/Validate';
 import checkInputDataError from '../../middlewares/checkInputDataError';
 import Exists from '../../middlewares/Exists';
+import Conflict from '../../middlewares/Conflict';
 import isUserVerified from '../../middlewares/isUserVerified';
+import { IsOwnerOfTrip, IsTripApproved } from '../../middlewares/findUsers';
 
 const tripRouter = express.Router();
 const { verifyToken } = AuthenticateToken;
 
-const { returnTripController, OneWayTripController } = TripController;
-
-tripRouter.post('/oneway',
-  verifyToken,
-  Validate.requestOnewayTripRules(),
-  checkInputDataError,
-  ValidateTrip.checkIfOriginDestinationExists,
-  ValidateTrip.checkIfOriginSameAsDestination,
-  ValidateTrip.checkMultiCityForSimilarRequests,
-  ValidateTrip.checkForSimilarRequests,
-  ValidateTrip.checkForSimilarRequestsDateRange,
-  OneWayTripController);
+const { returnTripController, OneWayTripController, editTrip } = TripController;
+const { isTripRequestFound } = Conflict;
 
 
 /**
@@ -63,18 +55,22 @@ tripRouter.post('/oneway',
  *           startDate: 2019-11-19 11:11:41.668+02
  *           returnDate: 2019-11-19 11:11:41.668+02
  */
-tripRouter.post(
-  '/multicity',
-  AuthenticateToken.verifyToken,
-  Validate.requestMultiTripRules(),
-  checkInputDataError,
-  ValidateTrip.checkIfOriginDestinationExists,
-  ValidateTrip.checkIfOriginSameAsDestination,
-  ValidateTrip.checkMultiCityForSimilarRequests,
-  ValidateTrip.checkForSimilarRequests,
-  ValidateTrip.checkForSimilarRequestsDateRange,
-  TripController.requestTrip
-);
+
+tripRouter
+  .post(
+    '/oneway',
+    verifyToken,
+    Validate.requestOnewayTripRules(),
+    checkInputDataError,
+    ValidateTrip.checkIfOriginDestinationExists,
+    ValidateTrip.checkIfOriginSameAsDestination,
+    ValidateTrip.checkMultiCityForSimilarRequests,
+    ValidateTrip.checkForSimilarRequests,
+    ValidateTrip.checkForSimilarRequestsDateRange,
+    OneWayTripController
+  );
+
+
 /**
  * @swagger
  *
@@ -138,11 +134,19 @@ tripRouter.post(
  *
  */
 
-tripRouter
-  .patch(
-    '/:id/approval', Exists.isRequestExist,
-    TripController.approveTrip
-  );
+tripRouter.post(
+  '/multicity',
+  AuthenticateToken.verifyToken,
+  Validate.requestMultiTripRules(),
+  checkInputDataError,
+  ValidateTrip.checkIfOriginDestinationExists,
+  ValidateTrip.checkIfOriginSameAsDestination,
+  ValidateTrip.checkMultiCityForSimilarRequests,
+  ValidateTrip.checkForSimilarRequests,
+  ValidateTrip.checkForSimilarRequestsDateRange,
+  TripController.requestTrip
+);
+
 
 /**
  * @swagger
@@ -168,17 +172,12 @@ tripRouter
  *
  */
 
-tripRouter.post('/twoWay',
-  verifyToken,
-  Validate.twoWayTripRules(),
-  checkInputDataError,
+tripRouter
+  .patch(
+    '/:id/approval', Exists.isRequestExist,
+    TripController.approveTrip
+  );
 
-  ValidateTrip.checkIfOriginDestinationExists,
-  ValidateTrip.checkIfOriginSameAsDestination,
-  ValidateTrip.checkMultiCityForSimilarRequests,
-  ValidateTrip.checkForSimilarRequests,
-  ValidateTrip.checkForSimilarRequestsDateRange,
-  returnTripController);
 
 /**
  * @swagger
@@ -239,12 +238,20 @@ tripRouter.post('/twoWay',
  *
  */
 
-tripRouter.get(
-  '/',
-  AuthenticateToken.verifyToken,
-  isUserVerified,
-  TripController.getUserRequests
-);
+tripRouter
+  .post(
+    '/twoWay',
+    verifyToken,
+    Validate.twoWayTripRules(),
+    checkInputDataError,
+    ValidateTrip.checkIfOriginDestinationExists,
+    ValidateTrip.checkIfOriginSameAsDestination,
+    ValidateTrip.checkMultiCityForSimilarRequests,
+    ValidateTrip.checkForSimilarRequests,
+    ValidateTrip.checkForSimilarRequestsDateRange,
+    returnTripController
+  );
+
 /**
  * @swagger
  *
@@ -267,4 +274,71 @@ tripRouter.get(
  *        "404":
  *          description: Trip requests are not found
  */
+
+
+tripRouter.get(
+  '/',
+  AuthenticateToken.verifyToken,
+  isUserVerified,
+  TripController.getUserRequests
+);
+
+
+/**
+ * @swagger
+ *
+ * /trips/edit/{tripRequestId}:
+ *    put:
+ *      summary: User should be able to edit trip
+ *      tags: [Trip]
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/TripMultiCity'
+ *      parameters:
+ *        - name: token
+ *          in: header
+ *          description: enter user token
+ *          required: true
+ *          schema:
+ *            type: string
+ *        - name: id
+ *          in: path
+ *          description: trip request id
+ *          required: true
+ *          schema:
+ *            type: integer
+ *            format: int64
+ *
+ *      responses:
+ *        "200":
+ *          description: Trip edited successfuly
+ *        "400":
+ *          description: Bad request
+ *        "401":
+ *          description: Authentication error
+ *
+ */
+
+tripRouter
+  .put(
+    '/edit/:tripRequestId',
+    verifyToken,
+    isUserVerified,
+    Validate.isIDInteger(),
+    checkInputDataError,
+    Validate.editRequest(),
+    checkInputDataError,
+    isTripRequestFound,
+    IsOwnerOfTrip,
+    IsTripApproved,
+    ValidateTrip.checkIfOriginDestinationExists,
+    ValidateTrip.checkIfOriginSameAsDestination,
+    ValidateTrip.checkMultiCityForSimilarRequests,
+    editTrip
+  );
+
+
 export default tripRouter;

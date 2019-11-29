@@ -262,3 +262,84 @@ describe('Get requests', () => {
       });
   });
 });
+
+describe('Users should be able to edit trips', () => {
+  let tripRequestMulticityId, tripRequestOneWayId;
+
+  before((done) => {
+    chai.request(app)
+      .post('/api/v1/trips/multicity')
+      .set('token', mockData.superAdminToken)
+      .send(tripMockData.multiCityData)
+      .end((err, res) => {
+        tripRequestMulticityId = res.body.data;
+        done();
+      });
+  });
+
+  before((done) => {
+    chai.request(app)
+      .post('/api/v1/trips/oneway')
+      .set('token', mockData.superAdminToken)
+      .send(tripMockData.newOneWayTrip)
+      .end((err, res) => {
+        tripRequestOneWayId = res.body.data;
+        done();
+      });
+  });
+
+  it('User should be able to re-send the same multitrip', (done) => {
+    chai.request(app)
+      .put(`/api/v1/trips/edit/${tripRequestMulticityId.id}`)
+      .set('token', mockData.superAdminToken)
+      .send(tripMockData.multiCityData)
+      .end((err, res) => {
+        res.body.should.have.property('message', 'Trip edited successfuly');
+        res.should.have.status(200);
+        res.body.should.be.an('object');
+        res.body.should.have.property('data');
+        done();
+      });
+  });
+
+  it('User should edit multi city', (done) => {
+    chai.request(app)
+      .put(`/api/v1/trips/edit/${tripRequestMulticityId.id}`)
+      .set('token', mockData.superAdminToken)
+      .send(tripMockData.newMultiCityData)
+      .end((err, res) => {
+        res.body.should.have.property('message', 'Trip edited successfuly');
+        res.should.have.status(200);
+        res.body.should.be.an('object');
+        res.body.should.have.property('data');
+        done();
+      });
+  });
+
+  it('User should edit one way', (done) => {
+    chai.request(app)
+      .put(`/api/v1/trips/edit/${tripRequestOneWayId.id}`)
+      .set('token', mockData.superAdminToken)
+      .send(tripMockData.editNewOneWay)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.an('object');
+        res.body.should.have.property('data');
+        res.body.should.have.property('message', 'Trip edited successfuly');
+        done();
+      });
+  });
+
+  it('User should not edit and send the same city', (done) => {
+    chai.request(app)
+      .put(`/api/v1/trips/edit/${tripRequestMulticityId.id}`)
+      .set('token', mockData.superAdminToken)
+      .send(tripMockData.multiCitySameCitiesData)
+      .end((err, res) => {
+        res.should.have.status(400);
+        res.body.should.be.an('object');
+        res.body.should.have.property('message', 'Orign should not be same as destination');
+        done();
+      });
+  });
+});

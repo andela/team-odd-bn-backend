@@ -185,8 +185,15 @@ const mockData = {
     department: 'IT',
     managerId: 5,
     bio: 'I have been a christian since 2014, Christ as my savior'
-  }
+  },
+  superAdminToken: AuthenticateToken.signToken({
+    id: 4,
+    firstName: 'another',
+    lastName: 'admin',
+    roleId: 1,
+    email: 'admin@gmail.com',
+    password: passwordEnv
+  })
 };
 
-export const superAdminToken = AuthenticateToken.signToken(mockData.newSuperAdmin);
 export default mockData;

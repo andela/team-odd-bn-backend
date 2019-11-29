@@ -2,7 +2,7 @@ import Customize from '../helpers/Customize';
 import { tripRequests, users, trips } from '../database/models';
 import ControllerHelper from '../helpers/ControllerHelper';
 import emailHelper from '../helpers/EmailHelper';
-
+import TripService from '../services/TripService';
 
 /**
  * @export
@@ -87,6 +87,24 @@ class TripController {
         }],
       });
       return Customize.successMessage(req, res, 'succesfully fetched all  user\'s requests', requests, 200);
+    } catch (err) {
+      return Customize.errorMessage(req, res, err.message, 500);
+    }
+  }
+
+  /**
+   * Users should be able to edit a trip
+   * @static
+   * @param {object} req request object
+   * @description PUT /api/v1/trips/edit/TriprequestID
+   * @param {object} res response object
+   * @memberof TripController
+   * @returns {object} data
+   */
+  static async editTrip(req, res) {
+    try {
+      const result = await TripService.editTripRequestToUser(req);
+      return Customize.successMessage(req, res, 'Trip edited successfuly', result, 200);
     } catch (err) {
       return Customize.errorMessage(req, res, err.message, 500);
     }
