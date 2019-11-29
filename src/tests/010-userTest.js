@@ -33,13 +33,6 @@ describe('Authentication test', () => {
       done();
     });
   });
-  it('should be not able to signup when route path is incorrect', (done) => {
-    chai.request(app).post('/api/v1/auth/signupkfnddnf').end((err, res) => {
-      res.should.have.status(404);
-      res.body.should.be.an('object');
-      done();
-    });
-  });
   it('Test Welcome Page route', (done) => {
     chai.request(app).get('/').end((err, res) => {
       res.should.have.status(200);
