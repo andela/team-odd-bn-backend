@@ -31,7 +31,7 @@ For API documentation, please visit [Barefoot Docs](https://team-odd-bn-backend-
  
 3. Install postgres
 
-4. When the server is running, create a database on your new PG server. Ensure your new development database is the same name as your ` barefoot_nomad_dev_db `  and your test database is the same name as ` Tbarefoot_nomad_test_db  ` environment variables
+4. When the server is running, create a database on your new PG server. Ensure your new development database is the same name as your ` barefoot_nomad_dev_db `  and your test database is the same name as ` barefoot_nomad_test_db  ` environment variables
 
 5. Ensure you have Postgres running 
 

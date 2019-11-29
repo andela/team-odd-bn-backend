@@ -158,6 +158,19 @@ class Validate {
   }
 
   /**
+  * Validate input
+* Validate user comment post
+* @static
+* @returns {object} errors
+*/
+  static commentPostRules() {
+    return [
+      check('comment', 'Comment should be of at least two characters').isLength({ min: 2 }),
+      check('tripRequestId', 'Trip Request Id shopuld be of integer').isInt()
+    ];
+  }
+
+  /**
     * Validate input
     * @static
     * @returns {object} errors
@@ -180,6 +193,18 @@ class Validate {
       check('reason', 'Reason should be a minimum of 2 letters').isString().isLength({ min: 2 }).optional(),
       check('startDate', 'Start date should be a valid date after today(YY-MM-DD) ').isAfter().isISO8601().optional(),
       check('returnDate', 'returnDate must be valid date after today(YY-MM-DD) ').isAfter().isISO8601().optional(),
+    ];
+  }
+
+  /**
+  * Validate input
+* Validate user view comments
+* @static
+* @returns {object} errors
+*/
+  static getCommentsRules() {
+    return [
+      check('tripRequestId', 'Trip Request Id shopuld be of integer type').isInt()
     ];
   }
 }

@@ -76,6 +76,14 @@ const mockData = {
     id: 1,
     email: 'demo@gmail.com'
   },
+  user1: {
+    email: 'jean@gmail.com',
+    password: 'admin1224'
+  },
+  user2: {
+    email: 'manager.email@gmail.com',
+    password: 'admin1234'
+  },
   wrongEmailFormat: {
     email: 'demo.com',
   },
@@ -193,7 +201,9 @@ const mockData = {
     roleId: 1,
     email: 'admin@gmail.com',
     password: passwordEnv
-  })
+  }),
+  userComment:
+  { comment: 'Everyone in the company should request for this trip' }
 };
 
 export default mockData;

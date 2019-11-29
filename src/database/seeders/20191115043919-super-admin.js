@@ -16,9 +16,9 @@ module.exports = {
         updatedAt: new Date()
       },
       {
-        firstName: 'Brian',
-        lastName: 'Maiyo',
-        email: 'maiyo.brian@andela.com',
+        firstName: 'mailer',
+        lastName: 'manager',
+        email: 'manager.email@gmail.com',
         password: '$2b$10$/Zh5Kwn95d/LPBwjL2VRc.Hpef/XZ2spe6U0eLksDgcxDuroB4XSq',
         isVerified: true,
         signupType: 'Barefoot',
