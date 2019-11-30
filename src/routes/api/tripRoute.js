@@ -1,5 +1,5 @@
 import express from 'express';
-import AuthenticateToken from '../../helpers/AuthenticateToken';
+import verifyToken from '../../middlewares/verifyToken';
 import TripController from '../../controllers/TripController';
 import ValidateTrip from '../../middlewares/ValidateTrip';
 import Validate from '../../middlewares/Validate';
@@ -10,7 +10,6 @@ import isUserVerified from '../../middlewares/isUserVerified';
 import { IsOwnerOfTrip, IsTripApproved } from '../../middlewares/findUsers';
 
 const tripRouter = express.Router();
-const { verifyToken } = AuthenticateToken;
 
 const { returnTripController, OneWayTripController, editTrip } = TripController;
 const { isTripRequestFound } = Conflict;
@@ -136,7 +135,7 @@ tripRouter
 
 tripRouter.post(
   '/multicity',
-  AuthenticateToken.verifyToken,
+  verifyToken,
   Validate.requestMultiTripRules(),
   checkInputDataError,
   ValidateTrip.checkIfOriginDestinationExists,
@@ -278,7 +277,7 @@ tripRouter
 
 tripRouter.get(
   '/',
-  AuthenticateToken.verifyToken,
+  verifyToken,
   isUserVerified,
   TripController.getUserRequests
 );

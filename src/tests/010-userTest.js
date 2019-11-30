@@ -19,12 +19,13 @@ let unverifiedUserToken, verifiedUserToken, trueToken;
 
 describe('Authentication test', () => {
   it('should be able to signup', (done) => {
-    chai.request(app).post('/api/v1/auth/signup').send(mockData.users).end((err, res) => {
-      res.should.have.status(201);
-      res.body.should.be.an('object');
-      token = res.body.data;
-      done();
-    });
+    chai.request(app).post('/api/v1/auth/signup')
+      .send(mockData.users).end((err, res) => {
+        res.should.have.status(201);
+        res.body.should.be.an('object');
+        token = res.body.data;
+        done();
+      });
   });
   it('Test verify email route', (done) => {
     chai.request(app).get(`/api/v1/auth/verify-email/7/${token}`).end((err, res) => {

@@ -1,8 +1,8 @@
 /**
  * @exports
- * @class Customization
+ * @class Response
 */
-class Customization {
+class Response {
   /**
    * @static
    * @param {request} req request object
@@ -34,4 +34,4 @@ class Customization {
   }
 }
 
-export default Customization;
+export default Response;

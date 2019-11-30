@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Customize from '../helpers/Customize';
+import Response from '../helpers/Response';
 import { cities, tripRequests, trips } from '../database/models';
 /**
  * @export
@@ -27,7 +27,7 @@ export default class ValidateTrip {
     const cityExist = userCitiesArr.every((val) => AllCitiesArr.indexOf(val) !== -1);
 
     if (!cityExist) {
-      return Customize.errorMessage(req, res, 'Location  not exist', 404);
+      return Response.errorMessage(req, res, 'Location  not exist', 404);
     }
 
     next();
@@ -60,7 +60,7 @@ export default class ValidateTrip {
     });
 
     if (checkDateOriginDestination.date || checkDateOriginDestination.originDestination) {
-      return Customize.errorMessage(req, res, checkDateOriginDestination.message, 400);
+      return Response.errorMessage(req, res, checkDateOriginDestination.message, 400);
     }
 
 
@@ -93,7 +93,7 @@ export default class ValidateTrip {
 
 
     if (checkSimilarRequests.similar) {
-      return Customize.errorMessage(req, res, 'You are passing similar request', 400);
+      return Response.errorMessage(req, res, 'You are passing similar request', 400);
     }
 
 
@@ -142,7 +142,7 @@ export default class ValidateTrip {
     });
 
     if (object.object) {
-      return Customize.errorMessage(req, res, 'Similar request exist', 409);
+      return Response.errorMessage(req, res, 'Similar request exist', 409);
     }
 
     next();
@@ -176,7 +176,7 @@ export default class ValidateTrip {
     });
 
     if (object.object) {
-      return Customize.errorMessage(req, res, 'Similar trip exists within this range.', 409);
+      return Response.errorMessage(req, res, 'Similar trip exists within this range.', 409);
     }
 
     next();

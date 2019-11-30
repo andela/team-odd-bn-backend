@@ -10,7 +10,6 @@ class TripService {
    * user edit trips
    * @static
    * @param {object} req pass request body
-   * @param {object} res pass request body
    * @memberof TripService
    * @returns {object} either an error or data
    */
@@ -53,6 +52,24 @@ class TripService {
       );
     });
     return itinerary;
+  }
+
+  /**
+   * A user should be able to get all the requests he/she has made over time
+   * @static
+   * @param {object} req request object
+   * @memberof class TripService {
+   * @returns {object} data
+   */
+  static async getUserRequests(req) {
+    const requestsUsersObject = {
+      include: [{
+        model: tripRequests,
+        where: { userId: req.user.id }
+      }],
+    };
+    const requests = await CommonQueries.findAll(trips, requestsUsersObject);
+    return requests;
   }
 }
 

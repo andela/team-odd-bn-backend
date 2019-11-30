@@ -1,13 +1,11 @@
 import dotenv from 'dotenv';
 import HttpStatus from 'http-status-codes';
-import { users, userProfile } from '../database/models';
 import HashPassword from '../helpers/HashPassword';
-import Customize from '../helpers/Customize';
+import Response from '../helpers/Response';
 import emailHelper from '../helpers/EmailHelper';
 import AuthenticateToken from '../helpers/AuthenticateToken';
 import UserService from '../services/UserService';
-import passwordHelper from '../helpers/resetPasswordEmail';
-import ControllerHelper from '../helpers/ControllerHelper';
+import UserHelper from '../helpers/UserHelper';
 
 const { hashPassword } = HashPassword;
 const { getAUser } = UserService;
@@ -28,35 +26,15 @@ class UserController {
    */
   static async signUp(req, res) {
     try {
-      const hashedPassword = HashPassword.hashPassword(req.body.password);
-      const {
-        firstName,
-        lastName,
-        email
-      } = req.body;
-
-      const newUser = await users.create({
-        firstName,
-        lastName,
-        email,
-        password: hashedPassword,
-        isVerified: false,
-        signupType: 'Barefoot'
-      });
-      const { id } = newUser.dataValues;
-      await userProfile.create({
-        userId: id,
-      });
-      const {
-        password,
-        ...data
-      } = newUser.dataValues;
+      const { firstName, lastName, email } = req.body;
+      const newUser = await UserService.signUp(req, firstName, lastName, email);
+      const { password, ...data } = newUser.dataValues;
       const token = AuthenticateToken.signToken(data);
       data.token = token;
       emailHelper.verifyEmailHelper(req, newUser.dataValues);
-      return Customize.successMessage(req, res, 'User created successfully, Please check your email', token, 201);
+      return Response.successMessage(req, res, 'User created successfully, Please check your email', token, 201);
     } catch (err) {
-      return Customize.errorMessage(req, res, err.message, 400);
+      return Response.errorMessage(req, res, 'Server Error', 500);
     }
   }
 
@@ -68,12 +46,8 @@ class UserController {
      * @returns {Object} response
      */
   static async verifyEmailController(req, res) {
-    await users.update({ isVerified: true }, {
-      where: {
-        id: req.params.id
-      }
-    });
-    return Customize.successMessage(req, res, 'You have been verified you can now login', '', 200);
+    await UserService.verifyEmail(req);
+    return Response.successMessage(req, res, 'You have been verified you can now login', '', 200);
   }
 
   /**
@@ -86,9 +60,9 @@ class UserController {
   static async resendEmailController(req, res) {
     try {
       emailHelper.verifyEmailHelper(req, req.row);
-      return Customize.successMessage(req, res, 'An email has been sent to you.', '', 200);
+      return Response.successMessage(req, res, 'An email has been sent to you.', '', 200);
     } catch (err) {
-      return Customize.errorMessage(req, res, err.message, 500);
+      return Response.errorMessage(req, res, err.message, 500);
     }
   }
 
@@ -104,7 +78,7 @@ class UserController {
     const { result } = req;
     const { password: pwd, ...data } = result.dataValues;
     const token = AuthenticateToken.signToken(data);
-    return Customize.successMessage(req, res, 'Successfuly login', token, 200);
+    return Response.successMessage(req, res, 'Successfuly login', token, 200);
   }
 
   /**
@@ -117,7 +91,7 @@ class UserController {
      * @returns {object} object
      */
   static async facebookCallBack(accessToken, refreshToken, profile, done) {
-    ControllerHelper.socialCallBack(accessToken, refreshToken, profile, 'facebook', done);
+    UserHelper.socialCallBack(accessToken, refreshToken, profile, 'facebook', done);
   }
 
   /**
@@ -129,7 +103,7 @@ class UserController {
    * @returns {object} object
    */
   static async googleCallBack(accessToken, refreshToken, profile, done) {
-    ControllerHelper.socialCallBack(accessToken, refreshToken, profile, 'google', done);
+    UserHelper.socialCallBack(accessToken, refreshToken, profile, 'google', done);
   }
 
   /**
@@ -139,7 +113,7 @@ class UserController {
    * @returns {object} object
    */
   static OAuthfacebook(req, res) {
-    ControllerHelper.OAuthSocial(req, res, 'Logged in with facebook successfully');
+    UserHelper.OAuthSocial(req, res, 'Logged in with facebook successfully');
   }
 
   /**
@@ -149,7 +123,7 @@ class UserController {
   * @returns {object} object
   */
   static OAuthgoogle(req, res) {
-    ControllerHelper.OAuthSocial(req, res, 'Logged in with google successfully');
+    UserHelper.OAuthSocial(req, res, 'Logged in with google successfully');
   }
 
   /**
@@ -162,10 +136,10 @@ class UserController {
     const { email } = req.body;
     const user = await getAUser({ email });
     if (!user) {
-      return Customize.errorMessage(req, res, 'User not found', 400);
+      return Response.errorMessage(req, res, 'User not found', 400);
     }
-    passwordHelper.resetPasswordEmailHelper(req, user);
-    return Customize.successMessage(req, res, 'A reset link has been sent to your email. Please check your email!', user.email, 200);
+    emailHelper.resetPasswordEmailHelper(req, user);
+    return Response.successMessage(req, res, 'A reset link has been sent to your email. Please check your email!', user.email, 200);
   }
 
   /**
@@ -182,10 +156,10 @@ class UserController {
     user.password = hashedPassword;
     user.save();
     if (!user) {
-      return Customize.errorMessage(req, res, 'Oops reset password was not successful', user.password, 404);
+      return Response.errorMessage(req, res, 'Oops reset password was not successful', user.password, 404);
     }
-    passwordHelper.resetPasswordSuccessfulHelper(user);
-    return Customize.successMessage(req, res, 'Password reset successfull!', user.password, 200);
+    emailHelper.resetPasswordSuccessfulHelper(user);
+    return Response.successMessage(req, res, 'Password reset successfull!', user.password, 200);
   }
 
   /**
@@ -196,11 +170,11 @@ class UserController {
    * @returns {Object} response
    */
   static async availableUsers(req, res) {
-    const allUsers = await users.findAll({ attributes: ['id', 'firstName', 'lastName', 'email', 'roleId'] });
+    const allUsers = await UserService.availableUsers();
     if (allUsers.length === 0) {
-      return Customize.errorMessage(req, res, 'no users are available', 404);
+      return Response.errorMessage(req, res, 'no users are available', 404);
     }
-    return Customize.successMessage(req, res, 'total Available roles', allUsers, 200);
+    return Response.successMessage(req, res, 'total Available roles', allUsers, 200);
   }
 
   /**
@@ -212,96 +186,26 @@ class UserController {
 * @returns {object} profileUpdate
 */
   static async updateProfile(req, res) {
-    const { id } = req.user;
-    const updateUser = await users.findOne({
-      where: {
-        id
-      }
-    });
-
-    let { firstName, lastName } = updateUser.dataValues;
-    const {
-      gender, birthDate, address, imageURL, department, managerId,
-      bio, userFirstName, userLastName,
-    } = req.body;
-    firstName = userFirstName || firstName;
-    lastName = userLastName || lastName;
-    const data = {
-      firstName,
-      lastName,
-      gender,
-      birthDate,
-      address,
-      imageURL,
-      department,
-      managerId,
-      bio
-    };
-    try {
-      const profileUpdate = await userProfile.update(
-        {
-          gender,
-          birthDate,
-          address,
-          imageURL,
-          department,
-          managerId,
-          bio
-        },
-        {
-          where: {
-            userId: id
-          }
-        }
-      );
-
-      await users.update(
-        {
-          firstName,
-          lastName
-        },
-        {
-          where: {
-            id
-          }
-        }
-      );
-      if (profileUpdate[0]) {
-        // Check if record exists in db
-        Customize.successMessage(req, res, 'Your profile updated successfully', data, HttpStatus.OK);
-      } else {
-        Customize.errorMessage(req, res, 'Unable to update your profile', HttpStatus.BAD_REQUEST);
-      }
-    } catch (e) {
-      Customize.errorMessage(req, res, e, HttpStatus.INTERNAL_SERVER_ERROR);
+    const data = await UserService.updateProfile(req);
+    if (data[0]) {
+      Response.successMessage(req, res, 'Your profile updated successfully', data[1], HttpStatus.OK);
+    } else {
+      Response.errorMessage(req, res, 'Unable to update your profile', HttpStatus.BAD_REQUEST);
     }
   }
 
   /**
-* User can view his/her profile
-* @description POST /api/v1/user/view-profile
-* @static
-* @param {object} req request object
-* @param {object} res response object
-* @returns {object} view-profile
-*/
+    * User can view his/her profile
+    * @description POST /api/v1/user/view-profile
+    * @static
+    * @param {object} req request object
+    * @param {object} res response object
+    * @returns {object} view-profile
+  */
   static async viewProfile(req, res) {
-    try {
-      const { id } = req.user;
-      const userData = await userProfile.findOne({
-        attributes: ['gender', 'birthDate', 'address', 'imageURL', 'department', 'managerId', 'bio'],
-        include: [{
-          model: users,
-          as: 'user',
-          attributes: ['id', 'firstName', 'lastName', 'email']
-        }],
-        where: { userId: id },
-      });
+    const userData = await UserService.viewProfile(req);
 
-      return Customize.successMessage(req, res, 'User profile retrieved successfully', userData, HttpStatus.OK);
-    } catch (e) {
-      return Customize.errorMessage(req, res, 'Server error', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return Response.successMessage(req, res, 'User profile retrieved successfully', userData, HttpStatus.OK);
   }
 }
 

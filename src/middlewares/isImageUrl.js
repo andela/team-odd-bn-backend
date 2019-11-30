@@ -1,4 +1,4 @@
-import Customize from '../helpers/Customize';
+import Response from '../helpers/Response';
 
 const isImage = (req, res, next) => {
   const { imageURL } = req.body;
@@ -9,7 +9,7 @@ const isImage = (req, res, next) => {
     || extension === 'jpeg' || extension === 'jpg') {
     next();
   } else {
-    return Customize.errorMessage(req, res, 'Invalid image url', 400);
+    return Response.errorMessage(req, res, 'Invalid image url', 400);
   }
 };
 

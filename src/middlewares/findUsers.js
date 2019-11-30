@@ -1,4 +1,4 @@
-import Customize from '../helpers/Customize';
+import Response from '../helpers/Response';
 import { users, tripRequests } from '../database/models';
 import CommonQueries from '../services/CommonQueries';
 
@@ -14,14 +14,14 @@ const findOneUser = async (req, res, next) => {
 
 export const IsOwnerOfTrip = async (req, res, next) => {
   if (req.user.id !== req.row.userId) {
-    return Customize.errorMessage(req, res, 'You are not the owner of the trip', 409);
+    return Response.errorMessage(req, res, 'You are not the owner of the trip', 409);
   }
   next();
 };
 
 export const IsTripApproved = async (req, res, next) => {
   if (req.row.statusId === 2) {
-    return Customize.errorMessage(req, res, 'The trip is already approved', 409);
+    return Response.errorMessage(req, res, 'The trip is already approved', 409);
   }
   next();
 };
@@ -49,6 +49,6 @@ export const commentAccess = async (req, res, next) => {
   if (isManager || isRequester) {
     return next();
   }
-  return Customize.errorMessage(req, res, 'You should be either a requester or a manager', 403);
+  return Response.errorMessage(req, res, 'You should be either a requester or a manager', 403);
 };
 export default findOneUser;

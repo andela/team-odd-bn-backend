@@ -8,8 +8,6 @@ class CommonQueries {
      * @static
      * @param {object} table table
      * @param {object} queryObject pass object
-     * @param {object} message error message
-     * @param {object} status status code
      * @memberof CommonQueries
      * @returns {object} either an error or data
      */
@@ -23,8 +21,6 @@ class CommonQueries {
    * @static
    * @param {object} table table
    * @param {object} queryObject pass object
-   * @param {object} message error message
-   * @param {object} status status code
    * @memberof CommonQueries
    * @returns {object} either an error or data
    */

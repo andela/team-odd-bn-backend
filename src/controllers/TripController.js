@@ -1,9 +1,10 @@
-import Customize from '../helpers/Customize';
-import { tripRequests, users, trips } from '../database/models';
-import ControllerHelper from '../helpers/ControllerHelper';
+import Response from '../helpers/Response';
+import { tripRequests, users } from '../database/models';
+import TripHelper from '../helpers/TripHelper';
 import emailHelper from '../helpers/EmailHelper';
 import TripService from '../services/TripService';
 
+const { createNewTrip } = TripHelper;
 /**
  * @export
  * @class TripController
@@ -19,7 +20,7 @@ class TripController {
    * @returns {object} data
    */
   static async OneWayTripController(req, res) {
-    ControllerHelper.tripControllerHelper(req, res, 1);
+    createNewTrip(req, res, 1);
   }
 
   /**
@@ -31,7 +32,7 @@ class TripController {
    * @returns {object} data
    */
   static async returnTripController(req, res) {
-    ControllerHelper.tripControllerHelper(req, res, 2);
+    createNewTrip(req, res, 2);
   }
 
   /**
@@ -44,7 +45,7 @@ class TripController {
    * @returns {object} data
    */
   static async requestTrip(req, res) {
-    ControllerHelper.tripControllerHelper(req, res, 3);
+    createNewTrip(req, res, 3);
   }
 
   /**
@@ -64,9 +65,9 @@ class TripController {
           id: req.params.id
         }
       });
-      return Customize.successMessage(req, res, 'Your request has been approved', '', 201);
+      return Response.successMessage(req, res, 'Your request has been approved', '', 201);
     } catch (err) {
-      return Customize.errorMessage(req, res, err.message, 500);
+      return Response.errorMessage(req, res, err.message, 500);
     }
   }
 
@@ -80,15 +81,10 @@ class TripController {
    */
   static async getUserRequests(req, res) {
     try {
-      const requests = await trips.findAll({
-        include: [{
-          model: tripRequests,
-          where: { userId: req.user.id }
-        }],
-      });
-      return Customize.successMessage(req, res, 'succesfully fetched all  user\'s requests', requests, 200);
+      const requests = await TripService.getUserRequests(req);
+      return Response.successMessage(req, res, 'succesfully fetched all  user\'s requests', requests, 200);
     } catch (err) {
-      return Customize.errorMessage(req, res, err.message, 500);
+      return Response.errorMessage(req, res, err.message, 500);
     }
   }
 
@@ -104,9 +100,9 @@ class TripController {
   static async editTrip(req, res) {
     try {
       const result = await TripService.editTripRequestToUser(req);
-      return Customize.successMessage(req, res, 'Trip edited successfuly', result, 200);
+      return Response.successMessage(req, res, 'Trip edited successfuly', result, 200);
     } catch (err) {
-      return Customize.errorMessage(req, res, err.message, 500);
+      return Response.errorMessage(req, res, err.message, 500);
     }
   }
 }
