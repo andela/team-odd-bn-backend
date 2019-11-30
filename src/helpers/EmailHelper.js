@@ -47,5 +47,26 @@ class EmailHelper {
   static approvedEmailHelper(user) {
     transporter.sendMail(EmailTemplates.approvedEmailTemplate(user));
   }
+
+  /**
+   *  Email Helper
+   * @static
+   * @param {Object} req request object
+   * @param {Object} user user object
+   * @returns {Object} forgot password email
+   */
+  static resetPasswordEmailHelper(req, user) {
+    transporter.sendMail(EmailTemplates.forgotPasswordTemplate(req, user));
+  }
+
+  /**
+   * Passwordhelper
+   * @static
+   * @param {Object} user user object
+   * @returns {Object} successful reset password email
+   */
+  static resetPasswordSuccessfulHelper(user) {
+    transporter.sendMail(EmailTemplates.successResetPasswordTemplate(user));
+  }
 }
 export default EmailHelper;

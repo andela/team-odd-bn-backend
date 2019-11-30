@@ -1,4 +1,4 @@
-import Customize from '../helpers/Customize';
+import Response from '../helpers/Response';
 /**
  * @export
  * @class DataEngine
@@ -19,7 +19,7 @@ class DataEngine {
   static async findOne(req, res, next, table, condition, notFound) {
     const oneRow = await table.findOne({ where: condition });
     if (!oneRow) {
-      return Customize.errorMessage(req, res, notFound, 404);
+      return Response.errorMessage(req, res, notFound, 404);
     }
     req.row = oneRow.dataValues;
     next();
@@ -40,7 +40,7 @@ class DataEngine {
   static async findConflict(req, res, next, table, condition, conflict) {
     const oneRow = await table.findOne({ where: condition });
     if (oneRow) {
-      return Customize.errorMessage(req, res, conflict, 409);
+      return Response.errorMessage(req, res, conflict, 409);
     }
     next();
   }

@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import Customize from '../helpers/Customize';
+import Response from '../helpers/Response';
 import { cities } from '../database/models';
 
 dotenv.config();
@@ -20,14 +20,11 @@ class LocationController {
     try {
       const { name } = req.body;
 
-      const newLocation = await cities.create({
-        city: name
-      });
+      const newLocation = await cities.create({ city: name });
 
-
-      return Customize.successMessage(req, res, 'Location posted successfully', newLocation, 201);
+      return Response.successMessage(req, res, 'Location posted successfully', newLocation, 201);
     } catch (err) {
-      return Customize.errorMessage(req, res, err.message, 500);
+      return Response.errorMessage(req, res, err.message, 500);
     }
   }
 }
