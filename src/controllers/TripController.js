@@ -1,7 +1,6 @@
 import Customize from '../helpers/Customize';
-import { tripRequests, users, trips } from '../database/models';
+import { tripRequests, trips } from '../database/models';
 import ControllerHelper from '../helpers/ControllerHelper';
-import emailHelper from '../helpers/EmailHelper';
 import TripService from '../services/TripService';
 
 const { availtripRequestsToManager } = TripService;
@@ -50,29 +49,6 @@ class TripController {
   }
 
   /**
-   * Manager should be able to approve a trip
-   * @static
-   * @param {object} req request object
-   * @param {object} res response object
-   * @memberof TripController
-   * @returns {object} data
-   */
-  static async approveTrip(req, res) {
-    try {
-      const user = await users.findOne({ where: { id: req.row.userId }, raw: true });
-      emailHelper.approvedEmailHelper(user);
-      await tripRequests.update({ statusId: 2 }, {
-        where: {
-          id: req.params.id
-        }
-      });
-      return Customize.successMessage(req, res, 'Your request has been approved', '', 201);
-    } catch (err) {
-      return Customize.errorMessage(req, res, err.message, 500);
-    }
-  }
-
-  /**
    * A user should be able to get all the requests he/she has made over time
    * @static
    * @param {object} req request object
@@ -92,6 +68,21 @@ class TripController {
     } catch (err) {
       return Customize.errorMessage(req, res, err.message, 500);
     }
+  }
+
+  /**
+   * Manager should be able to accept a trip request
+   * @static
+   * @param {object} req request object
+   * @param {object} res response object
+   * @memberof TripController
+   * @returns {object} data
+   */
+  static async acceptOrRejectRequestsController(req, res) {
+    const { reason } = req.body;
+    return (req.query.status === 'reject')
+      ? Customize.successMessage(req, res, 'this request has successfully rejected...', { reason }, 200)
+      : Customize.successMessage(req, res, 'this request has successfully accepted...', { reason }, 200);
   }
 
   /**

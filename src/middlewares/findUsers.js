@@ -1,5 +1,5 @@
 import Customize from '../helpers/Customize';
-import { users, tripRequests } from '../database/models';
+import { users, tripRequests, userProfile } from '../database/models';
 import CommonQueries from '../services/CommonQueries';
 
 const findOneUser = async (req, res, next) => {
@@ -50,5 +50,28 @@ export const commentAccess = async (req, res, next) => {
     return next();
   }
   return Customize.errorMessage(req, res, 'You should be either a requester or a manager', 403);
+};
+export const isManagerHasAccess = async (req, res, next) => {
+  const { id } = req.user;
+  const getRole = await users.findAll({ where: { roleId: 6, id } });
+  const [{ dataValues }] = getRole;
+  return dataValues.roleId !== 6
+    ? Customize.successMessage(req, res, 'You do not have access to perform this action as a manager', 403) : next();
+};
+
+export const isManagerOwnsRequest = async (req, res, next) => {
+  const { id } = req.user;
+  const { tripRequestId } = req.params;
+  const newArray = [];
+  const AllUsers = await userProfile.findAll({
+    where: { managerId: id },
+    raw: true
+  });
+  const allUserId = AllUsers.map(i => newArray.push(i));
+
+  const findRequest = await tripRequests.findOne({
+    where: { userId: allUserId, id: tripRequestId }, raw: true
+  });
+  return !findRequest ? Customize.errorMessage(req, res, 'this request does not belongs to this manager', 403) : next();
 };
 export default findOneUser;
