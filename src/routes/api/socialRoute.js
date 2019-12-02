@@ -4,7 +4,6 @@ import '../../services/passport';
 import socialErrorHandler from '../../middlewares/socialErrorHandler';
 import UserController from '../../controllers/UserController';
 
-
 const router = Router();
 router.use(passport.initialize());
 router.use(passport.session());

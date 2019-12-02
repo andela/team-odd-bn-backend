@@ -1,4 +1,4 @@
-import Customize from '../helpers/Customize';
+import Response from '../helpers/Response';
 import { users } from '../database/models';
 import HashPassword from '../helpers/HashPassword';
 
@@ -9,14 +9,14 @@ const validateCredentials = async (req, res, next) => {
 
   if (!result) {
     status = 400;
-    return Customize.errorMessage(req, res, 'Email not found', status);
+    return Response.errorMessage(req, res, 'Email not found', status);
   }
 
   const isPasswordMatch = HashPassword.matchingPassword(password, result);
 
   if (!isPasswordMatch) {
     status = 400;
-    return Customize.errorMessage(req, res, 'Email and password not match', status);
+    return Response.errorMessage(req, res, 'Email and password not match', status);
   }
 
   req.result = result;

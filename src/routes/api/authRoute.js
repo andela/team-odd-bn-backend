@@ -4,7 +4,7 @@ import isUserExist from '../../middlewares/findUsers';
 import Validate from '../../middlewares/Validate';
 import validateCredentials from '../../middlewares/validateCredentials';
 import Middlewares from '../../middlewares/ForgotPasswordMiddlewares';
-import AuthenticateToken from '../../helpers/AuthenticateToken';
+import verifyToken from '../../middlewares/verifyToken';
 import Conflict from '../../middlewares/Conflict';
 import checkInputDataError from '../../middlewares/checkInputDataError';
 
@@ -120,7 +120,7 @@ authRouter
 
 authRouter.get(
   '/verify-email/:id/:token',
-  AuthenticateToken.verifyToken,
+  verifyToken,
   verifyEmailController
 );
 /**

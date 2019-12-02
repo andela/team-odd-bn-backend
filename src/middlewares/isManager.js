@@ -1,4 +1,4 @@
-import Customize from '../helpers/Customize';
+import Response from '../helpers/Response';
 import { users } from '../database/models';
 
 const isManager = async (req, res, next) => {
@@ -10,7 +10,7 @@ const isManager = async (req, res, next) => {
     }
   });
   if (manager) { return next(); }
-  return Customize.errorMessage(req, res, 'Unknown line manager', 404);
+  return Response.errorMessage(req, res, 'Unknown line manager', 404);
 };
 
 export default isManager;
