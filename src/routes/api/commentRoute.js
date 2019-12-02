@@ -4,7 +4,7 @@ import checkInputDataError from '../../middlewares/checkInputDataError';
 import { commentAccess } from '../../middlewares/findUsers';
 import Exists from '../../middlewares/Exists';
 import isUserVerified from '../../middlewares/isUserVerified';
-import AuthenticateToken from '../../helpers/AuthenticateToken';
+import verifyToken from '../../middlewares/verifyToken';
 import CommentController from '../../controllers/CommentController';
 
 const commentRoute = express.Router();
@@ -51,7 +51,7 @@ const commentRoute = express.Router();
 commentRoute
   .post(
     '/:tripRequestId/comment',
-    AuthenticateToken.verifyToken,
+    verifyToken,
     isUserVerified,
     Validate.commentPostRules(),
     checkInputDataError,
@@ -96,7 +96,7 @@ commentRoute
 commentRoute
   .get(
     '/:tripRequestId/comments',
-    AuthenticateToken.verifyToken,
+    verifyToken,
     isUserVerified, Validate.getCommentsRules(),
     checkInputDataError,
     Exists.isTripRequestExist,

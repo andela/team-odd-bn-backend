@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import AuthenticateToken from '../../helpers/AuthenticateToken';
+import verifyToken from '../../middlewares/verifyToken';
 import verifyUserRoles from '../../middlewares/VerifyUserRoles';
 import verifyInputRoles from '../../middlewares/verifyInputRoles';
 import Validate from '../../middlewares/Validate';
 import RoleController from '../../controllers/RoleController';
 import isRoledifferent from '../../middlewares/isRoledifferent';
-import checkInputDataError from '../../helpers/checkInputDataError';
+import checkInputDataError from '../../middlewares/checkInputDataError';
 import UserController from '../../controllers/UserController';
 
 const roleRoute = Router();
@@ -13,7 +13,7 @@ const roleRoute = Router();
 roleRoute
   .put(
     '/role/:id',
-    AuthenticateToken.verifyToken,
+    verifyToken,
     Validate.roleRequest(),
     checkInputDataError,
     verifyInputRoles,
@@ -95,7 +95,7 @@ roleRoute
 roleRoute
   .get(
     '/all',
-    AuthenticateToken.verifyToken,
+    verifyToken,
     UserController.availableUsers
   );
 

@@ -1,10 +1,10 @@
-import Customize from '../helpers/Customize';
 import { tripRequests, trips } from '../database/models';
-import ControllerHelper from '../helpers/ControllerHelper';
 import TripService from '../services/TripService';
+import Response from '../helpers/Response';
+import TripHelper from '../helpers/TripHelper';
 
 const { availtripRequestsToManager } = TripService;
-
+const { createNewTrip } = TripHelper;
 /**
  * @export
  * @class TripController
@@ -20,7 +20,7 @@ class TripController {
    * @returns {object} data
    */
   static async OneWayTripController(req, res) {
-    ControllerHelper.tripControllerHelper(req, res, 1);
+    createNewTrip(req, res, 1);
   }
 
   /**
@@ -32,7 +32,7 @@ class TripController {
    * @returns {object} data
    */
   static async returnTripController(req, res) {
-    ControllerHelper.tripControllerHelper(req, res, 2);
+    createNewTrip(req, res, 2);
   }
 
   /**
@@ -45,7 +45,7 @@ class TripController {
    * @returns {object} data
    */
   static async requestTrip(req, res) {
-    ControllerHelper.tripControllerHelper(req, res, 3);
+    createNewTrip(req, res, 3);
   }
 
   /**
@@ -64,9 +64,9 @@ class TripController {
           where: { userId: req.user.id }
         }],
       });
-      return Customize.successMessage(req, res, 'succesfully fetched all  user\'s requests', requests, 200);
+      return Response.successMessage(req, res, 'succesfully fetched all  user\'s requests', requests, 200);
     } catch (err) {
-      return Customize.errorMessage(req, res, err.message, 500);
+      return Response.errorMessage(req, res, err.message, 500);
     }
   }
 
@@ -81,8 +81,8 @@ class TripController {
   static async acceptOrRejectRequestsController(req, res) {
     const { reason } = req.body;
     return (req.query.status === 'reject')
-      ? Customize.successMessage(req, res, 'this request has successfully rejected...', { reason }, 200)
-      : Customize.successMessage(req, res, 'this request has successfully accepted...', { reason }, 200);
+      ? Response.successMessage(req, res, 'this request has successfully rejected...', { reason }, 200)
+      : Response.successMessage(req, res, 'this request has successfully accepted...', { reason }, 200);
   }
 
   /**
@@ -97,9 +97,9 @@ class TripController {
   static async editTrip(req, res) {
     try {
       const result = await TripService.editTripRequestToUser(req);
-      return Customize.successMessage(req, res, 'Trip edited successfuly', result, 200);
+      return Response.successMessage(req, res, 'Trip edited successfuly', result, 200);
     } catch (err) {
-      return Customize.errorMessage(req, res, err.message, 500);
+      return Response.errorMessage(req, res, err.message, 500);
     }
   }
 
@@ -118,11 +118,11 @@ class TripController {
     try {
       const result = await availtripRequestsToManager(id);
       if (result.length === 0) {
-        return Customize.errorMessage(req, res, 'No trip requests are available for review', 404);
+        return Response.errorMessage(req, res, 'No trip requests are available for review', 404);
       }
-      return Customize.successMessage(req, res, 'Requests fetched successfully', result, 200);
+      return Response.successMessage(req, res, 'Requests fetched successfully', result, 200);
     } catch (error) {
-      return Customize.errorMessage(req, res, 'Oops! internal server error', 500);
+      return Response.errorMessage(req, res, 'Oops! internal server error', 500);
     }
   }
 }

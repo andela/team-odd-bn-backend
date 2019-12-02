@@ -1,6 +1,6 @@
 import DataEngine from './DataEngine';
-import { tripRequests, userProfile } from '../database/models';
-import Customize from '../helpers/Customize';
+import { tripRequests, userProfile, accommodations } from '../database/models';
+import Response from '../helpers/Response';
 /**
  * @export
  * @class Exists
@@ -46,6 +46,26 @@ class Exists {
     );
   }
 
+  /**
+* check if the accommodation exist
+* @static
+* @param {object} req request object
+* @param {object} res response object
+* @param {object} next next
+* @memberof Exists
+* @returns {object} data
+*/
+  static isAccommodationExist(req, res, next) {
+    return DataEngine.findOne(
+      req,
+      res,
+      next,
+      accommodations,
+      { id: req.params.accommodationId || req.body.accommodationId },
+      'The accommodation doesn\'t exist'
+    );
+  }
+
 
   /**
     * check is the request exist
@@ -57,11 +77,10 @@ class Exists {
     * @returns {object} data
     */
   static async getLineManager(req, res, next) {
-    // const { managerId } = req.body;
     const { id } = req.user;
     const userIdProfile = await userProfile.findOne({ where: { userId: id } });
     if (!userIdProfile.managerId) {
-      return Customize.errorMessage(req, res, 'Please update your line manager', 404);
+      return Response.errorMessage(req, res, 'Please update your line manager', 404);
     }
     const { managerId } = userProfile;
     req.body.managerId = managerId;

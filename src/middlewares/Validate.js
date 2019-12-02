@@ -208,5 +208,18 @@ class Validate {
       check('reason', 'Reason should be a minimum of 2 letters').isString().isLength({ min: 2 }),
     ];
   }
+
+  /**
+    * Validate rating input
+    * @static
+    * @returns {object} errors
+    */
+  static ratingRules() {
+    return [
+      check('rating', 'rating should be a number ranging from 1 - 5').isNumeric({ min: 1, max: 5 }),
+      check('review', 'Review should be a minimum of 2 letters').isString().isLength({ min: 2 }),
+      check('accommodationId', 'accommodationId should be an integer').isNumeric(),
+    ];
+  }
 }
 export default Validate;

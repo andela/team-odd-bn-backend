@@ -1,8 +1,8 @@
-import Customize from '../helpers/Customize';
+import Response from '../helpers/Response';
 
 const socialErrorHandler = (error, req, res, next) => {
   if (error) {
-    return Customize.errorMessage(req, res, 'Authentication error', 400);
+    return Response.errorMessage(req, res, 'Authentication error', 400);
   }
   next();
 };

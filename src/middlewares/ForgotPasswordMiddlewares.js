@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { check, validationResult } from 'express-validator';
-import Customize from '../helpers/Customize';
+import Response from '../helpers/Response';
 
 /**
  * @export
@@ -19,7 +19,7 @@ class ForgotPasswordMiddlewares {
     const error = validationResult(req);
     if (!error.isEmpty()) {
       const err = error.errors.map(err => err.msg);
-      return Customize.errorMessage(req, res, err, 400);
+      return Response.errorMessage(req, res, err, 400);
     }
     return next();
   }
@@ -36,7 +36,7 @@ class ForgotPasswordMiddlewares {
   static checkResetPasswordMiddleware(req, res, next) {
     const { password, confirmPassword } = req.body;
     if (password !== confirmPassword) {
-      return Customize.errorMessage(req, res, 'Oops! password and confirm password do not match!', 400);
+      return Response.errorMessage(req, res, 'Oops! password and confirm password do not match!', 400);
     }
     return next();
   }
@@ -58,7 +58,7 @@ class ForgotPasswordMiddlewares {
         return next();
       }
     } catch (error) {
-      return Customize.errorMessage(req, res, error.message, 400);
+      return Response.errorMessage(req, res, error.message, 400);
     }
   }
 

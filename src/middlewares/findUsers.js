@@ -1,4 +1,4 @@
-import Customize from '../helpers/Customize';
+import Response from '../helpers/Response';
 import { users, tripRequests, userProfile } from '../database/models';
 import CommonQueries from '../services/CommonQueries';
 
@@ -14,14 +14,14 @@ const findOneUser = async (req, res, next) => {
 
 export const IsOwnerOfTrip = async (req, res, next) => {
   if (req.user.id !== req.row.userId) {
-    return Customize.errorMessage(req, res, 'You are not the owner of the trip', 409);
+    return Response.errorMessage(req, res, 'You are not the owner of the trip', 409);
   }
   next();
 };
 
 export const IsTripApproved = async (req, res, next) => {
   if (req.row.statusId === 2) {
-    return Customize.errorMessage(req, res, 'The trip is already approved', 409);
+    return Response.errorMessage(req, res, 'The trip is already approved', 409);
   }
   next();
 };
@@ -49,14 +49,14 @@ export const commentAccess = async (req, res, next) => {
   if (isManager || isRequester) {
     return next();
   }
-  return Customize.errorMessage(req, res, 'You should be either a requester or a manager', 403);
+  return Response.errorMessage(req, res, 'You should be either a requester or a manager', 403);
 };
 export const isManagerHasAccess = async (req, res, next) => {
   const { id } = req.user;
   const getRole = await users.findAll({ where: { roleId: 6, id } });
   const [{ dataValues }] = getRole;
   return dataValues.roleId !== 6
-    ? Customize.successMessage(req, res, 'You do not have access to perform this action as a manager', 403) : next();
+    ? Response.successMessage(req, res, 'You do not have access to perform this action as a manager', 403) : next();
 };
 
 export const isManagerOwnsRequest = async (req, res, next) => {
@@ -72,6 +72,6 @@ export const isManagerOwnsRequest = async (req, res, next) => {
   const findRequest = await tripRequests.findOne({
     where: { userId: allUserId, id: tripRequestId }, raw: true
   });
-  return !findRequest ? Customize.errorMessage(req, res, 'this request does not belongs to this manager', 403) : next();
+  return !findRequest ? Response.errorMessage(req, res, 'this request does not belongs to this manager', 403) : next();
 };
 export default findOneUser;
