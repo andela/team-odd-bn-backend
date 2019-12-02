@@ -20,10 +20,9 @@ export default class ValidateTrip {
 
     const allCities = await cities.findAll({ attributes: ['id'], raw: true, });
     const userCitiesArr = [];
-
-    const AllCitiesArr = allCities.map((singleCity) => singleCity.id);
-    itinerary.forEach((singleCity) => userCitiesArr.push(singleCity.originId, singleCity.destinationId));
-
+    const AllCitiesArr = allCities.map(singleCity => singleCity.id);
+    itinerary
+      .forEach(singleCity => userCitiesArr.push(singleCity.originId, singleCity.destinationId));
     const cityExist = userCitiesArr.every((val) => AllCitiesArr.indexOf(val) !== -1);
 
     if (!cityExist) {

@@ -109,20 +109,6 @@ class Validate {
   }
 
   /**
-    * Validate input
-    * @static
-    * @returns {object} errors
-    */
-  static oneWayTripRules() {
-    return [
-      check('originId', 'originId should be an integer').isNumeric(),
-      check('destinationId', 'destinationId should be an integer').isNumeric(),
-      check('reason', 'Reason should be a minimum of 2 letters').isString().isLength({ min: 2 }),
-      check('startDate', 'Start date should be a valid date after today(YY-MM-DD) ').isAfter().isISO8601(),
-    ];
-  }
-
-  /**
 * Validate input
 * @static
 * @returns {object} errors

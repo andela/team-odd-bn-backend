@@ -9,7 +9,7 @@ module.exports = {
             address: null,
             imageURL:null,
             department: null,
-            managerId: null,
+            managerId: 5,
             bio: null,
             createdAt: new Date(),
             updatedAt: new Date()

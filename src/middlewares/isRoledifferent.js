@@ -7,7 +7,6 @@ const isRoledifferent = async (req, res, next) => {
   let status;
 
   if (existingEmail === assignEmail) {
-    
     status = 403;
     return Customize.errorMessage(req, res, 'you are not allowed to change your access', status);
   }

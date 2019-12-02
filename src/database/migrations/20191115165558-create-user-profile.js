@@ -38,7 +38,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       managerId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       bio: {
         type: Sequelize.STRING

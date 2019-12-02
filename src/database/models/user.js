@@ -11,10 +11,15 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   users.associate = function(models) {
     users.hasMany(models.tripRequests,
-       {foreignKey: 'id'},
+       {targetKey: 'userId'},
        { onDelete: 'cascade'},
        {onUpdate: 'cascade'}
        );
+    users.hasOne(models.userProfile,
+        {foreignKey: 'id'},
+        { onDelete: 'cascade'},
+        {onUpdate: 'cascade'}
+        );
   };
   return users;
 };

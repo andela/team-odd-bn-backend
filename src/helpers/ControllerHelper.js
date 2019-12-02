@@ -26,6 +26,7 @@ class ControllerHelper {
       const newTrip = await tripRequests.create({
         userId, statusId: 1, tripTypeId
       });
+      await tripRequests.findOne({ where: { userId } });
       itinerary.forEach(async (item) => {
         await trips.create({
           tripRequestId: newTrip.dataValues.id,
@@ -33,7 +34,7 @@ class ControllerHelper {
           destinationId: item.destinationId,
           reason: item.reason,
           startDate: item.startDate,
-          returnDate: item.returnDate
+          returnDate: item.returnDate,
         });
       });
       emailHelper.approveEmailHelper(req, process.env.MANAGER_EMAIL);

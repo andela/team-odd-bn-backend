@@ -7,6 +7,10 @@ const tripMockData = {
     id: 1,
     email: 'demo@gmail.com'
   },
+  signInAUser: {
+    email: 'marydoe@gmail.com',
+    password: 'Merry@12345'
+  },
   wrongOriginIdFormat: {
     originId: 'asdfgt',
     destinationId: 2,

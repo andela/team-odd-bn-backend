@@ -11,7 +11,7 @@ chai.should();
 dotenv.config();
 const { expect } = chai;
 let token;
-let unverifiedUserToken;
+let unverifiedUserToken, managerToken, wrongManagerToken;
 
 
 describe('Request One way trip test', () => {
@@ -23,6 +23,29 @@ describe('Request One way trip test', () => {
         token = res.body.data;
 
         done();
+      });
+  });
+  before((done) => {
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(mockData.usersSignin)
+      .end((err, res) => {
+        token = res.body.data;
+
+        done();
+      });
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(mockData.isManager)
+      .end((err, res) => {
+        managerToken = res.body.data;
+      });
+
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(mockData.wrongManager)
+      .end((err, res) => {
+        wrongManagerToken = res.body.data;
       });
   });
   it('should be able to create one way trip', (done) => {
@@ -269,8 +292,8 @@ describe('Users should be able to edit trips', () => {
   before((done) => {
     chai.request(app)
       .post('/api/v1/trips/multicity')
-      .set('token', mockData.superAdminToken)
-      .send(tripMockData.multiCityData)
+      .set('token', token)
+      .send(tripMockData.newMultiCityData)
       .end((err, res) => {
         tripRequestMulticityId = res.body.data;
         done();
@@ -280,7 +303,7 @@ describe('Users should be able to edit trips', () => {
   before((done) => {
     chai.request(app)
       .post('/api/v1/trips/oneway')
-      .set('token', mockData.superAdminToken)
+      .set('token', token)
       .send(tripMockData.newOneWayTrip)
       .end((err, res) => {
         tripRequestOneWayId = res.body.data;
@@ -291,7 +314,7 @@ describe('Users should be able to edit trips', () => {
   it('User should be able to re-send the same multitrip', (done) => {
     chai.request(app)
       .put(`/api/v1/trips/edit/${tripRequestMulticityId.id}`)
-      .set('token', mockData.superAdminToken)
+      .set('token', token)
       .send(tripMockData.multiCityData)
       .end((err, res) => {
         res.body.should.have.property('message', 'Trip edited successfuly');
@@ -305,7 +328,7 @@ describe('Users should be able to edit trips', () => {
   it('User should edit multi city', (done) => {
     chai.request(app)
       .put(`/api/v1/trips/edit/${tripRequestMulticityId.id}`)
-      .set('token', mockData.superAdminToken)
+      .set('token', token)
       .send(tripMockData.newMultiCityData)
       .end((err, res) => {
         res.body.should.have.property('message', 'Trip edited successfuly');
@@ -319,7 +342,7 @@ describe('Users should be able to edit trips', () => {
   it('User should edit one way', (done) => {
     chai.request(app)
       .put(`/api/v1/trips/edit/${tripRequestOneWayId.id}`)
-      .set('token', mockData.superAdminToken)
+      .set('token', token)
       .send(tripMockData.editNewOneWay)
       .end((err, res) => {
         res.should.have.status(200);
@@ -333,12 +356,46 @@ describe('Users should be able to edit trips', () => {
   it('User should not edit and send the same city', (done) => {
     chai.request(app)
       .put(`/api/v1/trips/edit/${tripRequestMulticityId.id}`)
-      .set('token', mockData.superAdminToken)
+      .set('token', token)
       .send(tripMockData.multiCitySameCitiesData)
       .end((err, res) => {
         res.should.have.status(400);
         res.body.should.be.an('object');
         res.body.should.have.property('message', 'Orign should not be same as destination');
+        done();
+      });
+  });
+
+
+  it('Should not avail requests for approval if not a manager', (done) => {
+    chai.request(app)
+      .get('/api/v1/trips/requests')
+      .set('token', token)
+      .end((err, res) => {
+        res.should.have.status(403);
+        res.body.should.be.an('object');
+        done();
+      });
+  });
+
+  it('Should not avail requests for empty trip requests', (done) => {
+    chai.request(app)
+      .get('/api/v1/trips/requests')
+      .set('token', wrongManagerToken)
+      .end((err, res) => {
+        res.should.have.status(404);
+        res.body.should.be.an('object');
+        done();
+      });
+  });
+
+  it('Should avail requests for approval if he/she reports that specific manager', (done) => {
+    chai.request(app)
+      .get('/api/v1/trips/requests')
+      .set('token', managerToken)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.an('object');
         done();
       });
   });
