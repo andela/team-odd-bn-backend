@@ -131,6 +131,7 @@ describe('User should signin', () => {
         res.should.have.status(200);
         res.body.should.have.property('data');
         res.body.should.be.an('object');
+        res.body.should.have.property('message', 'Successfuly login');
         done();
       });
   });
@@ -141,7 +142,8 @@ describe('User should signin', () => {
       .send(mockData.usersWrongInfo)
       .end((err, res) => {
         res.should.have.status(400);
-        res.body.should.have.property('message');
+        res.body.should.be.an('object');
+        res.body.should.have.property('message', 'Email not found');
         done();
       });
   });
@@ -153,7 +155,8 @@ describe('User should signin', () => {
       .send(mockData.usersAccountNotMatch)
       .end((err, res) => {
         res.should.have.status(400);
-        res.body.should.have.property('message');
+        res.body.should.be.an('object');
+        res.body.should.have.property('message', 'Email and password not match');
         done();
       });
   });
@@ -164,7 +167,8 @@ describe('User should signin', () => {
       .send(mockData.wrongEmail)
       .end((err, res) => {
         res.should.have.status(400);
-        res.body.should.have.property('message');
+        res.body.should.be.an('object');
+        res.body.should.have.property('message', 'Email not found');
         done();
       });
   });
@@ -175,7 +179,10 @@ describe('User should signin', () => {
       .send()
       .end((err, res) => {
         res.should.have.status(400);
+        res.body.should.be.an('object');
+        res.body.message.should.be.a('array');
         res.body.should.have.property('message');
+        res.body.message.should.be.eql(['email should be valid', 'minimum password length is 6']);
         done();
       });
   });

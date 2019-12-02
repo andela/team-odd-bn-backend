@@ -13,6 +13,7 @@ describe('Welcome to home', () => {
       .get('/')
       .end((err, res) => {
         res.should.have.status(200);
+        res.body.should.have.property('message', 'Welcome to Barefoot Nomad.');
         done();
       });
   });

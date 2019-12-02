@@ -29,6 +29,7 @@ describe('Super admin should be able to assign role', () => {
       .end((err, res) => {
         res.body.should.have.property('data');
         res.body.should.be.an('object');
+        res.body.should.have.property('message', 'User created successfully, Please check your email');
         done();
       });
   });
@@ -42,6 +43,9 @@ describe('Super admin should be able to assign role', () => {
       .end((err, res) => {
         res.body.should.have.property('data');
         res.body.should.be.an('object');
+        res.body.should.have.property('message', 'Role assigned successfully');
+        res.body.data.should.have.property('role');
+        res.body.data.role.should.be.an('object');
         done();
       });
   });
@@ -52,6 +56,8 @@ describe('Super admin should be able to assign role', () => {
       .put('/api/v1/users/role/6')
       .send({ email })
       .end((err, res) => {
+        res.should.status(401);
+        res.body.should.be.an('object');
         res.body.should.have.property('message', 'Please, insert the token');
         done();
       });
@@ -65,6 +71,7 @@ describe('Super admin should be able to assign role', () => {
       .send({ email })
       .end((err, res) => {
         res.should.have.status(403);
+        res.body.should.be.an('object');
         res.body.should.have.property('message', 'you are not allowed to change your access');
         done();
       });
@@ -77,6 +84,8 @@ describe('Super admin should be able to assign role', () => {
       .set('token', superAdminToken)
       .send({ email })
       .end((err, res) => {
+        res.should.have.status(404);
+        res.body.should.be.an('object');
         res.body.should.have.property('message', 'Email does not exist');
         done();
       });
@@ -90,6 +99,8 @@ describe('Super admin should be able to assign role', () => {
       .send({ email })
       .end((err, res) => {
         res.should.have.status(404);
+        res.body.should.be.an('object');
+        res.body.should.have.property('message', 'Role not exist');
         done();
       });
   });
@@ -99,6 +110,11 @@ describe('Super admin should be able to assign role', () => {
       .get('/api/v1/users/role')
       .end((err, res) => {
         res.should.have.status(200);
+        res.body.should.be.an('object');
+        res.body.should.have.property('message', 'Available roles');
+        res.body.should.have.property('data');
+        res.body.data.should.be.an('array');
+        res.body.data[2].should.eql({ id: 3, type: 'user' });
         done();
       });
   });
