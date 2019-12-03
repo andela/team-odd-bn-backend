@@ -43,9 +43,15 @@ In your terminal:
 
 2. For **Testing**: run `npm run test`
 
-3. For **Development**: run `npm run dev-start`
+3. Drop Tables run `npm run dropTables` to make sure you have update changes
 
-4. Access ` http://localhost:<:APPLICATION_PORT> ` (by default, the port is `3000`) in Postman, if app is running correctly, you will get a response with a message:
+4. Migrate database `npm run db-migrate` 
+
+5. Then populate db with seed data, run `npm run db-migrate-dev`
+
+6. For **Development**: run `npm run dev-start`
+
+7. Access ` http://localhost:<:APPLICATION_PORT> ` (by default, the port is `3000`) in Postman, if app is running correctly, you will get a response with a message:
 
     ```javascript
    { 
