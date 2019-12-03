@@ -1,9 +1,9 @@
 import sequelize from 'sequelize';
-import { ratings } from '../database/models';
+import { ratings, likes, accommodations } from '../database/models';
 import CommonQueries from './CommonQueries';
 
 /**
- * @exports
+ * @export
  * @class AccommodationService
  */
 class AccommodationService {
@@ -86,6 +86,83 @@ class AccommodationService {
     newRating.dataValues.totalRatings = totalRating;
     newRating.dataValues.averageRating = averageRating;
     return newRating;
+  }
+
+  /**
+ * user POST likes/dislikes accommodation facility
+ * @static
+ * @param {object} req pass request body
+ * @memberof AccommodationService
+ * @returns {object} either an error or data
+ */
+  static async addAccommodationLike(req) {
+    let setObject, displayMessage;
+    let { like } = req.query;
+    const { accommodationId } = req.params;
+    const { id } = req.user;
+    like = JSON.parse(like);
+
+    const accommodation = await CommonQueries.findOne(accommodations, { where: { id: accommodationId } });
+    const isLikedOrDisliked = await CommonQueries.findOne(likes, { where: { userId: id } });
+
+    if (isLikedOrDisliked) {
+      const { liked, disliked } = isLikedOrDisliked.dataValues;
+
+      if (like && liked && !disliked) {
+        setObject = { liked: false };
+        displayMessage = 'You unliked this accommodation!';
+      }
+      if (!like && !liked && disliked) {
+        setObject = { disliked: false };
+        displayMessage = 'You un-disliked this accommodation!';
+      }
+      if (!like && liked && !disliked) {
+        setObject = { disliked: true, liked: false };
+        displayMessage = 'You disliked this accommodation!';
+      }
+      if (!liked && !disliked) {
+        setObject = { liked: like, disliked: !like };
+        displayMessage = like ? 'You liked this accommodation!' : 'You disliked this accommodation!';
+      }
+
+      const updateLikeObject = [setObject, { where: { userId: id } }];
+
+      await CommonQueries.update(likes, updateLikeObject);
+    } else {
+      const addLikeObject = {
+        userId: id,
+        accommodationId,
+        liked: like,
+        disliked: !like
+      };
+      await CommonQueries.create(likes, addLikeObject);
+      displayMessage = like ? 'You liked this accommodation!' : 'You disliked this accommodation!';
+    }
+    return { displayMessage, accommodation };
+  }
+
+  /**
+   * user GET likes/dislikes accommodation facility
+   * @static
+   * @param {object} req pass request body
+   * @memberof AccommodationService
+   * @returns {object} either an error or data
+   */
+  static async getAccommodationLikes(req) {
+    const { accommodationId } = req.params;
+    const likeCounter = await CommonQueries.count(likes, {
+      where: {
+        accommodationId,
+        liked: true
+      },
+    });
+    const dislikeCounter = await CommonQueries.count(likes, {
+      where: {
+        accommodationId,
+        disliked: true
+      }
+    });
+    return { likeCounter, dislikeCounter };
   }
 }
 

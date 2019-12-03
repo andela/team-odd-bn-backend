@@ -55,6 +55,20 @@ class CommonQueries {
 
     return rows;
   }
+
+  /**
+   * get number of specific rows
+   * @static
+   * @param {object} table table
+   * @param {object} queryObject pass object
+   * @memberof CommonQueries
+   * @returns {object} either an error or data
+   */
+  static async count(table, queryObject) {
+    const rows = await table.count(queryObject);
+
+    return rows;
+  }
 }
 
 export default CommonQueries;
