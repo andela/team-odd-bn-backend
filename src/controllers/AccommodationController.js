@@ -1,17 +1,18 @@
+import dotenv from 'dotenv';
 import Response from '../helpers/Response';
 import AccommodationService from '../services/AccommodationService';
 
-const { createNewRating } = AccommodationService;
-
+const { createNewRating, createAccomodation } = AccommodationService;
+dotenv.config();
 /**
- * @export
- * @class AccomodationController
+ * @exports
+ * @class AccommodationController
  */
 class AccommodationController {
   /**
-   * User can be able rate an accomodation
+   * Travel Admin can be able to create accommodation facility
    * @static
-   * @param {object} req request object
+   * @param {object} req  request object
    * @param {object} res response object
    * @memberof AccommodationController
    * @returns {object} data
@@ -52,6 +53,23 @@ class AccommodationController {
     const likesAndDislikes = await AccommodationService.getAccommodationLikes(req);
 
     return Response.successMessage(req, res, 'All likes and dislikes of this accommodation have been retrieved successfully', likesAndDislikes, 200);
+  }
+
+  /**
+  * Travel Admin can be able to create accommodation facility
+   * @static
+   * @param {object} req  request object
+   * @param {object} res response object
+   * @memberof AccommodationController
+   * @returns {object} data
+   */
+  static async createNewAccomodation(req, res) {
+    try {
+      const newAccommodation = await createAccomodation(req);
+      return Response.successMessage(req, res, 'Accommodation successfully posted', newAccommodation, 201);
+    } catch (err) {
+      return Response.errorMessage(req, res, 'Server Error', 500);
+    }
   }
 }
 

@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   rooms.associate = function(models) {
     rooms.belongsTo(models.accommodations, {
-      foreignKey: "accommodationId",
+      sourceKey: "accommodationId",
       targetKey: "id",
     });
   };

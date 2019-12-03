@@ -1,5 +1,7 @@
-import sequelize from 'sequelize';
-import { ratings, likes, accommodations } from '../database/models';
+import Sequelize from 'sequelize';
+import {
+  accommodations, rooms, accommodationImages, ratings, likes, sequelize
+} from '../database/models';
 import CommonQueries from './CommonQueries';
 
 /**
@@ -38,7 +40,7 @@ class AccommodationService {
   static async getRatingSum(req) {
     const totalRatings = await ratings.findOne({
       where: { accommodationId: req.body.accommodationId },
-      attributes: ['accommodationId', [sequelize.fn('sum', sequelize.col('rating')), 'totalRating'],
+      attributes: ['accommodationId', [Sequelize.fn('sum', Sequelize.col('rating')), 'totalRating'],
       ],
       group: ['accommodationId']
     });
@@ -57,7 +59,7 @@ class AccommodationService {
   static async getRatingAverage(req) {
     const averageRating = await ratings.findOne({
       where: { accommodationId: req.body.accommodationId },
-      attributes: [[sequelize.fn('AVG', sequelize.col('rating')), 'averageRating'],
+      attributes: [[Sequelize.fn('AVG', Sequelize.col('rating')), 'averageRating'],
       ],
       group: ['accommodationId']
     });
@@ -163,6 +165,51 @@ class AccommodationService {
       }
     });
     return { likeCounter, dislikeCounter };
+  }
+
+  /**
+   * Travel Admin can be able to create accomodation
+   * @static
+   * @param {object} req  request object
+   * @memberof AccommodationService
+   * @returns {object} data
+   */
+  static async createAccomodation(req) {
+    const {
+      name,
+      cityId,
+      address,
+      description,
+      googleCoordinates,
+      imageUrls,
+      rooms: userRooms
+    } = req.body;
+
+    const newAccommodationObject = {
+      name,
+      cityId,
+      address,
+      description,
+      googleCoordinates
+    };
+    const newAccommodation = await CommonQueries.create(accommodations, newAccommodationObject);
+    await sequelize.transaction(async () => {
+      Array.from(new Set(imageUrls)).map(async (imageUrl) => {
+        await CommonQueries.create(accommodationImages,
+          { accommodationId: newAccommodation.id, imageUrl });
+      });
+    });
+
+    const roomSet = new Set(userRooms.map(a => a.id));
+    const unique = Array.from(roomSet);
+    const uniqueRooms = unique.map(id => userRooms.find(a => a.id === id));
+    await sequelize.transaction(async () => {
+      uniqueRooms.map(async (room) => {
+        room.accommodationId = newAccommodation.id;
+        await CommonQueries.create(rooms, room);
+      });
+    });
+    return newAccommodation;
   }
 }
 

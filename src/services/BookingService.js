@@ -18,34 +18,41 @@ class BookingService {
  * @returns {object} data
  */
   static async bookAccommodationService(req) {
-    const { tripId } = req.params;
-    const tripObj = {
-      where: { id: tripId }, raw: true
-    };
-    const getTrip = await CommonQueries.findOne(trips, tripObj);
-    const { destinationId } = getTrip;
+    try {
+      const { tripId } = req.params;
+      const tripObj = {
+        where: { id: tripId }, raw: true
+      };
+      const getTrip = await CommonQueries.findOne(trips, tripObj);
+      const { destinationId } = getTrip;
 
-    const accommodationObj = {
-      where: { cityId: destinationId }, raw: true
-    };
-    const isAccommodationExist = await CommonQueries.findOne(accommodations, accommodationObj);
-    const roomObj = {
-      where: { accommodationId: isAccommodationExist.cityId },
-      raw: true
-    };
+      const accommodationObj = {
+        where: { cityId: destinationId }, raw: true
+      };
+      const isAccommodationExist = await CommonQueries.findOne(accommodations, accommodationObj);
 
-    const allAvailRoom = await CommonQueries.findAll(rooms, roomObj);
-    const allAvailRoomId = allAvailRoom.map(i => i.id);
-    const bookedRoomObj = {
-      where: { roomId: allAvailRoomId }, raw: true
-    };
-    const isRoomBooked = await CommonQueries.findAll(booking, bookedRoomObj);
-    return {
-      allAvailRoom,
-      isAccommodationExist,
-      getTrip,
-      isRoomBooked,
-    };
+      const roomObj = {
+        where: { accommodationId: isAccommodationExist.cityId },
+        raw: true
+      };
+
+      const allAvailRoom = await CommonQueries.findAll(rooms, roomObj);
+
+      const allAvailRoomId = allAvailRoom.map(i => i.id);
+      const bookedRoomObj = {
+        where: { roomId: allAvailRoomId }, raw: true
+      };
+      const isRoomBooked = await CommonQueries.findAll(booking, bookedRoomObj);
+
+      return {
+        allAvailRoom,
+        isAccommodationExist,
+        getTrip,
+        isRoomBooked,
+      };
+    } catch (error) {
+      console.log('error', error);
+    }
   }
 
   /**
