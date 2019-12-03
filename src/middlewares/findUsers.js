@@ -62,13 +62,11 @@ export const isManagerHasAccess = async (req, res, next) => {
 export const isManagerOwnsRequest = async (req, res, next) => {
   const { id } = req.user;
   const { tripRequestId } = req.params;
-  const newArray = [];
   const AllUsers = await userProfile.findAll({
     where: { managerId: id },
     raw: true
   });
-  const allUserId = AllUsers.map(i => newArray.push(i));
-
+  const allUserId = AllUsers.map(i => i.userId);
   const findRequest = await tripRequests.findOne({
     where: { userId: allUserId, id: tripRequestId }, raw: true
   });

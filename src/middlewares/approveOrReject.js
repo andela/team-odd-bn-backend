@@ -7,13 +7,10 @@ const operateAcceptOrReject = async (req, res, next) => {
   const users = await userProfiles.findAll({
     where: { managerId: id }
   });
-  const newArray = [];
-  const allUserId = users.map(i => newArray.push(i));
-
+  const allUserId = users.map(i => i.userId);
   const findRequest = await tripRequests.findOne({
     where: { userId: allUserId, id: tripRequestId }, raw: true
   });
-
   const { statusId } = findRequest;
   const { status } = req.query;
 
