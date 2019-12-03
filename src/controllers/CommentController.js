@@ -1,6 +1,5 @@
-import { comments, users } from '../database/models';
-import Customize from '../helpers/Customize';
-import CommonQueries from '../services/CommonQueries';
+import Response from '../helpers/Response';
+import CommentService from '../services/CommentService';
 
 
 /**
@@ -18,17 +17,12 @@ class CommentController {
  * @returns {object} data
  */
   static async createComment(req, res) {
-    const { tripRequestId } = req.params;
-    const { id } = req.user;
-    const { comment } = req.body;
-    const queryObj = {
-      userId: id,
-      tripRequestId,
-      comment
-
-    };
-    CommonQueries.create(comments, queryObj);
-    return Customize.successMessage(req, res, 'Your comment was posted successfully', comment, 201);
+    try {
+      const comment = await CommentService.createComment(req);
+      return Response.successMessage(req, res, 'Your comment was posted successfully', comment, 201);
+    } catch (error) {
+      return Response.errorMessage(req, res, 'Server error', 500);
+    }
   }
 
   /**
@@ -41,22 +35,13 @@ class CommentController {
 * @returns {object} data
 */
   static async getComments(req, res) {
-    const { tripRequestId } = req.params;
-    const queryObj = {
-      attributes: ['comment', 'updatedAt'],
-      include: [{
-        model: users,
-        attributes: ['firstName', 'lastName']
-      }],
-      where: {
-        tripRequestId,
-      }
-    };
-
-    const tripComments = await CommonQueries.findAll(comments, queryObj);
-
-    return tripComments[0] ? Customize.successMessage(req, res, 'All comments about this trip request have been retrieved successfuly!', tripComments, 200)
-      : Customize.errorMessage(req, res, 'No comments for this trip yet!', 200);
+    try {
+      const tripComments = await CommentService.getComments(req);
+      return tripComments ? Response.successMessage(req, res, 'All comments about this trip request have been retrieved successfuly!', tripComments, 200)
+        : Response.errorMessage(req, res, 'No comments for this trip yet!', 200);
+    } catch (error) {
+      return Response.errorMessage(req, res, 'Server error', 500);
+    }
   }
 }
 export default CommentController;

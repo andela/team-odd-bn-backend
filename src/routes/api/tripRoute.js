@@ -1,5 +1,5 @@
 import express from 'express';
-import AuthenticateToken from '../../helpers/AuthenticateToken';
+import verifyToken from '../../middlewares/verifyToken';
 import TripController from '../../controllers/TripController';
 import ValidateTrip from '../../middlewares/ValidateTrip';
 import Validate from '../../middlewares/Validate';
@@ -12,9 +12,6 @@ import VerifyUserRoles from '../../middlewares/VerifyUserRoles';
 import operateAcceptOrReject from '../../middlewares/approveOrReject';
 
 const tripRouter = express.Router();
-const {
-  verifyToken
-} = AuthenticateToken;
 
 const {
   returnTripController,
@@ -146,20 +143,18 @@ tripRouter
  *
  */
 
-tripRouter
-  .post(
-    '/multicity',
-    AuthenticateToken.verifyToken,
-    Validate.requestMultiTripRules(),
-    checkInputDataError,
-    ValidateTrip.checkIfOriginDestinationExists,
-    ValidateTrip.checkIfOriginSameAsDestination,
-    ValidateTrip.checkMultiCityForSimilarRequests,
-    ValidateTrip.checkForSimilarRequests,
-    ValidateTrip.checkForSimilarRequestsDateRange,
-    TripController.requestTrip
-  );
-
+tripRouter.post(
+  '/multicity',
+  verifyToken,
+  Validate.requestMultiTripRules(),
+  checkInputDataError,
+  ValidateTrip.checkIfOriginDestinationExists,
+  ValidateTrip.checkIfOriginSameAsDestination,
+  ValidateTrip.checkMultiCityForSimilarRequests,
+  ValidateTrip.checkForSimilarRequests,
+  ValidateTrip.checkForSimilarRequestsDateRange,
+  TripController.requestTrip
+);
 
 tripRouter
   .post(
@@ -283,7 +278,7 @@ tripRouter.get(
 
 tripRouter.get(
   '/',
-  AuthenticateToken.verifyToken,
+  verifyToken,
   isUserVerified,
   TripController.getUserRequests
 );

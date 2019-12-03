@@ -257,7 +257,7 @@ describe('Request One way trip test', () => {
 
 
   it('should not be able to reject a trip request while request not belongs to manager', (done) => {
-    chai.request(app).patch('/api/v1/trips/2?status=accept')
+    chai.request(app).patch('/api/v1/trips/3?status=accept')
       .set('token', managerToken)
       .send(mockData.approveRequest)
       .end((err, res) => {
@@ -269,7 +269,7 @@ describe('Request One way trip test', () => {
   });
 
   it('should be able to approve a trip request', (done) => {
-    chai.request(app).patch('/api/v1/trips/3?status=accept')
+    chai.request(app).patch('/api/v1/trips/2?status=accept')
       .set('token', managerToken)
       .send(mockData.approveRequest)
       .end((err, res) => {
@@ -280,7 +280,7 @@ describe('Request One way trip test', () => {
       });
   });
   it('should not be able to approve a trip request when it is already approved', (done) => {
-    chai.request(app).patch('/api/v1/trips/3?status=accept')
+    chai.request(app).patch('/api/v1/trips/2?status=accept')
       .set('token', managerToken)
       .send(mockData.approveRequest)
       .end((err, res) => {
@@ -292,7 +292,7 @@ describe('Request One way trip test', () => {
   });
 
   it('should be able to reject a trip request', (done) => {
-    chai.request(app).patch('/api/v1/trips/3?status=reject')
+    chai.request(app).patch('/api/v1/trips/2?status=reject')
       .set('token', managerToken)
       .send(mockData.approveRequest)
       .end((err, res) => {
@@ -303,7 +303,7 @@ describe('Request One way trip test', () => {
       });
   });
   it('should not be able to reject a trip request when it is already rejected', (done) => {
-    chai.request(app).patch('/api/v1/trips/3?status=reject')
+    chai.request(app).patch('/api/v1/trips/2?status=reject')
       .set('token', managerToken)
       .send(mockData.approveRequest)
       .end((err, res) => {

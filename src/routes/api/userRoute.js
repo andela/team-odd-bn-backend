@@ -4,8 +4,8 @@ import isImageUrl from '../../middlewares/isImageUrl';
 import isManager from '../../middlewares/isManager';
 import isUserVerified from '../../middlewares/isUserVerified';
 import UserController from '../../controllers/UserController';
-import AuthenticateToken from '../../helpers/AuthenticateToken';
-import checkInputDataError from '../../helpers/checkInputDataError';
+import verifyToken from '../../middlewares/verifyToken';
+import checkInputDataError from '../../middlewares/checkInputDataError';
 
 
 const userRoute = express.Router();
@@ -127,6 +127,6 @@ const { profileUpdateRules } = Validate;
 *       500:
 *         description: Internal server error
 */
-userRoute.put('/profile-settings', AuthenticateToken.verifyToken, profileUpdateRules(), checkInputDataError, isImageUrl, isManager, isUserVerified, UserController.updateProfile);
-userRoute.get('/view-profile', AuthenticateToken.verifyToken, isUserVerified, UserController.viewProfile);
+userRoute.put('/profile-settings', verifyToken, profileUpdateRules(), checkInputDataError, isImageUrl, isManager, isUserVerified, UserController.updateProfile);
+userRoute.get('/view-profile', verifyToken, isUserVerified, UserController.viewProfile);
 export default userRoute;
