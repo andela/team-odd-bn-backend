@@ -7,16 +7,12 @@ const operateAcceptOrReject = async (req, res, next) => {
   const users = await userProfiles.findAll({
     where: { managerId: id }
   });
-  const newArray = [];
-  const allUserId = users.map(i => newArray.push(i));
-
+  const allUserId = users.map(i => i.userId);
   const findRequest = await tripRequests.findOne({
     where: { userId: allUserId, id: tripRequestId }, raw: true
   });
-
   const { statusId } = findRequest;
   const { status } = req.query;
-
   if (status === 'reject') {
     if (statusId === 3) {
       return Response.errorMessage(req, res, 'this request has already been rejected', 409);
@@ -46,5 +42,4 @@ const operateAcceptOrReject = async (req, res, next) => {
   );
   return !approveIt[0] ? Response.errorMessage(req, res, 'This request is not belongs to this Manager', 403) : next();
 };
-
 export default operateAcceptOrReject;
