@@ -12,7 +12,7 @@ export default class ValidateTrip {
    * @param {object} req response Object
    * @param {object} res request Object
    * @param {object} next next
-   * @memberof CheckMultiCityTrip
+   * @memberof ValidateTrip
    * @returns {object} data
    */
   static async checkIfOriginDestinationExists(req, res, next) {
@@ -38,7 +38,7 @@ export default class ValidateTrip {
    * @param {object} req response Object
    * @param {object} res request Object
    * @param {object} next next
-   * @memberof CheckMultiCityTrip
+   * @memberof ValidateTrip
    * @returns {object} data
    */
   static async checkIfOriginSameAsDestination(req, res, next) {
@@ -72,7 +72,7 @@ export default class ValidateTrip {
    * @param {object} req response Object
    * @param {object} res request Object
    * @param {object} next next
-   * @memberof CheckMultiCityTrip
+   * @memberof ValidateTrip
    * @returns {object} data
    */
   static async checkMultiCityForSimilarRequests(req, res, next) {
@@ -105,7 +105,7 @@ export default class ValidateTrip {
    * @param {object} req response Object
    * @param {object} res request Object
    * @param {object} next next
-   * @memberof CheckMultiCityTrip
+   * @memberof ValidateTrip
    * @returns {object} data
    */
   static async checkForSimilarRequests(req, res, next) {
@@ -153,7 +153,7 @@ export default class ValidateTrip {
    * @param {object} req response Object
    * @param {object} res request Object
    * @param {object} next next
-   * @memberof CheckMultiCityTrip
+   * @memberof ValidateTrip
    * @returns {object} data
    */
   static async checkForSimilarRequestsDateRange(req, res, next) {

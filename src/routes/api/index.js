@@ -7,6 +7,7 @@ import roleRoute from './roleRoute';
 import locationRoute from './locationRoute';
 import commentRoute from './commentRoute';
 import accomodationRouter from './accommodationRoute';
+import bookingRouter from './bookingRoute';
 
 const router = Router();
 router.use('/auth', authRoute);
@@ -17,6 +18,7 @@ router.use('/users', roleRoute);
 router.use('/location', locationRoute);
 router.use('/users', userRoute);
 router.use('/accommodations', accomodationRouter);
+router.use('/trips', bookingRouter);
 
 
 export default router;

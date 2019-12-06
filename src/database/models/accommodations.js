@@ -5,10 +5,24 @@ module.exports = (sequelize, DataTypes) => {
     cityId: DataTypes.INTEGER,
     address: DataTypes.STRING,
     description: DataTypes.STRING,
-    googleCoordinate: DataTypes.STRING
+    googleCoordinates: DataTypes.STRING
   }, {});
   accommodations.associate = function(models) {
-    // associations can be defined here
+    accommodations.hasMany(models.rooms,
+      {targetKey: 'accommodationId', sourceKey:'id', as:'accommodationRooms'},
+      { onDelete: 'cascade'},
+      {onUpdate: 'cascade'}
+      );
+    accommodations.belongsTo(models.cities, {
+      sourceKey: "cityId",
+      targetKey: "id",
+    });
+    accommodations.hasMany(models.ratings, {
+      targetKey: "accommodationId",
+      sourceKey: "id",
+      as: "ratings"
+    });
   };
   return accommodations;
+
 };

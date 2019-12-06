@@ -12,7 +12,13 @@ module.exports = {
         type: Sequelize.STRING
       },
       cityId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references:{
+          model:'cities',
+          key:'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       address: {
         type: Sequelize.STRING
@@ -20,7 +26,7 @@ module.exports = {
       description: {
         type: Sequelize.STRING
       },
-      googleCoordinate: {
+      googleCoordinates: {
         type: Sequelize.STRING
       },
       createdAt: {

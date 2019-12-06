@@ -245,5 +245,23 @@ class Validate {
       check('accommodationId', 'accommodationId should be an integer').isNumeric(),
     ];
   }
+
+  /**
+    * Validate Booking accommodation inputs
+    * @static
+    * @returns {object} errors
+  */
+  static bookAccommodationRules() {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = d.getMonth();
+    const day = d.getDate();
+    const correctDate = new Date(year, month, day).toDateString();
+    return [
+      check('roomId', 'roomId should be valid').isInt(),
+      check('checkInDate', 'Invalid Date(format: YYYY-MM-DD)').isAfter(correctDate),
+      check('checkOutDate', 'Invalid Date(format: YYYY-MM-DD)').isAfter(correctDate),
+    ];
+  }
 }
 export default Validate;

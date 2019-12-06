@@ -1,5 +1,7 @@
 import DataEngine from './DataEngine';
-import { cities, users, tripRequests } from '../database/models';
+import {
+  cities, users, tripRequests, trips, booking
+} from '../database/models';
 
 /**
  * @export
@@ -43,6 +45,46 @@ class Conflict {
     */
   static isTripRequestFound(req, res, next) {
     return DataEngine.findOne(req, res, next, tripRequests, { id: req.params.tripRequestId }, 'The trip request id not found');
+  }
+
+  /**
+    * Check if trip exist
+    * @static
+    * @param {object} req request object
+    * @param {object} res response object
+    * @param {object} next next
+    * @memberof Conflict
+    * @returns {object} data
+    */
+  static isTripFound(req, res, next) {
+    return DataEngine.findOne(req, res, next, trips, { id: req.params.tripId }, 'The trip id not found');
+  }
+
+  /**
+* check If booking request is already exist
+* @static
+* @param {object} req request object
+* @param {object} res response object
+* @param {object} next next
+* @memberof Exists
+* @returns {object} data
+*/
+  static isRoomBooked(req, res, next) {
+    const { tripId } = req.params;
+    const { roomId, checkInDate, checkOutDate } = req.body;
+    return DataEngine.findConflict(
+      req,
+      res,
+      next,
+      booking,
+      {
+        tripId: parseInt(tripId, 10),
+        roomId: parseInt(roomId, 10),
+        checkInDate: new Date(checkInDate),
+        checkOutDate: new Date(checkOutDate)
+      },
+      'The accommodation has already booked'
+    );
   }
 }
 
