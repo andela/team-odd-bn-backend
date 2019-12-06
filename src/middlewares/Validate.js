@@ -144,6 +144,30 @@ class Validate {
   }
 
   /**
+    * Validate accommodation params
+    * @static
+    * @returns {object} errors
+    */
+  static accommodationLikesDislikes() {
+    return [
+      oneOf([
+        check('like').isIn(['true', 'false'])
+      ], 'like param should be either true or false')
+    ];
+  }
+
+  /**
+  * Validate accommodation Id
+  * @static
+  * @returns {object} errors
+  */
+  static accommodationId() {
+    return [
+      check('accommodationId', 'Accommodation id should be an integer').isInt(),
+    ];
+  }
+
+  /**
   * Validate input
 * Validate user comment post
 * @static

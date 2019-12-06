@@ -1,3 +1,4 @@
+'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('accommodations', {
@@ -10,16 +11,16 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
-      description: {
-        type: Sequelize.STRING
-      },
       cityId: {
         type: Sequelize.INTEGER
       },
-      googleCordinates: {
+      address: {
         type: Sequelize.STRING
       },
-      address: {
+      description: {
+        type: Sequelize.STRING
+      },
+      googleCoordinate: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -30,9 +31,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-      });
+    });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('accommodations');
   }
-}
+};

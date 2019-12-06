@@ -42,7 +42,7 @@ class Exists {
       next,
       tripRequests,
       { id: req.params.tripRequestId },
-      'The trip request doen\'t exist'
+      'The trip request doesn\'t exist'
     );
   }
 

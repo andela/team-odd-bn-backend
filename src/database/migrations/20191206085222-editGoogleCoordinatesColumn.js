@@ -1,12 +1,12 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.renameColumn('accommodations', 'googleCordinates', 'googleCoordinates', {
+    return queryInterface.renameColumn('accommodations', 'googleCoordinate', 'googleCoordinates', {
       type: Sequelize.STRING,
     })
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.renameColumn('accommodations', 'googleCoordinates', 'googleCordinates', {
+    return queryInterface.renameColumn('accommodations', 'googleCoordinates', 'googleCoordinate', {
       type: Sequelize.STRING,
     })
   }
