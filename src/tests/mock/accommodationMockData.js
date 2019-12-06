@@ -2,12 +2,12 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const { PASSWORD_ENV } = process.env;
+const { TEST_PASSWORD_ENV } = process.env;
 
 const accommodationMockData = {
   ratingUser: {
     email: 'lynnzioka@gmail.com',
-    password: PASSWORD_ENV
+    password: TEST_PASSWORD_ENV
   },
   wrongRating: {
     rating: 'rating',
