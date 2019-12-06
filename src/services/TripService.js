@@ -1,4 +1,6 @@
-import { tripRequests, trips, userProfile, users } from '../database/models';
+import {
+  tripRequests, trips, userProfile, users
+} from '../database/models';
 import CommonQueries from './CommonQueries';
 
 /**

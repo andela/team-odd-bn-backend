@@ -244,7 +244,6 @@ describe('Request One way trip test', () => {
         done();
       });
   });
-
   it('should not be able to approve a trip request', (done) => {
     chai.request(app).patch('/api/v1/trips/100/approval')
       .set('token', token)

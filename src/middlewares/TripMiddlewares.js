@@ -1,5 +1,5 @@
 import { userProfile } from '../database/models';
-import Customize from '../helpers/Customize';
+import Response from '../helpers/Response';
 
 /**
  * @export
@@ -19,7 +19,7 @@ class TripMiddleware {
     const { id } = req.user;
     const userIdProfile = await userProfile.findOne({ where: { userId: id } });
     if (!userIdProfile.managerId) {
-      return Customize.errorMessage(req, res, 'Please update your line manager', 404);
+      return Response.errorMessage(req, res, 'Please update your line manager', 404);
     }
     const { managerId } = userProfile;
     req.body.managerId = managerId;

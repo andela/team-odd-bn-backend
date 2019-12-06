@@ -1,5 +1,5 @@
 import DataEngine from './DataEngine';
-import { tripRequests, userProfile } from '../database/models';
+import { tripRequests, userProfile, accommodations } from '../database/models';
 import Response from '../helpers/Response';
 /**
  * @export
@@ -46,6 +46,26 @@ class Exists {
     );
   }
 
+  /**
+* check if the accommodation exist
+* @static
+* @param {object} req request object
+* @param {object} res response object
+* @param {object} next next
+* @memberof Exists
+* @returns {object} data
+*/
+  static isAccommodationExist(req, res, next) {
+    return DataEngine.findOne(
+      req,
+      res,
+      next,
+      accommodations,
+      { id: req.params.accommodationId || req.body.accommodationId },
+      'The accommodation doesn\'t exist'
+    );
+  }
+
 
   /**
     * check is the request exist
@@ -57,7 +77,6 @@ class Exists {
     * @returns {object} data
     */
   static async getLineManager(req, res, next) {
-    // const { managerId } = req.body;
     const { id } = req.user;
     const userIdProfile = await userProfile.findOne({ where: { userId: id } });
     if (!userIdProfile.managerId) {
