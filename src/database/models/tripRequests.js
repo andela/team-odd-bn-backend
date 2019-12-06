@@ -26,6 +26,12 @@ module.exports = (sequelize, DataTypes) => {
        {targetKey: 'tripRequestId'},
        { onDelete: 'cascade'},
        {onUpdate: 'cascade'});
+    tripRequests.hasMany(
+      models.notifications,
+        {targetKey: 'id'},
+        {onDelete: 'cascade'},
+        {onUpdate: 'cascade'}
+        );
   };
   return tripRequests;
 };

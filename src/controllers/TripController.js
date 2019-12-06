@@ -2,6 +2,7 @@ import { tripRequests, trips } from '../database/models';
 import TripService from '../services/TripService';
 import Response from '../helpers/Response';
 import TripHelper from '../helpers/TripHelper';
+import NotificationService from '../services/NotificationService';
 
 const { availtripRequestsToManager } = TripService;
 const { createNewTrip } = TripHelper;
@@ -80,6 +81,7 @@ class TripController {
    */
   static async acceptOrRejectRequestsController(req, res) {
     const { reason } = req.body;
+    await NotificationService.ApprovedOrRejectedTripNotification(req, reason);
     return (req.query.status === 'reject')
       ? Response.successMessage(req, res, 'this request has successfully rejected...', { reason }, 200)
       : Response.successMessage(req, res, 'this request has successfully accepted...', { reason }, 200);
