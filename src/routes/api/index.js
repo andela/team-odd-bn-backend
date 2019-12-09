@@ -6,7 +6,7 @@ import socialRoute from './socialRoute';
 import roleRoute from './roleRoute';
 import locationRoute from './locationRoute';
 import commentRoute from './commentRoute';
-import accomodationRouter from './accommodationRoute';
+import accommodationRoute from './accommodationRoute';
 import bookingRouter from './bookingRoute';
 
 const router = Router();
@@ -17,7 +17,7 @@ router.use('/trips', commentRoute);
 router.use('/users', roleRoute);
 router.use('/location', locationRoute);
 router.use('/users', userRoute);
-router.use('/accommodations', accomodationRouter);
+router.use('/accommodations', accommodationRoute);
 router.use('/trips', bookingRouter);
 
 

@@ -5,6 +5,12 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   cities.associate = function(models) {
     cities.hasMany(models.trips, {foreignKey: 'id'},{ onDelete: 'cascade'},{onUpdate: 'cascade'});
+    cities.hasMany(models.accommodations,
+      {targetKey: 'cityId',sourceKey: 'id', as:'cityAccommodations'},
+      { onDelete: 'cascade'},
+      {onUpdate: 'cascade'}
+      );
+    
   };
   return cities;
 };

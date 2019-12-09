@@ -263,5 +263,23 @@ class Validate {
       check('checkOutDate', 'Invalid Date(format: YYYY-MM-DD)').isAfter(correctDate),
     ];
   }
+
+  /**
+* Validate accomodation inputs
+* @static
+* @returns {object} errors
+*/
+  static checkAccommodationRules() {
+    return [
+      check('name', 'name should be a minimum of 2 letters').isString().isLength({ min: 2 }),
+      check('address', 'address should be a minimum of 2 letters').isString().isLength({ min: 2 }),
+      check('description', 'description should be a minimum of 2 letters').isString().isLength({ min: 10 }),
+      check('rooms', 'Rooms must be provided').isLength({ min: 1 }),
+      check('cityId', 'cityId should be an integer').isInt(),
+      check('imageUrls', 'imageUrls must be provided').isLength({ min: 1 }),
+      check('rooms.*.name', 'room name should be a minimum of 1 letters').isString().isLength({ min: 1 }),
+      check('rooms.*.roomType', 'roomType should be a minimum of 2 letters').isString().isLength({ min: 2 })
+    ];
+  }
 }
 export default Validate;

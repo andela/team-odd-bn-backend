@@ -6,11 +6,18 @@ import isUserVerified from '../../middlewares/isUserVerified';
 import checkInputDataError from '../../middlewares/checkInputDataError';
 import AccomodationMiddleware from '../../middlewares/AccommodationMiddleware';
 import AccommodationController from '../../controllers/AccommodationController';
+import VerifyUserRoles from '../../middlewares/VerifyUserRoles';
+import Conflict from '../../middlewares/Conflict';
+import customValidator from '../../middlewares/customValidator';
 
 
 const accommodationRoute = express.Router();
 const { checkforDuplicateRating } = AccomodationMiddleware;
 const { isAccommodationExist } = Exists;
+const { isImage, isCoordinates } = customValidator;
+const { checkForDuplicateAccommodation } = Conflict;
+const { createNewAccomodation } = AccommodationController;
+
 /**
  * @swagger
  *
@@ -64,7 +71,6 @@ const { isAccommodationExist } = Exists;
  *           accommodationId: 1
  *
  */
-
 accommodationRoute
   .post(
     '/ratings',
@@ -176,6 +182,91 @@ accommodationRoute
     checkInputDataError,
     Exists.isAccommodationExist,
     AccommodationController.getAccommodationLikes
+  );
+
+/**
+ * @swagger
+ *
+ * /accommodations/:
+ *    post:
+ *      summary: Travel Admin can post accomodation facilities with their rooms
+ *      tags: [Accomodations]
+ *      parameters:
+ *        - name: token
+ *          in: header
+ *          required: true
+ *          description: Travel Admin Token
+ *          schema:
+ *              $ref: '#/components/schemas/Token'
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/accomodations'
+ *      responses:
+ *        "201":
+ *          description: Created
+ *        "400":
+ *          description: Input error
+ *        "401":
+ *          description: Unauthorized
+ *        "403":
+ *          description: Forbiden
+ *
+ * components:
+ *    schemas:
+ *      accomodations:
+ *        type: object
+ *        required:
+ *          - name
+ *          - cityId
+ *          - address
+ *          - googleCordinates
+ *          - imageUrls
+ *          - description
+ *          - rooms
+ *        properties:
+ *          name:
+ *            type: string
+ *          cityId:
+ *            type: integer
+ *          address:
+ *            type: string
+ *          googleCordinates:
+ *            type: string
+ *          imageUrls:
+ *            type: array
+ *          description:
+ *            type: string
+ *          rooms:
+ *            type:array
+ *        example:
+ *           name: dnffd
+ *           cityId: 1
+ *           address: fname.lname@andela.com
+ *           googleCordinates: yourpassword
+ *           imageUrls:
+ *           - hfn
+ *           - jff
+ *           description: fnkjndgfkljf
+ *           rooms:
+ *           - name:78
+ *           -  roomType:single
+ *
+ */
+accommodationRoute
+  .post(
+    '/',
+    verifyToken,
+    isUserVerified,
+    VerifyUserRoles.isTravelAdministrator,
+    Validate.checkAccommodationRules(),
+    checkInputDataError,
+    isCoordinates,
+    isImage,
+    checkForDuplicateAccommodation,
+    createNewAccomodation
   );
 
 export default accommodationRoute;

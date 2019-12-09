@@ -8,11 +8,20 @@ module.exports = (sequelize, DataTypes) => {
     googleCoordinates: DataTypes.STRING
   }, {});
   accommodations.associate = function(models) {
-    accommodations.hasMany(models.rooms,
-      {targetKey: 'accommodationId', sourceKey:'id', as:'accommodationRooms'},
+    accommodations.hasMany(models.accommodationImages,
+      {targetKey: 'accommodationId',
+      sourceKey:'id',
+       as:'imagesAccommodation'},
       { onDelete: 'cascade'},
       {onUpdate: 'cascade'}
       );
+      accommodations.hasMany(models.rooms,
+        {targetKey: 'accommodationId',
+         sourceKey:'id',
+          as:'accommodationRooms'},
+        { onDelete: 'cascade'},
+        {onUpdate: 'cascade'}
+        );
     accommodations.belongsTo(models.cities, {
       sourceKey: "cityId",
       targetKey: "id",

@@ -1,6 +1,6 @@
 import DataEngine from './DataEngine';
 import {
-  cities, users, tripRequests, trips, booking
+  cities, users, tripRequests, trips, booking, accommodations
 } from '../database/models';
 
 /**
@@ -85,6 +85,34 @@ class Conflict {
       },
       'The accommodation has already booked'
     );
+  }
+
+/**
+* Check if accomodation already exist
+* @static
+* @param {object} req request object
+* @param {object} res response object
+* @param {object} next next
+* @memberof Exists
+* @returns {object} data
+*/
+  static checkForDuplicateAccommodation(req, res, next) {
+    const {
+      name,
+      cityId,
+      address,
+      description,
+      googleCoordinates
+    } = req.body;
+
+    return DataEngine.findConflict(req, res, next, accommodations,
+      {
+        name,
+        cityId,
+        address,
+        description,
+        googleCoordinates
+      }, 'The accommodation already exist.');
   }
 }
 
