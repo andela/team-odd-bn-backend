@@ -34,31 +34,31 @@ const BookingsMockData = {
   },
   bookAccommodation: {
     roomId: 1,
-    checkInDate: '2019-12-10',
-    checkOutDate: '2019-12-17'
+    checkInDate: '2030-11-30',
+    checkOutDate: '2030-12-30'
   },
   bookedAccommodation: {
     roomId: 1,
-    checkInDate: '2019-12-15',
-    checkOutDate: '2019-12-19'
+    checkInDate: '2030-11-30',
+    checkOutDate: '2030-12-30'
   },
   checkInDateGreaterThanCheckOutDate: {
     roomId: 1,
-    checkInDate: '2019-12-15',
-    checkOutDate: '2019-12-10'
+    checkInDate: '2030-12-15',
+    checkOutDate: '2030-12-10'
   },
   checkInDateEqualsToCheckOutDate: {
     roomId: 1,
-    checkInDate: '2019-12-15',
-    checkOutDate: '2019-12-15'
+    checkInDate: '2030-12-15',
+    checkOutDate: '2030-12-15'
   },
   userSign: {
     email: 'test@email.com',
     password: TEST_PASSWORD_ENV
   },
   noRoomIdProvided: {
-    checkInDate: '2019-12-10',
-    checkOutDate: '2019-12-17'
+    checkInDate: '2030-12-10',
+    checkOutDate: '2030-12-17'
   },
 };
 export default BookingsMockData;

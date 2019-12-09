@@ -69,6 +69,20 @@ class CommonQueries {
 
     return rows;
   }
+
+  /**
+   * delete row
+   * @static
+   * @param {object} table table
+   * @param {object} queryObject pass object
+   * @memberof CommonQueries
+   * @returns {object} either an error or data
+   */
+  static async destroy(table, queryObject) {
+    const row = await table.destroy(queryObject);
+
+    return row;
+  }
 }
 
 export default CommonQueries;

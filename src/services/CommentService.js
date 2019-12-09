@@ -1,7 +1,6 @@
 import { comments, users } from '../database/models';
 import CommonQueries from './CommonQueries';
 
-
 /**
  * @exports
  * @class CommentService
@@ -12,7 +11,7 @@ class CommentService {
  * @static
  * @description POST /api/users/:tripRequestId/comment
  * @param {object} req request object
- * @memberof CommentController
+ * @memberof CommentService
  * @returns {object} data
  */
   static async createComment(req) {
@@ -32,9 +31,9 @@ class CommentService {
   /**
 * users or managers can view comment thread
 * @static
-* @description POST /api/users/:tripRequestId/comments
+* @description GET /api/users/:tripRequestId/comments
 * @param {object} req request object
-* @memberof CommentController
+* @memberof CommentService
 * @returns {object} data
 */
   static async getComments(req) {
@@ -53,6 +52,49 @@ class CommentService {
     const tripComments = await CommonQueries.findAll(comments, queryObj);
 
     return tripComments[0];
+  }
+
+
+  /**
+* users or managers can view comment thread
+* @static
+* @description GET /api/users/:tripRequestId/comments
+* @param {object} req request object
+* @memberof CommentService
+* @returns {object} data
+*/
+  static async getSpecificComments(req) {
+    const { commentId } = req.params;
+    const queryObj = {
+      where: {
+        commentId,
+      }
+    };
+
+    const specificComment = await CommonQueries.findOne(comments, queryObj);
+
+    return specificComment;
+  }
+
+
+  /**
+* users can delete a comment they made
+* @static
+* @description DELETE/api/trips/:commentId
+* @param {object} req request object
+* @param {object} res response object
+* @memberof CommentService
+* @returns {object} data
+*/
+  static async deleteComment(req) {
+    const { commentId } = req.params;
+    const queryObject = {
+      where: {
+        id: commentId,
+      }
+    };
+    const deletingComment = await CommonQueries.destroy(comments, queryObject);
+    return deletingComment;
   }
 }
 export default CommentService;

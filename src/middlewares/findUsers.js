@@ -1,5 +1,7 @@
 import Response from '../helpers/Response';
-import { users, tripRequests, userProfile } from '../database/models';
+import {
+  users, tripRequests, userProfile, comments
+} from '../database/models';
 import CommonQueries from '../services/CommonQueries';
 
 const findOneUser = async (req, res, next) => {
@@ -72,4 +74,32 @@ export const isManagerOwnsRequest = async (req, res, next) => {
   });
   return !findRequest ? Response.errorMessage(req, res, 'this request does not belongs to this manager', 403) : next();
 };
+
+export const isCommentOwner = async (req, res, next) => {
+  const { id } = req.user;
+  const queryObject = {
+    where: { userId: id }
+
+  };
+  const oneComment = await CommonQueries.findOne(comments, queryObject);
+  if (!oneComment) {
+    return Response.errorMessage(req, res, 'Ooops! You cannot delete this comment. You are not the owner', 403);
+  }
+  return next();
+};
+
+
+export const CommentExists = async (req, res, next) => {
+  const { commentId } = req.params;
+  const queryObject = {
+    where: { id: commentId }
+
+  };
+  const oneComment = await CommonQueries.findOne(comments, queryObject);
+  if (!oneComment) {
+    return Response.errorMessage(req, res, 'Ooops! Comment does\'nt exist', 404);
+  }
+  return next();
+};
+
 export default findOneUser;
