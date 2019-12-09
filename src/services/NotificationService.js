@@ -24,7 +24,6 @@ class NotificationService {
    */
   static async ApprovedOrRejectedTripNotification(req, reason) {
     const { tripRequestId } = req.params;
-    const { id: lineManagerId } = req.user;
 
     const userTripsRequestsObject = {
       where: { id: tripRequestId }
@@ -46,7 +45,6 @@ class NotificationService {
     await CommonQueries.create(notifications, {
       userId,
       tripRequestId,
-      managerId: lineManagerId,
       message
     });
     eventEmitters.emit('notification_message', JSON.stringify({ message, data }));
