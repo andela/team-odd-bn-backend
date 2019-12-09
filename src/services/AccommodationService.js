@@ -175,6 +175,7 @@ class AccommodationService {
    * @returns {object} data
    */
   static async createAccomodation(req) {
+    const { id: userId } = req.user;
     const {
       name,
       cityId,
@@ -190,7 +191,8 @@ class AccommodationService {
       cityId,
       address,
       description,
-      googleCoordinates
+      googleCoordinates,
+      userId
     };
     const newAccommodation = await CommonQueries.create(accommodations, newAccommodationObject);
     await sequelize.transaction(async () => {

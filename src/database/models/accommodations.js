@@ -1,6 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const accommodations = sequelize.define('accommodations', {
+    userId: DataTypes.INTEGER,
     name: DataTypes.STRING,
     cityId: DataTypes.INTEGER,
     address: DataTypes.STRING,
@@ -31,6 +32,14 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "id",
       as: "ratings"
     });
+    accommodations.belongsTo(models.users,
+      {
+        targetKey: 'id',
+        sourceKey: 'userId',
+      },
+      { onDelete: 'cascade' },
+      { onUpdate: 'cascade' }
+    );
   };
   return accommodations;
 
