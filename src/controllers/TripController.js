@@ -99,6 +99,7 @@ class TripController {
   static async editTrip(req, res) {
     try {
       const result = await TripService.editTripRequestToUser(req);
+      NotificationService.editedTripNotification(req);
       return Response.successMessage(req, res, 'Trip edited successfuly', result, 200);
     } catch (err) {
       return Response.errorMessage(req, res, err.message, 500);

@@ -1,5 +1,6 @@
 import Response from '../helpers/Response';
 import CommentService from '../services/CommentService';
+import NotificationService from '../services/NotificationService';
 
 /**
  * @exports
@@ -18,6 +19,7 @@ class CommentController {
   static async createComment(req, res) {
     try {
       const comment = await CommentService.createComment(req);
+      NotificationService.addCommentNotification(req);
       return Response.successMessage(req, res, 'Your comment was posted successfully', comment, 201);
     } catch (error) {
       return Response.errorMessage(req, res, 'Server error', 500);
