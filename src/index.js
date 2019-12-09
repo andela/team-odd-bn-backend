@@ -12,10 +12,14 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.text());
 app.use(bodyParser.json({ type: 'application/json' }));
+
 app.use('/', router);
 
 app.get('/', (req, res) => res.status(200).send({
   message: 'Welcome to Barefoot Nomad.'
+}));
+app.use('*', (req, res) => res.status(404).send({
+  message: 'Ooops route does not exist!'
 }));
 
 app.use('/static', express.static(path.join(__dirname, 'public')));
