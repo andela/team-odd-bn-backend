@@ -2,6 +2,8 @@
 module.exports = (sequelize, DataTypes) => {
   const notifications = sequelize.define('notifications', {
     userId: DataTypes.INTEGER,
+    bookingId:DataTypes.INTEGER,
+    managerId: DataTypes.INTEGER,
     tripRequestId: DataTypes.INTEGER,
     message: DataTypes.TEXT,
     markRead: DataTypes.BOOLEAN
@@ -14,6 +16,11 @@ module.exports = (sequelize, DataTypes) => {
     });
     notifications.belongsTo(models.tripRequests, {
       foreignKey: 'tripRequestId',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
+    notifications.belongsTo(models.booking, {
+      sourceKey:'bookingId',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     });

@@ -49,7 +49,7 @@ const options = {
     path.resolve(__dirname, '../routes/api/commentRoute.js'),
     path.resolve(__dirname, '../routes/api/accommodationRoute.js'),
     path.resolve(__dirname, '../routes/api/bookingRoute.js'),
-
+    path.resolve(__dirname, '../routes/api/notificationRoute.js'),
   ]
 };
 export default options;

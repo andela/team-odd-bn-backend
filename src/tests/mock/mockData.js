@@ -12,7 +12,7 @@ const mockData = {
     email: 'jamson@gmail.com',
     password: TEST_PASSWORD_ENV,
     signupType: 'Barefoot',
-    isVerified: true
+    isVerified: true,
   },
   usersUnverifiedSignup: {
     firstName: 'Yannick',

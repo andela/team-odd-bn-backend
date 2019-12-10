@@ -2,6 +2,7 @@ import Response from './Response';
 import emailHelper from './EmailHelper';
 import CommonQueries from '../services/CommonQueries';
 import { tripRequests, trips, cities } from '../database/models';
+import NotificationService from '../services/NotificationService';
 
 
 /**
@@ -20,6 +21,9 @@ class TripHelper {
    */
   static async createNewTrip(req, res, tripTypeId) {
     try {
+      if (tripTypeId === 1) {
+        req.body.returnDate = null;
+      }
       const itinerary = req.body.itinerary ? req.body.itinerary : [req.body];
       const userId = req.user.id;
       const newTrip = await tripRequests.create({
@@ -35,6 +39,9 @@ class TripHelper {
           returnDate: item.returnDate
         });
       });
+
+      req.result = newTrip;
+      await NotificationService.newTripRequestNotification(req);
       emailHelper.approveEmailHelper(req, process.env.MANAGER_EMAIL);
       return Response.successMessage(req, res, 'Trip requested successfully', newTrip, 201);
     } catch (err) {

@@ -78,7 +78,6 @@ tripRouter
     ValidateTrip.checkIfOriginSameAsDestination,
     ValidateTrip.checkMultiCityForSimilarRequests,
     ValidateTrip.checkForSimilarRequests,
-    ValidateTrip.checkForSimilarRequestsDateRange,
     OneWayTripController
   );
 

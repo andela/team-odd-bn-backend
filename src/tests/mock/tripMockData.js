@@ -114,13 +114,6 @@ const tripMockData = {
     startDate: '2020-03-02',
     returnDate: '2020-05-12',
   },
-  correctOneWayTripDateRange: {
-    originId: 5,
-    destinationId: 4,
-    reason: 'blablabla',
-    startDate: '2020-03-02',
-    returnDate: '2020-05-12',
-  },
   nonLocationsOneWayTrip: {
     originId: 110,
     destinationId: 120,

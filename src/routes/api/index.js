@@ -8,6 +8,8 @@ import locationRoute from './locationRoute';
 import commentRoute from './commentRoute';
 import accommodationRoute from './accommodationRoute';
 import bookingRouter from './bookingRoute';
+import notificationRoute from './notificationRoute';
+
 
 const router = Router();
 router.use('/auth', authRoute);
@@ -19,6 +21,7 @@ router.use('/location', locationRoute);
 router.use('/users', userRoute);
 router.use('/accommodations', accommodationRoute);
 router.use('/trips', bookingRouter);
+router.use('/notifications', notificationRoute);
 
 
 export default router;

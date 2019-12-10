@@ -4,7 +4,12 @@ import {
   tripRequests,
   status,
   notifications,
+  users,
   userProfile,
+  rooms,
+  accommodations,
+  booking,
+  sequelize
 } from '../database/models';
 import { notificationEvents } from '../helpers/notificationConfig';
 
@@ -144,6 +149,112 @@ class NotificationService {
       updatedAt: result.dataValues.updatedAt
     };
     notificationEvents('post_comment_notification', { message, data });
+    NotificationService.saveNotification({
+      userId,
+      tripRequestId,
+      message
+    });
+    notificationEvents('approve_reject_notification', { message, data });
+  }
+
+  /**
+   * generate notification
+   * @static
+   * @param {object} req request object
+   * @memberof NotificationService
+   * @returns {object} data
+   */
+  static async newTripRequestNotification(req) {
+    const managerIdqueryObject = {
+      where: { userId: req.user.id },
+      include: [{
+        model: users,
+        as: 'user'
+      }],
+      raw: true
+    };
+    const tripUser = await CommonQueries.findAll(userProfile, managerIdqueryObject);
+    const message = `${tripUser[0]['user.firstName']} ${tripUser[0]['user.lastName']} has made an new travel request`;
+    const newNotification = await NotificationService.saveNotification({
+      userId: req.user.id,
+      message,
+      tripRequestId: req.result.id
+    });
+    const { bookingId, updatedAt, ...data } = newNotification.dataValues;
+    data.managerId = tripUser.managerId;
+    notificationEvents('trip_request_notification', { data });
+  }
+
+
+  /**
+   * generate notification
+   * @static
+   * @param {object} req request object
+   * @memberof NotificationService
+   * @returns {object} data
+   */
+  static async newBookingNotification(req) {
+    const userQueryObject = {
+      where: { id: req.user.id }
+    };
+    const travelAdminQueryObject = {
+      where: { id: req.result.id },
+      attributes: [],
+      include: [{
+        model: rooms,
+        include: [{
+          model: accommodations,
+          attributes: ['userId'],
+        }],
+        attributes: ['name'],
+      }],
+      raw: true
+    };
+    const user = await CommonQueries.findAll(users, userQueryObject);
+    const accommodation = await CommonQueries.findAll(booking, travelAdminQueryObject);
+    const message = `${user[0].firstName} ${user[0].lastName} has booked room ${accommodation[0]['room.name']} `;
+    const newNotification = await NotificationService.saveNotification({
+      message,
+      userId: req.user.id,
+      bookingId: req.result.id
+    });
+    const { tripRequestId, updatedAt, ...data } = newNotification.dataValues;
+    data.travelAdminId = accommodation[0]['room.accommodation.userId'];
+
+    notificationEvents('booking_notification', { data });
+  }
+
+  /**
+   * generate notification
+   * @static
+   * @param {object} dataNotification pass object to save in Table
+   * @memberof NotificationService
+   * @returns {object} data
+   */
+  static async saveNotification(dataNotification) {
+    const newNotification = await CommonQueries.create(notifications, dataNotification);
+    return newNotification;
+  }
+
+  /**
+   * Mark notification as read
+   * @static
+   * @param {array} notificationsArrayIds pass object to save in Table
+   * @memberof NotificationService
+   * @returns {object} data
+   */
+  static async markNotificationAsRead(notificationsArrayIds) {
+    await sequelize.transaction(async () => {
+      notificationsArrayIds.map(async (notificationId) => {
+        const markReadNotificationQueryObject = [
+          { markRead: true },
+          {
+            where: { id: notificationId }
+          }
+        ];
+        await CommonQueries.update(notifications, markReadNotificationQueryObject);
+      });
+    });
   }
 }
 

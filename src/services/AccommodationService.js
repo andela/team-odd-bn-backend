@@ -104,7 +104,9 @@ class AccommodationService {
     const { id } = req.user;
     like = JSON.parse(like);
 
-    const accommodation = await CommonQueries.findOne(accommodations, { where: { id: accommodationId } });
+    const accommodation = await CommonQueries.findOne(
+      accommodations, { where: { id: accommodationId } }
+    );
     const isLikedOrDisliked = await CommonQueries.findOne(likes, { where: { userId: id } });
 
     if (isLikedOrDisliked) {
@@ -183,10 +185,10 @@ class AccommodationService {
       description,
       googleCoordinates,
       imageUrls,
-      rooms: userRooms
+      rooms: userRooms,
     } = req.body;
-
     const newAccommodationObject = {
+      userId,
       name,
       cityId,
       address,
@@ -201,7 +203,6 @@ class AccommodationService {
           { accommodationId: newAccommodation.id, imageUrl });
       });
     });
-
     const roomSet = new Set(userRooms.map(a => a.id));
     const unique = Array.from(roomSet);
     const uniqueRooms = unique.map(id => userRooms.find(a => a.id === id));

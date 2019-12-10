@@ -1,5 +1,6 @@
 import Response from '../helpers/Response';
 import AccommodationService from '../services/BookingService';
+import NotificationService from '../services/NotificationService';
 
 /**
  * @exports
@@ -18,6 +19,8 @@ class BookingController {
   static async bookAccommodation(req, res) {
     try {
       const result = await AccommodationService.createAccommodationService(req);
+      req.result = result;
+      await NotificationService.newBookingNotification(req);
       return Response.successMessage(req, res, 'You have booked an accommodation facility successfully', result, 201);
     } catch (error) {
       return Response.errorMessage(req, res, 'Server error', 500);
