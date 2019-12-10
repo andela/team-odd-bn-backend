@@ -288,6 +288,7 @@ class Validate {
     const day = d.getDate();
     const correctDate = new Date(year, month, day).toDateString();
     return [
+      check('tripId', 'tripId should be an integer').isNumeric(),
       check('roomId', 'roomId should be valid').isInt(),
       check('checkInDate', 'Invalid Date(format: YYYY-MM-DD)').isAfter(correctDate),
       check('checkOutDate', 'Invalid Date(format: YYYY-MM-DD)').isAfter(correctDate),

@@ -26,5 +26,24 @@ class BookingController {
       return Response.errorMessage(req, res, 'Server error', 500);
     }
   }
+
+  /**
+ * Manager can get specific or all booking requests
+ * @static
+ * @description GET /api/trips/booking
+ * @param {object} req request object
+ * @param {object} res response object
+ * @memberof BookingController
+ * @returns {object} data
+ */
+  static async getUserBookingRequests(req, res) {
+    try {
+      const result = await AccommodationService.getUserBookingReqService(req);
+      return result.length !== 0 ? Response.successMessage(req, res, 'User booking requests are retrieved successfully', result, 200)
+        : Response.errorMessage(req, res, 'No Booking request found', 404);
+    } catch (error) {
+      return Response.errorMessage(req, res, 'Server error', 500);
+    }
+  }
 }
 export default BookingController;
