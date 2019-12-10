@@ -36,6 +36,21 @@ class customValidator {
   }
 
   /**
+* Check if the manager has provided user id
+* @static
+* @param {object} req request object
+* @param {object} res response object
+* @param {object} next next
+* @memberof Conflict
+* @returns {object} data
+*/
+  static isUserOrManager(req, res, next) {
+    if (req.user.roleId === 6) { return req.query.user ? next() : Response.errorMessage(req, res, 'Please provide user id if you are a manager', 400); }
+    next();
+  }
+
+
+  /**
    * Validate images
    * @static
    * @param {object} req  request object

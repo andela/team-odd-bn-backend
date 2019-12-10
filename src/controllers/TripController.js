@@ -127,5 +127,26 @@ class TripController {
       return Response.errorMessage(req, res, 'Oops! internal server error', 500);
     }
   }
+
+  /**
+ * Manager/User should be able to get trip stats he made in X timeframe
+ * @static
+ * @param {object} req request object
+ * @param {object} res response object
+ * @memberof TripController
+ * @returns {object} data
+ * @description PATCH api/v1/trips/requests
+ */
+  static async getTripStatsController(req, res) {
+    try {
+      const { from, to } = req.query;
+      const userTrips = await TripService.getUserTrips(req);
+      const tripsCounter = userTrips.length;
+      const msg = `All one way trips made between ${from} and ${to} retrieved successfully!`;
+      Response.successMessage(req, res, msg, { tripsCounter, userTrips }, 200);
+    } catch (error) {
+      Response.errorMessage(req, res, error.message, 500);
+    }
+  }
 }
 export default TripController;
