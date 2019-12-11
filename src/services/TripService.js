@@ -1,9 +1,10 @@
 import Sequelize, { Promise } from 'sequelize';
 import {
-  tripRequests, trips, userProfile, users
+  tripRequests, trips, userProfile, users, accommodations, cities
 } from '../database/models';
 import TripHelper from '../helpers/TripHelper';
 import CommonQueries from './CommonQueries';
+import mostTraveledDestination from '../helpers/TripHelper';
 
 /**
  * @export
@@ -177,6 +178,28 @@ class TripService {
       return trip;
     });
     return Promise.all(tripsWithCityName);
+  }
+
+  /**
+   * Get some info about most traveled destination
+   * @static
+   * @param {object} req request object
+   * @memberof class TripService {
+   * @returns {object} data
+   */
+  static async getInfoAboutDestination() {
+    const { cityId, counter } = await mostTraveledDestination.findMostTraveledDestination();
+    const cityNameObj = {
+      where: { id: cityId }, raw: true
+    };
+    const findAccommodationObj = {
+      where: { cityId }, raw: true
+    };
+    const { city } = await CommonQueries.findOne(cities, cityNameObj);
+
+    const numberOfAccommodations = await CommonQueries.count(accommodations, findAccommodationObj);
+    const timeVisited = counter;
+    return { city, timeVisited, numberOfAccommodations };
   }
 }
 

@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   accommodationImages.associate = function(models) {
     accommodationImages.belongsTo(models.accommodations, {
       sourceKey: "accommodationId",
-      targetKey: "id",
+      targetKey: "id",    
     });
   };
   return accommodationImages;

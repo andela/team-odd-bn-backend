@@ -557,3 +557,25 @@ describe('User stats for trips in X timeframe', () => {
       });
   });
 });
+describe('User or Manager get info on most traveled destination', () => {
+  before((done) => {
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(mockData.usersSignin)
+      .end((err, res) => {
+        userToken = res.body.data;
+        done();
+      });
+  });
+
+  it('should be able to get info on the most traveled destination', (done) => {
+    chai.request(app).get('/api/v1/trips/most-traveled')
+      .set('token', userToken)
+      .end((err, res) => {
+        expect(res.body.message).eql('Most traveled destination info retrieved successfully');
+        res.should.have.status(200);
+        res.body.should.be.an('object');
+        done(err);
+      });
+  });
+});

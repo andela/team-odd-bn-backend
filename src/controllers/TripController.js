@@ -149,5 +149,22 @@ class TripController {
       Response.errorMessage(req, res, error.message, 500);
     }
   }
+
+  /**
+   * A user should be able to get info on the most traveled destination
+   * @static
+   * @param {object} req request object
+   * @param {object} res response object
+   * @memberof TripController
+   * @returns {object} data
+   */
+  static async mostTraveledDestination(req, res) {
+    try {
+      const result = await TripService.getInfoAboutDestination();
+      return Response.successMessage(req, res, 'Most traveled destination info retrieved successfully', result, 200);
+    } catch (err) {
+      return Response.errorMessage(req, res, err.message, 500);
+    }
+  }
 }
 export default TripController;

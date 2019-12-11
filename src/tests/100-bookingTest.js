@@ -84,9 +84,9 @@ describe('Book an accomadition facility', () => {
   it('should not be able to book an accomadition facility when some one took it', (done) => {
     chai.request(app).post(`/api/v1/trips/${3}/booking`)
       .set('token', userToken1)
-      .send(bookMockData.bookedAccommodation)
+      .send(bookMockData.someTookAccommodation)
       .end((err, res) => {
-        expect(res.body.message).eql('The accommodation has already booked');
+        expect(res.body.message).eql('Room booked by other client');
         res.should.have.status(409);
         res.body.should.be.an('object');
         done(err);

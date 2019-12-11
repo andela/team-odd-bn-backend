@@ -9,7 +9,10 @@ import Conflict from '../../middlewares/Conflict';
 import CustomValidator from '../../middlewares/customValidator';
 import isUserVerified from '../../middlewares/isUserVerified';
 import {
-  IsOwnerOfTrip, IsTripApproved, isManagerHasAccess, isManagerOwnsRequest
+  IsOwnerOfTrip,
+  IsTripApproved,
+  isManagerHasAccess,
+  isManagerOwnsRequest
 } from '../../middlewares/findUsers';
 import VerifyUserRoles from '../../middlewares/VerifyUserRoles';
 import operateAcceptOrReject from '../../middlewares/approveOrReject';
@@ -20,9 +23,12 @@ const {
   returnTripController,
   OneWayTripController,
   editTrip,
-  getRequestsByManager
+  getRequestsByManager,
+  mostTraveledDestination
 } = TripController;
-const { isTripRequestFound } = Conflict;
+const {
+  isTripRequestFound
+} = Conflict;
 const {
   acceptOrRejectRequestsController, getTripStatsController
 } = TripController;
@@ -480,7 +486,38 @@ tripRouter
   .get(
     '/stats/:tripTypeId',
     verifyToken, Validate.tripStatsRules(),
-    checkInputDataError, ValidateTrip.dateValidation, CustomValidator.isUserOrManager, getTripStatsController
+    checkInputDataError,
+    ValidateTrip.dateValidation,
+    CustomValidator.isUserOrManager,
+    getTripStatsController
+  );
+/**
+ * @swagger
+ *
+ * /trips/most-traveled:
+ *    get:
+ *      summary: get info about most traveled destination
+ *      tags: [Trip]
+ *      parameters:
+ *        - name: token
+ *          in: header
+ *          description: enter token
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        "200":
+ *          description:  Most traveled destination info retrieved successfully
+ *        "401":
+ *          description: No token provided
+ */
+
+tripRouter
+  .get(
+    '/most-traveled',
+    verifyToken,
+    isUserVerified,
+    mostTraveledDestination
   );
 
 export default tripRouter;

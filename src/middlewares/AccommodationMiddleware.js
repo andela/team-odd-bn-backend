@@ -51,7 +51,7 @@ class AccommodationMiddleware {
     });
 
     if (isBookable) {
-      return Response.errorMessage(req, res, 'Room booked by other client', 403);
+      return Response.errorMessage(req, res, 'Room booked by other client', 409);
     }
     if (!isAccommodationExist) {
       return Response.errorMessage(req, res, 'Sorry, the destination of your trip request does not have available accommodation', 404);

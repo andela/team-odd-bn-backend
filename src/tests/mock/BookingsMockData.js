@@ -40,6 +40,11 @@ const BookingsMockData = {
     checkInDate: '2030-11-30',
     checkOutDate: '2030-12-30'
   },
+  someTookAccommodation: {
+    roomId: 1,
+    checkInDate: '2030-12-10',
+    checkOutDate: '2030-12-30'
+  },
   checkInDateGreaterThanCheckOutDate: {
     roomId: 1,
     checkInDate: '2030-12-15',
