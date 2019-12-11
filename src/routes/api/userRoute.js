@@ -127,6 +127,28 @@ const { isImage } = customValidator;
 *       500:
 *         description: Internal server error
 */
+
+/**
+ * @swagger
+ *
+ * /users/notification:
+ *    get:
+ *      summary: Available notification for a specific user
+ *      tags: [Notifications]
+ *      parameters:
+ *        - name: token
+ *          in: header
+ *          description: enter token
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        "200":
+ *          description: Available notifications
+ *        "404":
+ *          description: Notification not found
+ */
 userRoute.put('/profile-settings', verifyToken, profileUpdateRules(), checkInputDataError, isImage, isManager, isUserVerified, UserController.updateProfile);
 userRoute.get('/view-profile', verifyToken, isUserVerified, UserController.viewProfile);
+userRoute.get('/notification', verifyToken, isUserVerified, UserController.viewNotification);
 export default userRoute;
