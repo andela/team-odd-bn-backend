@@ -10,6 +10,7 @@ import accommodationRoute from './accommodationRoute';
 import bookingRouter from './bookingRoute';
 import notificationRoute from './notificationRoute';
 
+import searchRouter from './searchRoute';
 
 const router = Router();
 router.use('/auth', authRoute);
@@ -23,5 +24,6 @@ router.use('/accommodations', accommodationRoute);
 router.use('/trips', bookingRouter);
 router.use('/notifications', notificationRoute);
 
+router.use('/search', searchRouter);
 
 export default router;
