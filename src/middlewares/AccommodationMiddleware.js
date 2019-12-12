@@ -40,6 +40,12 @@ class AccommodationMiddleware {
       isAccommodationExist, allAvailRoom, isRoomBooked
     } = serviceQueries;
 
+    const isOwnerOfTheTrip = await BookingService.isOwnerOftheTripService(req);
+
+    if (isOwnerOfTheTrip.length === 0) {
+      return Response.errorMessage(req, res, 'Sorry, You are not the owner of this trip request', 403);
+    }
+
     const allAvailRoomId = allAvailRoom.map(i => i.id);
     const isRoomExist = allAvailRoomId.includes(parseInt(roomId, 10));
     if (!isRoomExist) {
@@ -51,7 +57,7 @@ class AccommodationMiddleware {
     });
 
     if (isBookable) {
-      return Response.errorMessage(req, res, 'Room booked by other client', 403);
+      return Response.errorMessage(req, res, 'Room booked by other client', 409);
     }
     if (!isAccommodationExist) {
       return Response.errorMessage(req, res, 'Sorry, the destination of your trip request does not have available accommodation', 404);

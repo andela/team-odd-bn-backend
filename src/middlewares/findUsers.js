@@ -54,11 +54,10 @@ export const commentAccess = async (req, res, next) => {
   return Response.errorMessage(req, res, 'You should be either a requester or a manager', 403);
 };
 export const isManagerHasAccess = async (req, res, next) => {
-  const { id } = req.user;
-  const getRole = await users.findAll({ where: { roleId: 6, id } });
-  const [{ dataValues }] = getRole;
-  return dataValues.roleId !== 6
-    ? Response.successMessage(req, res, 'You do not have access to perform this action as a manager', 403) : next();
+  const getRole = await users.findAll({ where: { roleId: req.user.roleId }, raw: true });
+  const [{ roleId }] = getRole;
+  return roleId !== 6
+    ? Response.errorMessage(req, res, 'You do not have access to perform this action as a manager', 403) : next();
 };
 
 export const isManagerOwnsRequest = async (req, res, next) => {

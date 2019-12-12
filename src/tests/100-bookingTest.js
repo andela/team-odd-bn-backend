@@ -8,7 +8,8 @@ import bookMockData from './mock/BookingsMockData';
 chai.use(chaiHttp);
 chai.should();
 dotenv.config();
-let userToken1;
+let userToken1, managerSignin;
+
 describe('Book an accomadition facility', () => {
   before((done) => {
     chai.request(app)
@@ -16,6 +17,15 @@ describe('Book an accomadition facility', () => {
       .send(bookMockData.userSign)
       .end((err, res) => {
         userToken1 = res.body.data;
+        done();
+      });
+  });
+  before((done) => {
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(bookMockData.managerSignin)
+      .end((err, res) => {
+        managerSignin = res.body.data;
         done();
       });
   });
@@ -38,7 +48,7 @@ describe('Book an accomadition facility', () => {
       });
   });
   it('should not be able to book an accomadition facility when checkInDate is greater than checkOutDate', (done) => {
-    chai.request(app).post(`/api/v1/trips/${3}/booking`)
+    chai.request(app).post(`/api/v1/trips/${7}/booking`)
       .set('token', userToken1)
       .send(bookMockData.checkInDateGreaterThanCheckOutDate)
       .end((err, res) => {
@@ -49,7 +59,7 @@ describe('Book an accomadition facility', () => {
       });
   });
   it('should not be able to book an accomadition facility when checkInDate is Equal to checkOutDate', (done) => {
-    chai.request(app).post(`/api/v1/trips/${3}/booking`)
+    chai.request(app).post(`/api/v1/trips/${7}/booking`)
       .set('token', userToken1)
       .send(bookMockData.checkInDateEqualsToCheckOutDate)
       .end((err, res) => {
@@ -60,7 +70,7 @@ describe('Book an accomadition facility', () => {
       });
   });
   it('should not be able to book an accomadition facility when no roomid provided', (done) => {
-    chai.request(app).post(`/api/v1/trips/${3}/booking`)
+    chai.request(app).post(`/api/v1/trips/${7}/booking`)
       .set('token', userToken1)
       .send(bookMockData.noRoomIdProvided)
       .end((err, res) => {
@@ -71,7 +81,7 @@ describe('Book an accomadition facility', () => {
       });
   });
   it('should be able to book an accomadition facility', (done) => {
-    chai.request(app).post(`/api/v1/trips/${3}/booking`)
+    chai.request(app).post('/api/v1/trips/7/booking')
       .set('token', userToken1)
       .send(bookMockData.bookAccommodation)
       .end((err, res) => {
@@ -82,18 +92,18 @@ describe('Book an accomadition facility', () => {
       });
   });
   it('should not be able to book an accomadition facility when some one took it', (done) => {
-    chai.request(app).post(`/api/v1/trips/${3}/booking`)
+    chai.request(app).post(`/api/v1/trips/${7}/booking`)
       .set('token', userToken1)
-      .send(bookMockData.bookedAccommodation)
+      .send(bookMockData.someTookAccommodation)
       .end((err, res) => {
-        expect(res.body.message).eql('The accommodation has already booked');
+        expect(res.body.message).eql('Room booked by other client');
         res.should.have.status(409);
         res.body.should.be.an('object');
         done(err);
       });
   });
   it('should not be able to book an accomadition facility when already requested', (done) => {
-    chai.request(app).post(`/api/v1/trips/${3}/booking`)
+    chai.request(app).post(`/api/v1/trips/${7}/booking`)
       .set('token', userToken1)
       .send(bookMockData.bookAccommodation)
       .end((err, res) => {
@@ -103,12 +113,55 @@ describe('Book an accomadition facility', () => {
         done(err);
       });
   });
-  it('should be able to book an accomadition facility', (done) => {
+  it('should not be able to book an accomadition facility when trip id not found', (done) => {
     chai.request(app).post(`/api/v1/trips/${900}/booking`)
       .set('token', userToken1)
       .send(bookMockData.bookAccommodation)
       .end((err, res) => {
         expect(res.body.message).eql('The trip id not found');
+        res.should.have.status(404);
+        res.body.should.be.an('object');
+        done(err);
+      });
+  });
+});
+describe('Get User Booking accomadition request', () => {
+  it('should be able to get user booking request', (done) => {
+    chai.request(app).get('/api/v1/trips/booking')
+      .set('token', managerSignin)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.an('object');
+        expect(res.body.message).eql('User booking requests are retrieved successfully');
+        done(err);
+      });
+  });
+  it('should not be able to get user booking request when s/he is not a manager', (done) => {
+    chai.request(app).get('/api/v1/trips/booking')
+      .set('token', userToken1)
+      .end((err, res) => {
+        expect(res.body.message).eql('You do not have access to perform this action as a manager');
+        res.should.have.status(403);
+        res.body.should.be.an('object');
+        done(err);
+      });
+  });
+
+  it('should be able to get a specific user booking request', (done) => {
+    chai.request(app).get('/api/v1/trips/booking/8')
+      .set('token', managerSignin)
+      .end((err, res) => {
+        expect(res.body.message).eql('User booking requests are retrieved successfully');
+        res.should.have.status(200);
+        res.body.should.be.an('object');
+        done(err);
+      });
+  });
+  it('should not be able to get a specific user booking request when the request does not found', (done) => {
+    chai.request(app).get('/api/v1/trips/booking/8000')
+      .set('token', managerSignin)
+      .end((err, res) => {
+        expect(res.body.message).eql('No Booking request found');
         res.should.have.status(404);
         res.body.should.be.an('object');
         done(err);

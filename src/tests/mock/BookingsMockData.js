@@ -30,6 +30,7 @@ const BookingsMockData = {
     startDate: '2019-10-02',
     returnDate: '2019-10-12',
   },
+
   bookAccommodation: {
     roomId: 1,
     checkInDate: '2030-11-30',
@@ -38,6 +39,11 @@ const BookingsMockData = {
   bookedAccommodation: {
     roomId: 1,
     checkInDate: '2030-11-30',
+    checkOutDate: '2030-12-30'
+  },
+  someTookAccommodation: {
+    roomId: 1,
+    checkInDate: '2030-12-10',
     checkOutDate: '2030-12-30'
   },
   checkInDateGreaterThanCheckOutDate: {
@@ -51,12 +57,16 @@ const BookingsMockData = {
     checkOutDate: '2030-12-15'
   },
   userSign: {
-    email: 'test@email.com',
-    password: TEST_PASSWORD_ENV
+    email: 'jamson@gmail.com',
+    password: 'Demo@123'
   },
   noRoomIdProvided: {
     checkInDate: '2030-12-10',
     checkOutDate: '2030-12-17'
   },
+  managerSignin: {
+    email: 'manager.email@gmail.com',
+    password: TEST_PASSWORD_ENV
+  }
 };
 export default BookingsMockData;

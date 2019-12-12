@@ -7,6 +7,7 @@ import Validate from '../../middlewares/Validate';
 import checkInputDataError from '../../middlewares/checkInputDataError';
 import ValidateAccommodation from '../../middlewares/ValidateAccommodation';
 import isUserVerified from '../../middlewares/isUserVerified';
+import { isManagerHasAccess } from '../../middlewares/findUsers';
 
 const { checkIfCheckInDateIsAsCheckOutDate } = ValidateAccommodation;
 const bookingRouter = express.Router();
@@ -69,6 +70,52 @@ const { isTripFound, isRoomBooked } = Conflict;
 
 
 bookingRouter.post('/:tripId/booking', verifyToken, isUserVerified, isTripFound, Validate.bookAccommodationRules(), checkInputDataError, checkIfCheckInDateIsAsCheckOutDate, isRoomBooked, AccommodationMiddleware.isAccommodationAvail, BookingController.bookAccommodation);
+
+/**
+ * @swagger
+ *
+ * /trips/booking:
+ *    get:
+ *      summary: Manager can get all booking requests
+ *      tags: [Booking]
+ *      responses:
+ *        "200":
+ *          description: Ok
+ *        "400":
+ *          description: Bad request
+ *        "404":
+ *          description: Booking request not found
+ *        "500":
+ *          description: Server Error
+ */
+
+bookingRouter.get('/booking', verifyToken, isUserVerified, isManagerHasAccess, BookingController.getUserBookingRequests);
+/**
+ * @swagger
+ *
+ * /trips/booking/{userId}:
+ *    get:
+ *      summary: Manager can get specific booking requests
+ *      tags: [Booking]
+*      parameters:
+ *        - name: userId
+ *          in: path
+ *          description: Please enter the valid user id
+ *          required: false
+ *          schema:
+ *            type: integer
+ *      responses:
+ *        "200":
+ *          description: Ok
+ *        "400":
+ *          description: Bad request
+ *        "404":
+ *          description: Booking request not found
+ *        "500":
+ *          description: Server Error
+ */
+
+bookingRouter.get('/booking/:userId', verifyToken, isUserVerified, isManagerHasAccess, BookingController.getUserBookingRequests);
 
 
 export default bookingRouter;
