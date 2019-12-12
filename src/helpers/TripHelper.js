@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 import Response from './Response';
 import emailHelper from './EmailHelper';
 import CommonQueries from '../services/CommonQueries';
@@ -16,7 +17,7 @@ class TripHelper {
    * @param {object} req request object
    * @param {object} res response object
    * @param {object} tripTypeId trip type ID
-   * @memberof TripController
+   * @memberof TripHelper
    * @returns {object} data
    */
   static async createNewTrip(req, res, tripTypeId) {
@@ -60,6 +61,39 @@ class TripHelper {
     const { dataValues: origin } = await CommonQueries.findOne(cities, { where: { id: tripTypeId.originId }, attributes: ['city'] });
     const { dataValues: destination } = await CommonQueries.findOne(cities, { where: { id: tripTypeId.destinationId }, attributes: ['city'] });
     return { origin, destination };
+  }
+
+  /**
+   * find the most traveled destination
+   * @static
+   * @memberof class TripChecker
+   * @returns {object} data
+   */
+  static async findMostTraveledDestination() {
+    const destinationObj = {
+      attributes: ['destinationId'], raw: true
+    };
+    const getAllDestinations = await CommonQueries.findAll(trips, destinationObj);
+    const getDestinationIds = getAllDestinations.map(i => i.destinationId);
+    const countHolder = [];
+    const newArray = [];
+
+    for (let i = 0; i < getDestinationIds.length; i++) {
+      let count = 0;
+      for (let z = 0; z < getDestinationIds.length; z++) {
+        if (getDestinationIds[z] === getDestinationIds[i]) count++;
+      }
+      countHolder.push(count);
+      newArray.push({ counter: count, cityId: getDestinationIds[i] });
+    }
+    const maxNumber = Math.max(...countHolder);
+    const frequentCityId = newArray.filter((item) => {
+      if (item.counter === maxNumber) {
+        return { cityId: item.cityId, counts: item.counter };
+      }
+    });
+    const [{ cityId, counter }] = frequentCityId;
+    return { cityId, counter };
   }
 }
 

@@ -43,11 +43,8 @@ class LocationController {
       if (result.length === 0) {
         return Response.errorMessage(req, res, 'No city is available at the moment', 404);
       }
-      return Response.successMessage(req, res, 'Location retrieved','', 200);
-
+      return Response.successMessage(req, res, 'Location retrieved', result, 200);
     } catch (err) {
-      console.log(err);
-      
       return Response.errorMessage(req, res, err.message, 500);
     }
   }
