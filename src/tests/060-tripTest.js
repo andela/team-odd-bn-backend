@@ -488,3 +488,81 @@ describe('Users should be able to edit trips', () => {
       });
   });
 });
+
+describe('User stats for trips in X timeframe', () => {
+  it('should return all one-way trips made between 2019-10-01 and 2019-11-30', (done) => {
+    chai.request(app)
+      .get('/api/v1/trips/stats/1?from=2019-10-01&to=2030-11-30')
+      .set('token', token)
+      .end((err, res) => {
+        expect(res.status).eql(200);
+        expect(res.body.message).eql('All one way trips made between 2019-10-01 and 2030-11-30 retrieved successfully!');
+        expect(res.body.data.userTrips.length).eql(2);
+        expect(res.body.data).to.be.an('Object');
+        done(err);
+      });
+  });
+  it('should return all two-way trips made between 2020-01-01 and 2020-12-31', (done) => {
+    chai.request(app)
+      .get('/api/v1/trips/stats/2?from=2020-01-01&to=2020-12-31')
+      .set('token', token)
+      .end((err, res) => {
+        expect(res.status).eql(200);
+        expect(res.body.message).eql('All one way trips made between 2020-01-01 and 2020-12-31 retrieved successfully!');
+        expect(res.body.data.userTrips.length).eql(1);
+        expect(res.body.data).to.be.an('Object');
+        done(err);
+      });
+  });
+  it('should return all multi city trips made between 2020-01-01 and 2020-12-30', (done) => {
+    chai.request(app)
+      .get('/api/v1/trips/stats/2?from=2020-01-01&to=2020-12-30')
+      .set('token', token)
+      .end((err, res) => {
+        expect(res.status).eql(200);
+        expect(res.body.message).eql('All one way trips made between 2020-01-01 and 2020-12-30 retrieved successfully!');
+        expect(res.body.data.userTrips.length).eql(1);
+        done(err);
+      });
+  });
+  it('should not retieve data if manager has not provided user id', (done) => {
+    chai.request(app)
+      .get('/api/v1/trips/stats/2?from=2020-01-01&to=2020-12-30')
+      .set('token', managerToken)
+      .end((err, res) => {
+        expect(res.status).eql(400);
+        expect(res.body.message).eql('Please provide user id if you are a manager');
+        done(err);
+      });
+  });
+  it('manager should get trip stats for a specific user', (done) => {
+    chai.request(app)
+      .get('/api/v1/trips/stats/2?from=2020-01-01&to=2020-12-30&user=1')
+      .set('token', managerToken)
+      .end((err, res) => {
+        expect(res.status).eql(200);
+        expect(res.body.message).eql('All one way trips made between 2020-01-01 and 2020-12-30 retrieved successfully!');
+        done(err);
+      });
+  });
+  it('should not retieve data if fromDate is less than toDate', (done) => {
+    chai.request(app)
+      .get('/api/v1/trips/stats/2?from=2020-01-01&to=2015-12-30')
+      .set('token', managerToken)
+      .end((err, res) => {
+        expect(res.status).eql(400);
+        expect(res.body.message).eql('Start date should be less that end date');
+        done(err);
+      });
+  });
+  it('should not retieve data if user id is invalid', (done) => {
+    chai.request(app)
+      .get('/api/v1/trips/stats/2?from=2020-01-01&to=2025-12-30&user=b')
+      .set('token', managerToken)
+      .end((err, res) => {
+        expect(res.status).eql(500);
+        expect(res.body.message).eql('invalid input syntax for integer: "b"');
+        done(err);
+      });
+  });
+});

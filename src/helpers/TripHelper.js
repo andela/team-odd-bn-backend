@@ -1,6 +1,7 @@
 import Response from './Response';
 import emailHelper from './EmailHelper';
-import { tripRequests, trips } from '../database/models';
+import CommonQueries from '../services/CommonQueries';
+import { tripRequests, trips, cities } from '../database/models';
 
 
 /**
@@ -39,6 +40,19 @@ class TripHelper {
     } catch (err) {
       return Response.errorMessage(req, res, err.message, 500);
     }
+  }
+
+  /**
+  * Should return city names corresponding to both originId and destinationId provided
+  * @static
+  * @param {object} tripTypeId city type ID
+  * @memberof TripController
+  * @returns {object} data
+  */
+  static async getCityName(tripTypeId) {
+    const { dataValues: origin } = await CommonQueries.findOne(cities, { where: { id: tripTypeId.originId }, attributes: ['city'] });
+    const { dataValues: destination } = await CommonQueries.findOne(cities, { where: { id: tripTypeId.destinationId }, attributes: ['city'] });
+    return { origin, destination };
   }
 }
 

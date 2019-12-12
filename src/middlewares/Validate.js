@@ -246,6 +246,24 @@ class Validate {
   }
 
   /**
+  * Validate trips stats inputs
+  * @static
+  * @returns {object} errors
+  */
+  static tripStatsRules() {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = d.getMonth();
+    const day = d.getDate();
+    const MaxDate = new Date(year + 20, month, day).toDateString();
+    return [
+      check('tripTypeId', 'trip type id should be an integer(1: One-way, 2: two-way, 3: Multi-city)').isInt(),
+      check('from', 'To date should be valid(YYYY-MM-DD)').isBefore(MaxDate),
+      check('to', 'End date should be valid(YYYY-MM-DD)').isBefore(MaxDate),
+    ];
+  }
+
+  /**
     * Validate rating input
     * @static
     * @returns {object} errors

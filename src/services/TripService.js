@@ -1,6 +1,8 @@
+import Sequelize, { Promise } from 'sequelize';
 import {
   tripRequests, trips, userProfile, users
 } from '../database/models';
+import TripHelper from '../helpers/TripHelper';
 import CommonQueries from './CommonQueries';
 
 /**
@@ -103,7 +105,78 @@ class TripService {
       }],
     };
     const requests = await CommonQueries.findAll(trips, requestsUsersObject);
+
     return requests;
+  }
+
+  /**
+ * A user/Manager should be able to get all trips made in a particular time frame
+ * @static
+ * @param {object} req request object
+ * @memberof class TripService {
+ * @returns {object} data
+ */
+  static async getUserTrips(req) {
+    const { Op } = Sequelize;
+    const { from, to, user } = req.query;
+    const { id, roleId } = req.user;
+    let userTripsObject, requests;
+    if (roleId !== 6) {
+      userTripsObject = {
+        where: {
+          startDate: {
+            [Op.between]: [from, to],
+          }
+        },
+        include: [{
+          model: tripRequests,
+          attributes: ['statusId'],
+          where: {
+            userId: id,
+            tripTypeId: req.params.tripTypeId
+          },
+        }
+        ],
+      };
+      requests = await CommonQueries.findAll(trips, userTripsObject);
+      const tripsWithCityName = await requests.map(async (trip) => {
+        const { originId, destinationId } = trip;
+        const { origin, destination } = await TripHelper.getCityName({ originId, destinationId });
+        trip.originId = origin.city;
+        trip.destinationId = destination.city;
+        return trip;
+      });
+      return Promise.all(tripsWithCityName);
+    }
+    userTripsObject = {
+      where: { managerId: id, userId: user },
+      attributes: ['userId'],
+      include: [{
+        model: users,
+        attributes: ['firstName', 'lastName', 'email'],
+        as: 'user',
+        include: [{
+          model: tripRequests,
+          attributes: ['statusId'],
+          include: [
+            {
+              model: trips,
+              attributes: ['originId', 'destinationId', 'startDate', 'returnDate']
+
+            }
+          ]
+        }],
+      }]
+    };
+    requests = await CommonQueries.findAll(userProfile, userTripsObject);
+    const tripsWithCityName = await requests.map(async (trip) => {
+      const { originId, destinationId } = trip.dataValues.user.dataValues.tripRequests[0].dataValues.trips[0].dataValues;
+      const { origin, destination } = await TripHelper.getCityName({ originId, destinationId });
+      trip.dataValues.user.dataValues.tripRequests[0].dataValues.trips[0].dataValues.originId = origin.city;
+      trip.dataValues.user.dataValues.tripRequests[0].dataValues.trips[0].dataValues.destinationId = destination.city;
+      return trip;
+    });
+    return Promise.all(tripsWithCityName);
   }
 }
 

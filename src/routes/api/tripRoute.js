@@ -6,8 +6,11 @@ import Validate from '../../middlewares/Validate';
 import checkInputDataError from '../../middlewares/checkInputDataError';
 import Exists from '../../middlewares/Exists';
 import Conflict from '../../middlewares/Conflict';
+import CustomValidator from '../../middlewares/customValidator';
 import isUserVerified from '../../middlewares/isUserVerified';
-import { IsOwnerOfTrip, IsTripApproved, isManagerHasAccess, isManagerOwnsRequest } from '../../middlewares/findUsers';
+import {
+  IsOwnerOfTrip, IsTripApproved, isManagerHasAccess, isManagerOwnsRequest
+} from '../../middlewares/findUsers';
 import VerifyUserRoles from '../../middlewares/VerifyUserRoles';
 import operateAcceptOrReject from '../../middlewares/approveOrReject';
 
@@ -21,7 +24,7 @@ const {
 } = TripController;
 const { isTripRequestFound } = Conflict;
 const {
-  acceptOrRejectRequestsController
+  acceptOrRejectRequestsController, getTripStatsController
 } = TripController;
 
 
@@ -419,6 +422,66 @@ tripRouter
     checkInputDataError, Exists.isTripRequestExist,
     isManagerOwnsRequest, isManagerHasAccess,
     operateAcceptOrReject, acceptOrRejectRequestsController
+  );
+
+/**
+* @swagger
+*
+* /trips/stats/{tripTypeId}:
+*   get:
+*     summary: User/Manager get stats of trips made in X timeframe
+*     description: Trips stats
+*     tags:
+*       - Trip
+*     parameters:
+*      - name: token
+*        in: header
+*        required: true
+*        description: user token
+*        schema:
+*          $ref: '#/components/schemas/Token'
+*      - name: tripTypeId
+*        in: path
+*        required: true
+*        description: trip type id
+*        schema:
+*          $ref: '#/components/schemas/Id'
+*      - name: from
+*        in: query
+*        required: true
+*        description: start date
+*        schema:
+*          type: string
+*      - name: to
+*        in: query
+*        required: true
+*        description: end date
+*        schema:
+*          type: string
+*     responses:
+*       200:
+*         description: Trips stas retieved successfully
+*       400:
+*         description: Invalid input
+*       401:
+*         description: Unauthorized
+*       500:
+*         description: Internal server error
+*/
+/**
+* @swagger
+*  components:
+*    schemas:
+*      Id:
+*        type: integer
+*        example: 1
+*        minimum: 1
+*/
+tripRouter
+  .get(
+    '/stats/:tripTypeId',
+    verifyToken, Validate.tripStatsRules(),
+    checkInputDataError, ValidateTrip.dateValidation, CustomValidator.isUserOrManager, getTripStatsController
   );
 
 export default tripRouter;

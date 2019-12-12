@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 
 dotenv.config();
-
 const { TEST_PASSWORD_ENV } = process.env;
 const BookingsMockData = {
   userBooker: {
@@ -14,7 +13,6 @@ const BookingsMockData = {
     signupType: 'default',
     createdAt: new Date(),
     updatedAt: new Date()
-
   },
   userSetProfile: {
     gender: 'male',

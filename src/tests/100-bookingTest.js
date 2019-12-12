@@ -1,16 +1,14 @@
+
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import dotenv from 'dotenv';
 import app from '../index';
 import bookMockData from './mock/BookingsMockData';
 
-
 chai.use(chaiHttp);
 chai.should();
-
 dotenv.config();
 let userToken1;
-
 describe('Book an accomadition facility', () => {
   before((done) => {
     chai.request(app)
@@ -30,7 +28,6 @@ describe('Book an accomadition facility', () => {
         done();
       });
   });
-
   before((done) => {
     chai.request(app)
       .post('/api/v1/trips/oneway')
@@ -73,7 +70,6 @@ describe('Book an accomadition facility', () => {
         done(err);
       });
   });
-
   it('should be able to book an accomadition facility', (done) => {
     chai.request(app).post(`/api/v1/trips/${3}/booking`)
       .set('token', userToken1)

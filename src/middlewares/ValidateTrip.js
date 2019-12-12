@@ -67,6 +67,20 @@ export default class ValidateTrip {
   }
 
   /**
+ * check if fromDate is behind toDate
+ * @static
+ * @param {object} req response Object
+ * @param {object} res request Object
+ * @param {object} next next
+ * @memberof ValidateTrip
+ * @returns {object} data
+ */
+  static async dateValidation(req, res, next) {
+    const { from, to } = req.query;
+    return from < to ? next() : Response.errorMessage(req, res, 'Start date should be less that end date', 400);
+  }
+
+  /**
    * checkMultiCityForSimilarRequests
    * @static
    * @param {object} req response Object
