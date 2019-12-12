@@ -1,22 +1,11 @@
 import socketIO from 'socket.io';
-import eventEmitters from './eventEmitters';
+import { sendNotification } from './notificationConfig';
 
 const socketIo = (server) => {
   const io = socketIO(server);
-  io.use((sockets, next) => {
-    if (sockets) {
-      sockets.socket = sockets;
-      next();
-    } else {
-      next(new Error('Socket Error'));
-    }
-  });
-
-  io.on('connection', (socket) => {
-    eventEmitters.on('notification_message', (data) => {
-      socket.emit('approve_reject', data);
-    });
-  });
+  sendNotification(io, 'approve_reject_notification', 'approve_reject_client');
+  sendNotification(io, 'edit_trip_notification', 'edit_trip_client');
+  sendNotification(io, 'post_comment_notification', 'post_comment_client');
   return io;
 };
 

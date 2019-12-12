@@ -14,7 +14,13 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
   const socket = io('http://localhost:3000');
-  socket.on('approve_reject', (name) => {
+  socket.on('approve_reject_client', (name) => {
+    console.log(JSON.parse(name));
+  });
+  socket.on('edit_trip_client', (name) => {
+    console.log(JSON.parse(name));
+  });
+  socket.on('post_comment_client', (name) => {
     console.log(JSON.parse(name));
   });
 </script>

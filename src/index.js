@@ -12,6 +12,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.text());
 app.use(bodyParser.json({ type: 'application/json' }));
+app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.use('/', router);
 
@@ -22,7 +23,6 @@ app.use('*', (req, res) => res.status(404).send({
   message: 'Ooops route does not exist!'
 }));
 
-app.use('/static', express.static(path.join(__dirname, 'public')));
 
 const server = app.listen(port, () => {
   // eslint-disable-next-line no-console
