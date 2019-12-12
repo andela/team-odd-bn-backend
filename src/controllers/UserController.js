@@ -6,6 +6,7 @@ import emailHelper from '../helpers/EmailHelper';
 import AuthenticateToken from '../helpers/AuthenticateToken';
 import UserService from '../services/UserService';
 import UserHelper from '../helpers/UserHelper';
+import NotificationService from '../services/NotificationService';
 
 const { hashPassword } = HashPassword;
 const { getAUser } = UserService;
@@ -205,6 +206,19 @@ class UserController {
     const userData = await UserService.viewProfile(req);
 
     return Response.successMessage(req, res, 'User profile retrieved successfully', userData, HttpStatus.OK);
+  }
+
+  /**
+    * User can view his/her specific notification
+    * @description GET /api/v1/users/notification
+    * @static
+    * @param {object} req request object
+    * @param {object} res response object
+    * @returns {object} view notifications
+  */
+  static async viewNotification(req, res) {
+    const notification = await NotificationService.viewNotification(req);
+    return Response.successMessage(req, res, 'Available notification', notification, HttpStatus.OK);
   }
 }
 

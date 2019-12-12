@@ -256,6 +256,31 @@ class NotificationService {
       });
     });
   }
+
+  /**
+  * User can view his/her notification
+  * @description GET /api/v1/users/notification
+  * @static
+  * @param {object} req request object
+  * @returns {object} NotificationService
+  */
+  static async viewNotification(req) {
+    const { id } = req.user;
+    const findAllNotificationObject = {
+      where: {
+        userId: id
+      },
+      order: [
+        ['id', 'DESC'],
+      ],
+    };
+    const result = await CommonQueries.findAll(notifications, findAllNotificationObject);
+
+    if (result.length === 0) {
+      return 'no new notification';
+    }
+    return result;
+  }
 }
 
 export default NotificationService;

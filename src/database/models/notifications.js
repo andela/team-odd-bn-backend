@@ -3,7 +3,6 @@ module.exports = (sequelize, DataTypes) => {
   const notifications = sequelize.define('notifications', {
     userId: DataTypes.INTEGER,
     bookingId:DataTypes.INTEGER,
-    managerId: DataTypes.INTEGER,
     tripRequestId: DataTypes.INTEGER,
     message: DataTypes.TEXT,
     markRead: DataTypes.BOOLEAN
