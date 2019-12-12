@@ -311,5 +311,18 @@ class Validate {
       check('rooms.*.roomType', 'roomType should be a minimum of 2 letters').isString().isLength({ min: 2 })
     ];
   }
+
+  /**
+* Validate notification id
+* @static
+* @returns {object} errors
+*/
+  static validateNotificationIdRules() {
+    return [
+      check('notificationId', 'The notificationId should be an integer').isInt().optional(),
+      check('notificationIds', 'The notificationIds should be an array').isArray(),
+      check('notificationIds.*', 'The notification IDs should be integer').isInt()
+    ];
+  }
 }
 export default Validate;

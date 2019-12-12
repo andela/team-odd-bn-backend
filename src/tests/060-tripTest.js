@@ -79,15 +79,6 @@ describe('Request One way trip test', () => {
         done();
       });
   });
-  it('should not be able to create one way trip whose dates fall in same range', (done) => {
-    chai.request(app).post('/api/v1/trips/oneway').send(tripMockData.correctOneWayTripDateRange)
-      .set('token', token)
-      .end((err, res) => {
-        res.should.have.status(409);
-        res.body.should.be.an('object');
-        done();
-      });
-  });
   it('should not be able to create one way trip twice', (done) => {
     chai.request(app).post('/api/v1/trips/oneway').send(tripMockData.correctOneWayTrip)
       .set('token', token)

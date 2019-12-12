@@ -49,4 +49,12 @@ describe('Location test', () => {
         done();
       });
   });
+  it('should be able to get all locations', (done) => {
+    chai.request(app).get('/api/v1/location').set('token', token)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.an('object');
+        done();
+      });
+  });
 });

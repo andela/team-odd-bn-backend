@@ -23,5 +23,12 @@
   socket.on('post_comment_client', (name) => {
     console.log(JSON.parse(name));
   });
+  socket.on('booking_client', (name) => {
+    console.log(JSON.parse(name));
+  });
+  socket.on('trip_request_client', (name) => {
+    console.log(JSON.parse(name));
+  });
+ 
 </script>
 </html>

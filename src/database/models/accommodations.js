@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const accommodations = sequelize.define('accommodations', {
     userId: DataTypes.INTEGER,
     name: DataTypes.STRING,
+    userId: DataTypes.INTEGER,
     cityId: DataTypes.INTEGER,
     address: DataTypes.STRING,
     description: DataTypes.STRING,
@@ -25,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
         );
     accommodations.belongsTo(models.cities, {
       sourceKey: "cityId",
+      targetKey: "id",
+    });
+    accommodations.belongsTo(models.users, {
+      sourceKey: "userId",
       targetKey: "id",
     });
     accommodations.hasMany(models.ratings, {

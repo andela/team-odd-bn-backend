@@ -21,10 +21,17 @@ module.exports = (sequelize, DataTypes) => {
         {onUpdate: 'cascade'}
         );
     users.hasMany(models.notifications,
-      {targetKey: 'id'},
+      {sourceKey: 'id'},
+      {targetKey: 'userId'},
       {onDelete: 'cascade'},
       {onUpdate: 'cascade'}
       );
+      users.hasMany(models.accommodations,
+        {sourceKey:'id'},
+        {targetKey: 'userId'},
+        {onDelete: 'cascade'},
+        {onUpdate: 'cascade'}
+        );
   };
   return users;
 };
