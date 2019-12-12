@@ -95,11 +95,25 @@ describe('Authentication test', () => {
       done();
     });
   });
-  it('Test resend email route', (done) => {
-    chai.request(app).get('/api/v1/auth/1/resend-email').end((err, res) => {
+  it('Test resend email route succesful transaction', (done) => {
+    chai.request(app).post('/api/v1/auth/resend-email').send(mockData.resendEmailData).end((err, res) => {
       res.should.have.status(200);
-      res.body.should.be.an('object');
-      done();
+      expect(res.body.message).eql('An email has been sent to you.');
+      done(err);
+    });
+  });
+  it('Test resend email route with non-existent email', (done) => {
+    chai.request(app).post('/api/v1/auth/resend-email').send({ email: 'iii@gmail.com' }).end((err, res) => {
+      res.should.have.status(404);
+      expect(res.body.message).eql('iii@gmail.com does not exist');
+      done(err);
+    });
+  });
+  it('Test resend email route with invalid email', (done) => {
+    chai.request(app).post('/api/v1/auth/resend-email').send({ email: 'iiigmail.com' }).end((err, res) => {
+      res.should.have.status(400);
+      expect(res.body.message).eql(['email should be valid']);
+      done(err);
     });
   });
   it('should not be able to signup when empty password', (done) => {
@@ -109,13 +123,6 @@ describe('Authentication test', () => {
     } = mockData.users;
     chai.request(app).post('/api/v1/auth/signup').send(datas).end((err, res) => {
       res.should.have.status(400);
-      res.body.should.be.an('object');
-      done();
-    });
-  });
-  it('Test resend email route with invalid id', (done) => {
-    chai.request(app).get('/api/v1/auth/453/resend-email').end((err, res) => {
-      res.should.have.status(404);
       res.body.should.be.an('object');
       done();
     });

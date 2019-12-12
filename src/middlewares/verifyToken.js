@@ -9,8 +9,6 @@ import Response from '../helpers/Response';
   * next
  */
 const verifyToken = (req, res, next) => {
-
-
   const token = !req.headers.token ? req.params.token : req.headers.token;
   if (!token) {
     return Response.errorMessage(req, res, 'Please, insert the token', 401);

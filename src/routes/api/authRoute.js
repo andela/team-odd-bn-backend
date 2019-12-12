@@ -164,12 +164,14 @@ authRouter.post(
  *          description: 'Server Error'
  *
  */
-
-authRouter.get(
-  '/:id/resend-email',
+authRouter.post(
+  '/resend-email',
+  Validate.validateResendEmail(),
+  checkInputDataError,
   Conflict.isUsersConflict,
   resendEmailController
 );
+
 /**
  * @swagger
  *

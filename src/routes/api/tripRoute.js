@@ -9,11 +9,13 @@ import Conflict from '../../middlewares/Conflict';
 import CustomValidator from '../../middlewares/customValidator';
 import isUserVerified from '../../middlewares/isUserVerified';
 import {
+  tripAccess,
   IsOwnerOfTrip,
   IsTripApproved,
   isManagerHasAccess,
   isManagerOwnsRequest
 } from '../../middlewares/findUsers';
+
 import VerifyUserRoles from '../../middlewares/VerifyUserRoles';
 import operateAcceptOrReject from '../../middlewares/approveOrReject';
 
@@ -33,6 +35,34 @@ const {
   acceptOrRejectRequestsController, getTripStatsController
 } = TripController;
 
+/**
+ * @swagger
+ *
+ * /trips/most-traveled:
+ *    get:
+ *      summary: get info about most traveled destination
+ *      tags: [Trip]
+ *      parameters:
+ *        - name: token
+ *          in: header
+ *          description: enter token
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        "200":
+ *          description:  Most traveled destination info retrieved successfully
+ *        "401":
+ *          description: No token provided
+ */
+
+tripRouter
+  .get(
+    '/most-traveled',
+    verifyToken,
+    isUserVerified,
+    mostTraveledDestination
+  );
 
 /**
  * @swagger
@@ -291,6 +321,40 @@ tripRouter.get(
   TripController.getUserRequests
 );
 
+/**
+ * @swagger
+ *
+ * /trips/:id:
+ *    get:
+ *      summary: Available trip requests
+ * /trips/requests:
+ *    get:
+ *      summary: Available requests to manager for approval
+ *      tags: [Trip]
+ *      parameters:
+ *        - name: token
+ *          in: header
+ *          description: enter token
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        "200":
+ *          description: Trip requests fetched successfuly
+ *        "401":
+ *          description: No token provided
+ *        "404":
+ *          description: Trip requests are not found
+ */
+tripRouter.get(
+  '/:tripId',
+  verifyToken,
+  isUserVerified,
+  Validate.isTripIDInteger(),
+  checkInputDataError,
+  tripAccess,
+  TripController.getSingleTrip
+);
 
 /**
  * @swagger
@@ -491,33 +555,6 @@ tripRouter
     CustomValidator.isUserOrManager,
     getTripStatsController
   );
-/**
- * @swagger
- *
- * /trips/most-traveled:
- *    get:
- *      summary: get info about most traveled destination
- *      tags: [Trip]
- *      parameters:
- *        - name: token
- *          in: header
- *          description: enter token
- *          required: true
- *          schema:
- *            type: string
- *      responses:
- *        "200":
- *          description:  Most traveled destination info retrieved successfully
- *        "401":
- *          description: No token provided
- */
 
-tripRouter
-  .get(
-    '/most-traveled',
-    verifyToken,
-    isUserVerified,
-    mostTraveledDestination
-  );
 
 export default tripRouter;

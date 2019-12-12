@@ -39,7 +39,7 @@ class BookingController {
   static async getUserBookingRequests(req, res) {
     try {
       const result = await AccommodationService.getUserBookingReqService(req);
-      return result.length !== 0 ? Response.successMessage(req, res, 'User booking requests are retrieved successfully', result, 200)
+      return result.myBookingsresult.length !== 0 || result.managerWatchBookings.length !== 0 ? Response.successMessage(req, res, 'User booking requests are retrieved successfully', result, 200)
         : Response.errorMessage(req, res, 'No Booking request found', 404);
     } catch (error) {
       return Response.errorMessage(req, res, 'Server error', 500);
