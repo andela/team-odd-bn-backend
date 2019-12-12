@@ -5,7 +5,6 @@ import tripMockData from './mock/tripMockData';
 
 const { expect } = chai;
 
-
 let userToken, superToken, tripId, managerToken;
 describe('User/manager should be able to post/get comments', () => {
   before((done) => {
@@ -138,6 +137,65 @@ describe('User/manager should be able to post/get comments', () => {
       .end((err, res) => {
         expect(res.status).eql(400);
         expect(res.body.message[0]).eql('Trip Request Id shopuld be of integer type');
+        done(err);
+      });
+  });
+  it('Should not delete comment if token is invalid', (done) => {
+    chai.request(app)
+      .delete('/api/v1/trips/delete/1')
+      .set('token', mockData.invalidToken)
+      .send(mockData.userComment)
+      .end((err, res) => {
+        expect(res.status).eql(401);
+        expect(res.body.message.message).eql('jwt malformed');
+        done(err);
+      });
+  });
+
+  it('Should not delete comment if comment id is not an integer', (done) => {
+    chai.request(app)
+      .delete('/api/v1/trips/delete/dffghj')
+      .set('token', userToken)
+      .send(mockData.userComment)
+      .end((err, res) => {
+        expect(res.status).eql(400);
+        expect(res.body.message[0]).eql('Comment Id should be an integer');
+        done(err);
+      });
+  });
+
+  it('Should not delete comment if user does not own the comment', (done) => {
+    chai.request(app)
+      .delete('/api/v1/trips/delete/1')
+      .set('token', userToken)
+      .send(mockData.userComment)
+      .end((err, res) => {
+        expect(res.status).eql(403);
+        expect(res.body.message).eql('Ooops! You cannot delete this comment. You are not the owner');
+        done(err);
+      });
+  });
+
+
+  it('Should not delete comment if commentId does not exist', (done) => {
+    chai.request(app)
+      .delete('/api/v1/trips/delete/99999999')
+      .set('token', managerToken)
+      .end((err, res) => {
+        expect(res.status).eql(404);
+        expect(res.body.message).eql('Ooops! Comment does\'nt exist');
+        done(err);
+      });
+  });
+
+  it('Should delete comment successfully if the user owns the comment', (done) => {
+    chai.request(app)
+      .delete('/api/v1/trips/delete/1')
+      .set('token', managerToken)
+      .send(mockData.userComment)
+      .end((err, res) => {
+        expect(res.status).eql(200);
+        expect(res.body.message).eql('Your comment has been deleted successfully');
         done(err);
       });
   });

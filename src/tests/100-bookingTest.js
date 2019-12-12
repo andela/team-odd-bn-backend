@@ -90,8 +90,8 @@ describe('Book an accomadition facility', () => {
       .set('token', userToken1)
       .send(bookMockData.bookedAccommodation)
       .end((err, res) => {
-        expect(res.body.message).eql('Room booked by other client');
-        res.should.have.status(403);
+        expect(res.body.message).eql('The accommodation has already booked');
+        res.should.have.status(409);
         res.body.should.be.an('object');
         done(err);
       });

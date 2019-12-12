@@ -219,6 +219,18 @@ class Validate {
   }
 
   /**
+  * Validate input
+* Validate comment id to be deleted
+* @static
+* @returns {object} errors
+*/
+  static deleteCommentRules() {
+    return [
+      check('commentId', 'Comment Id should be an integer').isInt()
+    ];
+  }
+
+  /**
     * Validate reason for approval or rejection
     * @static
     * @returns {object} errors

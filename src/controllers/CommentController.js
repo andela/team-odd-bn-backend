@@ -1,7 +1,6 @@
 import Response from '../helpers/Response';
 import CommentService from '../services/CommentService';
 
-
 /**
  * @exports
  * @class CommentController
@@ -41,6 +40,27 @@ class CommentController {
         : Response.errorMessage(req, res, 'No comments for this trip yet!', 200);
     } catch (error) {
       return Response.errorMessage(req, res, 'Server error', 500);
+    }
+  }
+
+  /**
+* owner of comment can delete comment
+* @static
+* @description DELETE /api/trips/delete/:commentId
+* @param {object} req request object
+* @param {object} res response object
+* @memberof CommentController
+* @returns {object} data
+*/
+  static async deleteComment(req, res) {
+    try {
+      const result = await CommentService.deleteComment(req);
+      if (!result) {
+        return Response.errorMessage(req, res, 'This comment does not exist!', 404);
+      }
+      return Response.successMessage(req, res, 'Your comment has been deleted successfully', '', 200);
+    } catch (error) {
+      return Response.errorMessage(req, res, error.message, 500);
     }
   }
 }
