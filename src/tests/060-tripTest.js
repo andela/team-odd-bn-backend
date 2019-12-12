@@ -346,6 +346,24 @@ describe('Get requests', () => {
         done();
       });
   });
+  it('A user should be able to get a single trip', (done) => {
+    chai.request(app).get('/api/v1/trips/1')
+      .set('token', token)
+      .end((err, res) => {
+        res.should.have.status(200);
+        expect(res.body.message).eql('succesfully fetched one  trip');
+        done();
+      });
+  });
+  it('A user should receive 404 error when the trip id is not found in the database', (done) => {
+    chai.request(app).get('/api/v1/trips/nbfddbb')
+      .set('token', token)
+      .end((err, res) => {
+        res.should.have.status(400);
+        expect(res.body.message).eql(['ID should be an integer']);
+        done();
+      });
+  });
   it('A user should be not able to get his/her trip requests if not verified', (done) => {
     chai.request(app).get('/api/v1/trips/')
       .set('token', unverifiedUserToken)
@@ -552,7 +570,7 @@ describe('User stats for trips in X timeframe', () => {
       .set('token', managerToken)
       .end((err, res) => {
         expect(res.status).eql(500);
-        expect(res.body.message).eql('invalid input syntax for integer: "b"');
+        expect(res.body).to.have.property('message', 'invalid input syntax for integer: "b"');
         done(err);
       });
   });
@@ -564,7 +582,7 @@ describe('User or Manager get info on most traveled destination', () => {
       .send(mockData.usersSignin)
       .end((err, res) => {
         userToken = res.body.data;
-        done();
+        done(err);
       });
   });
 

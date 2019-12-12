@@ -5,7 +5,7 @@ import tripMockData from './mock/tripMockData';
 
 const { expect } = chai;
 
-let userToken, superToken, tripId, managerToken;
+let userToken, superToken, tripId, tripId2, managerToken;
 describe('User/manager should be able to post/get comments', () => {
   before((done) => {
     chai.request(app)
@@ -51,6 +51,16 @@ describe('User/manager should be able to post/get comments', () => {
       .send(tripMockData.oneWaytrip)
       .end((err, res) => {
         tripId = res.body.data.id;
+        done(err);
+      });
+  });
+  before((done) => {
+    chai.request(app)
+      .post('/api/v1/trips/oneway')
+      .set('token', userToken)
+      .send(tripMockData.oneWaytrip1)
+      .end((err, res) => {
+        tripId2 = res.body.data.id;
         done(err);
       });
   });
@@ -111,7 +121,7 @@ describe('User/manager should be able to post/get comments', () => {
   });
   it('It should get 0 comments of a specific trip', (done) => {
     chai.request(app)
-      .get(`/api/v1/trips/${tripId}/comments`)
+      .get(`/api/v1/trips/${tripId2}/comments`)
       .set('token', userToken)
       .end((err, res) => {
         expect(res.status).eql(200);

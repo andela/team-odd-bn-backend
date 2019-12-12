@@ -1,6 +1,6 @@
 import Response from '../helpers/Response';
 import {
-  users, tripRequests, userProfile, comments
+  users, tripRequests, userProfile, comments, trips
 } from '../database/models';
 import CommonQueries from '../services/CommonQueries';
 
@@ -47,6 +47,38 @@ export const commentAccess = async (req, res, next) => {
   const isManager = await CommonQueries.findOne(users, userObj);
 
   const isRequester = await CommonQueries.findOne(tripRequests, tripObj);
+
+  if (isManager || isRequester) {
+    return next();
+  }
+  return Response.errorMessage(req, res, 'You should be either a requester or a manager', 403);
+};
+export const tripAccess = async (req, res, next) => {
+  const { id } = req.user;
+  const { tripId } = req.params;
+  const userObj = {
+    where: { id: tripId },
+    include: [{
+      model: tripRequests,
+    }],
+  };
+  const tripObj = {
+    where: {
+      id: tripId,
+    },
+    include: [{
+      model: tripRequests,
+      where: { userId: id, }
+    }]
+  };
+  const tripUser = await CommonQueries.findOne(trips, userObj);
+  const { userId } = tripUser.dataValues.tripRequest.dataValues;
+  const qObject = {
+    where: { userId, managerId: id }
+  };
+  const isManager = await CommonQueries.findOne(userProfile, qObject);
+
+  const isRequester = await CommonQueries.findOne(trips, tripObj);
 
   if (isManager || isRequester) {
     return next();

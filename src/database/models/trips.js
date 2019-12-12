@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     returnDate: DataTypes.STRING
   }, {});
   trips.associate = function(models) {
+    trips.hasMany(models.booking, {sourceKey: 'id', targetKey:'tripId'},{ onDelete: 'cascade'},{onUpdate: 'CASCADE'});
     trips.belongsTo(models.tripRequests, {foreignKey: 'tripRequestId'},{ onDelete: 'cascade'},{onUpdate: 'CASCADE'});
     trips.belongsTo(models.cities, {foreignKey: 'originId'},{ onDelete: 'cascade'},{onUpdate: 'CASCADE'});
     trips.belongsTo(models.cities, {foreignKey: 'destinationId'},{ onDelete: 'cascade'},{onUpdate: 'CASCADE'});

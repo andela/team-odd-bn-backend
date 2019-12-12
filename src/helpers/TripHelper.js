@@ -2,7 +2,9 @@
 import Response from './Response';
 import emailHelper from './EmailHelper';
 import CommonQueries from '../services/CommonQueries';
-import { tripRequests, trips, cities } from '../database/models';
+import {
+  tripRequests, trips, cities, userProfile, users, accommodations
+} from '../database/models';
 import NotificationService from '../services/NotificationService';
 
 
@@ -30,8 +32,8 @@ class TripHelper {
       const newTrip = await tripRequests.create({
         userId, statusId: 1, tripTypeId
       });
-      itinerary.forEach(async (item) => {
-        await trips.create({
+      let createdTrips = itinerary.map(async (item) => {
+        const createdTrip = await trips.create({
           tripRequestId: newTrip.dataValues.id,
           originId: item.originId,
           destinationId: item.destinationId,
@@ -39,11 +41,21 @@ class TripHelper {
           startDate: item.startDate,
           returnDate: item.returnDate
         });
+        return createdTrip.dataValues;
       });
-
+      createdTrips = await Promise.all(createdTrips);
+      createdTrips = [].concat(...createdTrips);
+      newTrip.dataValues.trips = createdTrips;
       req.result = newTrip;
       await NotificationService.newTripRequestNotification(req);
-      emailHelper.approveEmailHelper(req, process.env.MANAGER_EMAIL);
+      const { id } = req.user;
+      const userInfo = await CommonQueries.findOne(userProfile,
+        { where: { userId: id }, raw: true });
+      const { managerId } = userInfo;
+      const managerInfo = await CommonQueries.findOne(users,
+        { where: { id: managerId }, raw: true });
+      req.user.managerInfo = managerInfo;
+      emailHelper.approveEmailHelper(req);
       return Response.successMessage(req, res, 'Trip requested successfully', newTrip, 201);
     } catch (err) {
       return Response.errorMessage(req, res, err.message, 500);
@@ -58,8 +70,16 @@ class TripHelper {
   * @returns {object} data
   */
   static async getCityName(tripTypeId) {
-    const { dataValues: origin } = await CommonQueries.findOne(cities, { where: { id: tripTypeId.originId }, attributes: ['city'] });
-    const { dataValues: destination } = await CommonQueries.findOne(cities, { where: { id: tripTypeId.destinationId }, attributes: ['city'] });
+    const { dataValues: origin } = await CommonQueries.findOne(cities,
+      {
+        where: { id: tripTypeId.originId },
+        attributes: ['city']
+      });
+    const { dataValues: destination } = await CommonQueries.findOne(cities,
+      {
+        where: { id: tripTypeId.destinationId },
+        attributes: ['city']
+      });
     return { origin, destination };
   }
 
@@ -84,7 +104,9 @@ class TripHelper {
         if (getDestinationIds[z] === getDestinationIds[i]) count++;
       }
       countHolder.push(count);
-      newArray.push({ counter: count, cityId: getDestinationIds[i] });
+      newArray.push({
+        counter: count, cityId: getDestinationIds[i], city: null, accommodationNo: null
+      });
     }
     const maxNumber = Math.max(...countHolder);
     const frequentCityId = newArray.filter((item) => {

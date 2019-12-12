@@ -7,11 +7,11 @@ import Validate from '../../middlewares/Validate';
 import checkInputDataError from '../../middlewares/checkInputDataError';
 import ValidateAccommodation from '../../middlewares/ValidateAccommodation';
 import isUserVerified from '../../middlewares/isUserVerified';
-import { isManagerHasAccess } from '../../middlewares/findUsers';
 
 const { checkIfCheckInDateIsAsCheckOutDate } = ValidateAccommodation;
 const bookingRouter = express.Router();
 const { isTripFound, isRoomBooked } = Conflict;
+
 
 /**
  * @swagger
@@ -67,9 +67,18 @@ const { isTripFound, isRoomBooked } = Conflict;
  *           checkInDate: 2019-11-19
  *           checkOutDate: 2019-11-19 11:11:41.668+02
  */
-
-
-bookingRouter.post('/:tripId/booking', verifyToken, isUserVerified, isTripFound, Validate.bookAccommodationRules(), checkInputDataError, checkIfCheckInDateIsAsCheckOutDate, isRoomBooked, AccommodationMiddleware.isAccommodationAvail, BookingController.bookAccommodation);
+bookingRouter.post(
+  '/:tripId',
+  verifyToken,
+  isUserVerified,
+  isTripFound,
+  Validate.bookAccommodationRules(),
+  checkInputDataError,
+  checkIfCheckInDateIsAsCheckOutDate,
+  isRoomBooked,
+  AccommodationMiddleware.isAccommodationAvail,
+  BookingController.bookAccommodation
+);
 
 /**
  * @swagger
@@ -88,8 +97,12 @@ bookingRouter.post('/:tripId/booking', verifyToken, isUserVerified, isTripFound,
  *        "500":
  *          description: Server Error
  */
-
-bookingRouter.get('/booking', verifyToken, isUserVerified, isManagerHasAccess, BookingController.getUserBookingRequests);
+bookingRouter.get(
+  '/',
+  verifyToken,
+  isUserVerified,
+  BookingController.getUserBookingRequests
+);
 /**
  * @swagger
  *
@@ -114,8 +127,11 @@ bookingRouter.get('/booking', verifyToken, isUserVerified, isManagerHasAccess, B
  *        "500":
  *          description: Server Error
  */
-
-bookingRouter.get('/booking/:userId', verifyToken, isUserVerified, isManagerHasAccess, BookingController.getUserBookingRequests);
-
+bookingRouter.get(
+  '/:bookingId',
+  verifyToken,
+  isUserVerified,
+  BookingController.getUserBookingRequests
+);
 
 export default bookingRouter;

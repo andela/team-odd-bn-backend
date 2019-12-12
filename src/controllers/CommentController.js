@@ -38,7 +38,7 @@ class CommentController {
   static async getComments(req, res) {
     try {
       const tripComments = await CommentService.getComments(req);
-      return tripComments ? Response.successMessage(req, res, 'All comments about this trip request have been retrieved successfuly!', tripComments, 200)
+      return tripComments[0] ? Response.successMessage(req, res, 'All comments about this trip request have been retrieved successfuly!', tripComments, 200)
         : Response.errorMessage(req, res, 'No comments for this trip yet!', 200);
     } catch (error) {
       return Response.errorMessage(req, res, 'Server error', 500);

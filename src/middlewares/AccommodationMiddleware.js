@@ -40,7 +40,7 @@ class AccommodationMiddleware {
       isAccommodationExist, allAvailRoom, isRoomBooked
     } = serviceQueries;
 
-    const isOwnerOfTheTrip = await BookingService.isOwnerOftheTripService(req);
+    const isOwnerOfTheTrip = await BookingService.isOwnerOftheTripService(req, res);
 
     if (isOwnerOfTheTrip.length === 0) {
       return Response.errorMessage(req, res, 'Sorry, You are not the owner of this trip request', 403);
@@ -53,7 +53,9 @@ class AccommodationMiddleware {
     }
     let isBookable;
     isRoomBooked.forEach(x => {
-      if (new Date(x.checkOutDate) > new Date(checkInDate)) { isBookable = true; }
+      if (
+        new Date(x.checkOutDate) > new Date(checkInDate)
+        && x.id === roomId) { isBookable = true; }
     });
 
     if (isBookable) {

@@ -144,6 +144,39 @@ class Validate {
   }
 
   /**
+  * Validate input
+  * @static
+  * @returns {object} errors
+  */
+  static isTripIDInteger() {
+    return [
+      check('tripId', 'ID should be an integer').isInt(),
+    ];
+  }
+
+  /**
+  * Validate input
+  * @static
+  * @returns {object} errors
+  */
+  static isAccommodationIDInteger() {
+    return [
+      check('accommodationId', 'ID should be an integer').isInt(),
+    ];
+  }
+
+  /**
+  * Validate input
+  * @static
+  * @returns {object} errors
+  */
+  static validateResendEmail() {
+    return [
+      check('email', 'email should be valid').trim().isEmail(),
+    ];
+  }
+
+  /**
     * Validate accommodation params
     * @static
     * @returns {object} errors

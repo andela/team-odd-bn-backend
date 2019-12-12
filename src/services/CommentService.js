@@ -39,7 +39,7 @@ class CommentService {
   static async getComments(req) {
     const { tripRequestId } = req.params;
     const queryObj = {
-      attributes: ['comment', 'updatedAt'],
+      attributes: ['id', 'comment', 'updatedAt'],
       include: [{
         model: users,
         attributes: ['firstName', 'lastName']
@@ -48,10 +48,9 @@ class CommentService {
         tripRequestId,
       }
     };
-
     const tripComments = await CommonQueries.findAll(comments, queryObj);
 
-    return tripComments[0];
+    return tripComments;
   }
 
 
