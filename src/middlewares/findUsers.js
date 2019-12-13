@@ -55,16 +55,16 @@ export const commentAccess = async (req, res, next) => {
 };
 export const tripAccess = async (req, res, next) => {
   const { id } = req.user;
-  const { tripId } = req.params;
+  const { tripRequestId } = req.params;
   const userObj = {
-    where: { id: tripId },
+    where: { id: tripRequestId },
     include: [{
       model: tripRequests,
     }],
   };
   const tripObj = {
     where: {
-      id: tripId,
+      id: tripRequestId,
     },
     include: [{
       model: tripRequests,

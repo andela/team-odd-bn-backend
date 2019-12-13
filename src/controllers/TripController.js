@@ -4,7 +4,7 @@ import Response from '../helpers/Response';
 import TripHelper from '../helpers/TripHelper';
 import NotificationService from '../services/NotificationService';
 
-const { availtripRequestsToManager, getTripTypes } = TripService;
+const { availtripRequestsToManager, getUserRequests, getTripTypes } = TripService;
 const { createNewTrip } = TripHelper;
 /**
  * @export
@@ -59,12 +59,7 @@ class TripController {
    */
   static async getUserRequests(req, res) {
     try {
-      const requests = await trips.findAll({
-        include: [{
-          model: tripRequests,
-          where: { userId: req.user.id }
-        }],
-      });
+      const requests = await getUserRequests(req);
       return Response.successMessage(req, res, 'succesfully fetched all  user\'s requests', requests, 200);
     } catch (err) {
       return Response.errorMessage(req, res, err.message, 500);
@@ -81,8 +76,8 @@ class TripController {
    */
   static async getSingleTrip(req, res) {
     try {
-      const { tripId } = req.params;
-      const result = await TripService.getSingleTrip(tripId);
+      const { tripRequestId } = req.params;
+      const result = await TripService.getSingleTrip(tripRequestId);
       return Response.successMessage(req, res, 'succesfully fetched one  trip', result, 200);
     } catch (err) {
       return Response.errorMessage(req, res, err.message, 500);

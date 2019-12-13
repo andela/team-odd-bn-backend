@@ -150,7 +150,7 @@ class Validate {
   */
   static isTripIDInteger() {
     return [
-      check('tripId', 'ID should be an integer').isInt(),
+      check('tripRequestId', 'ID should be an integer').isInt(),
     ];
   }
 
