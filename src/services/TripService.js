@@ -1,6 +1,6 @@
 import Sequelize, { Promise } from 'sequelize';
 import {
-  tripRequests, trips, userProfile, users, accommodations, cities
+  tripRequests, trips, userProfile, users, accommodations, cities, tripTypes
 } from '../database/models';
 import TripHelper from '../helpers/TripHelper';
 import CommonQueries from './CommonQueries';
@@ -232,6 +232,22 @@ class TripService {
     const { origin, destination } = await TripHelper.getCityName({ originId, destinationId });
     result.city = { origin, destination };
     return result;
+  }
+
+  /**
+   * get all triptypes
+   * @static
+   * @param {object} req request object
+   * @memberof class TripService
+   * @returns {object} data
+   */
+  static async getTripTypes() {
+    const queryObject = {
+      attributes: ['id', 'tripType']
+    };
+    const allTriptypes = await CommonQueries.findAll(tripTypes, queryObject);
+
+    return allTriptypes;
   }
 }
 

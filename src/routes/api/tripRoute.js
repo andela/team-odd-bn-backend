@@ -26,7 +26,8 @@ const {
   OneWayTripController,
   editTrip,
   getRequestsByManager,
-  mostTraveledDestination
+  mostTraveledDestination,
+  getAllTripTypes
 } = TripController;
 const {
   isTripRequestFound
@@ -63,7 +64,13 @@ tripRouter
     isUserVerified,
     mostTraveledDestination
   );
-
+tripRouter
+  .get(
+    '/triptypes',
+    verifyToken,
+    isUserVerified,
+    getAllTripTypes
+  );
 /**
  * @swagger
  *
