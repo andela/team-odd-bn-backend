@@ -32,26 +32,37 @@ const BookingsMockData = {
   },
 
   bookAccommodation: {
+    roomType: '2 bed 1 living room',
+    roomId: 1,
+    checkInDate: '2030-11-30',
+    checkOutDate: '2030-12-30'
+  },
+  invalidRoomType: {
+    roomType: '33 bed 1 living room',
     roomId: 1,
     checkInDate: '2030-11-30',
     checkOutDate: '2030-12-30'
   },
   bookedAccommodation: {
+    roomType: '2 bed 1 living room',
     roomId: 1,
     checkInDate: '2030-11-30',
     checkOutDate: '2030-12-30'
   },
   someTookAccommodation: {
+    roomType: '2 bed 1 living room',
     roomId: 1,
     checkInDate: '2030-12-10',
     checkOutDate: '2030-12-30'
   },
   checkInDateGreaterThanCheckOutDate: {
+    roomType: '2 bed 1 living room',
     roomId: 1,
     checkInDate: '2030-12-15',
     checkOutDate: '2030-12-10'
   },
   checkInDateEqualsToCheckOutDate: {
+    roomType: '2 bed 1 living room',
     roomId: 1,
     checkInDate: '2030-12-15',
     checkOutDate: '2030-12-15'

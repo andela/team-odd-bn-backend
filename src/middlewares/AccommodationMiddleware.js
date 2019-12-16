@@ -48,6 +48,7 @@ class AccommodationMiddleware {
 
     const allAvailRoomId = allAvailRoom.map(i => i.id);
     const isRoomExist = allAvailRoomId.includes(parseInt(roomId, 10));
+
     if (!isRoomExist) {
       return Response.errorMessage(req, res, 'Room is not available', 404);
     }

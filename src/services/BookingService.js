@@ -32,23 +32,29 @@ class BookingService {
         where: { cityId: destinationId }, raw: true
       };
       const isAccommodationExist = await CommonQueries.findAll(accommodations, accommodationObj);
-      const availlableRooms = isAccommodationExist.map(async (accommodation) => {
-        const roomObj = {
-          where: { accommodationId: accommodation.id },
+      const allAccommationAvail = isAccommodationExist.map(async (i) => {
+        const roomTypeObj = {
+          where: { accommodationId: i.id, roomType: req.body.roomType },
           raw: true
         };
-        const allAvailRoom = await CommonQueries.findAll(rooms, roomObj);
-        return allAvailRoom;
+        const checkRoomType = await CommonQueries.findOne(rooms, roomTypeObj);
+        return checkRoomType;
       });
-      const arrays = await Promise.all(availlableRooms);
-      let availlableRoomsArray = [].concat(...arrays);
-      availlableRoomsArray = availlableRoomsArray.filter(Boolean);
-      const allAvailRoom = availlableRoomsArray;
+
+      const getActualData = await Promise.all(allAccommationAvail);
+      let allAvailRoom = [].concat(...getActualData);
+      allAvailRoom = allAvailRoom.filter((Boolean));
+
+      if (allAvailRoom.length === 0) {
+        return Response.errorMessage(req, res, 'Room Type not found', 404);
+      }
+
       const allAvailRoomId = allAvailRoom.map(i => i.id);
       const bookedRoomObj = {
         where: { roomId: allAvailRoomId }, raw: true
       };
       const isRoomBooked = await CommonQueries.findAll(booking, bookedRoomObj);
+
       return {
         allAvailRoom,
         isAccommodationExist,

@@ -566,11 +566,11 @@ describe('User stats for trips in X timeframe', () => {
   });
   it('should not retieve data if user id is invalid', (done) => {
     chai.request(app)
-      .get('/api/v1/trips/stats/2?from=2020-01-01&to=2025-12-30&user=b')
+      .get('/api/v1/trips/stats/2?from=2020-01-01&to=2025-12-30&user=1f')
       .set('token', managerToken)
       .end((err, res) => {
-        expect(res.status).eql(500);
-        expect(res.body).to.have.property('message', 'invalid input syntax for integer: "b"');
+        expect(res.status).eql(400);
+        expect(res.body.message).eql(['user should be identified by id of integer type']);
         done(err);
       });
   });

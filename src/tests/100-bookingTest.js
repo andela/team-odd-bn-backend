@@ -80,6 +80,17 @@ describe('Book an accomadition facility', () => {
         done(err);
       });
   });
+  it('should not be able to book an accomadition facility when no room type found', (done) => {
+    chai.request(app).post('/api/v1/bookings/7')
+      .set('token', userToken1)
+      .send(bookMockData.invalidRoomType)
+      .end((err, res) => {
+        expect(res.body.message).eql('Room Type not found');
+        res.should.have.status(404);
+        res.body.should.be.an('object');
+        done(err);
+      });
+  });
   it('should be able to book an accomadition facility', (done) => {
     chai.request(app).post('/api/v1/bookings/7')
       .set('token', userToken1)
