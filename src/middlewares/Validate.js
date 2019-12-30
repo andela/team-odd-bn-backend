@@ -358,5 +358,19 @@ class Validate {
       check('notificationIds.*', 'The notification IDs should be integer').isInt()
     ];
   }
+
+  /**
+  * Validate Social login info
+  * @static
+  * @returns {object} errors
+  */
+  static validateSocialLogin() {
+    return [
+      check('id', 'User Id is required and number').isInt(),
+      check('email', 'Email is required and string').isString(),
+      check('lastName', 'Last name is required and string').isString(),
+      check('firstName', 'First name is required and string').isString()
+    ];
+  }
 }
 export default Validate;

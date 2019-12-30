@@ -136,7 +136,7 @@ class UserController {
     const { email } = req.body;
     const user = await getAUser({ email });
     if (!user) {
-      return Response.errorMessage(req, res, 'User not found', 400);
+      return Response.errorMessage(req, res, 'User with this email does not exist', 400);
     }
     emailHelper.resetPasswordEmailHelper(req, user);
     return Response.successMessage(req, res, 'A reset link has been sent to your email. Please check your email!', user.email, 200);

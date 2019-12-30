@@ -1,9 +1,9 @@
-
-import HttpStatus from 'http-status-codes';
+import dotenv from 'dotenv';
 import Response from './Response';
 import { users } from '../database/models';
 import AuthenticateToken from './AuthenticateToken';
 
+dotenv.config();
 
 /**
  * @export
@@ -46,7 +46,7 @@ class UserHelper {
         email, firstName, lastName, signupType, isVerified
       } = data;
 
-      users.findOrCreate({
+      const socialUser = await users.findOrCreate({
         where: { email },
         defaults: {
           firstName,
@@ -57,7 +57,8 @@ class UserHelper {
           isVerified
         }
       });
-      done(null, data);
+
+      done(null, socialUser[0].dataValues);
     } catch (error) {
       done(error, false, error.message);
     }
@@ -78,7 +79,8 @@ class UserHelper {
     const data = {
       id, email, firstName, lastName, signupType, isVerified, token
     };
-    return Response.successMessage(req, res, successSocialSignUp, data, HttpStatus.OK);
+    const socialInfo = JSON.stringify({ signupType, token });
+    return res.redirect(`${process.env.REDIRECT_SOCIAL_AUTH_DATA_URL}/?info=${socialInfo}`);
   }
 }
 

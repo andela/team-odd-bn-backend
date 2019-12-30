@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import AuthenticateToken from './AuthenticateToken';
 
 dotenv.config();
-const { EMAIL_ADDRESS } = process.env;
+const { EMAIL_ADDRESS, RESET_PASSWORD_FRONTEND_URL, VERIFY_EMAIL_FRONTEND_URL } = process.env;
 
 /**
  * @export
@@ -54,7 +54,7 @@ class EmailTemplates {
           <p style="">Barefoot Nomad needs to verify your email address associated with the account created.</p>
           <p style="">To verify your email address, click on the link below.</p>
           <a 
-          href=${appUrl} 
+          href=${VERIFY_EMAIL_FRONTEND_URL}?verifiedToken=${token}
           style='display:block; 
           background-color:#00B9F2; 
           width:200px; 
@@ -102,7 +102,7 @@ class EmailTemplates {
       from: EMAIL_ADDRESS,
       subject: 'Reset Password Link',
       html: `<h4>Hi, ${user.firstName},</h4>
-    <p>You requested for a password reset, kindly use this <a href="${appUrl}/api/v1/auth/reset-password/${token}">link</a> to reset your password</p>`
+      You requested for a password reset, kindly use2 this <a href=${RESET_PASSWORD_FRONTEND_URL}?resetToken=${token}>link</a> to reset your password</p>`
     };
   }
 

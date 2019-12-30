@@ -1,11 +1,12 @@
 import chai from 'chai';
+import jwt from 'jsonwebtoken';
 import app from '../index';
 import mockData from './mock/mockData';
 import accommodationMockData from './mock/accommodationMockData';
 
 const { expect } = chai;
 const fakeToken = 'hhhhbjhvjhfgjfjfjfjfgjhvjjgjhjhjgjgj';
-let TripAdminToken, superAdminToken, TripAdminSignupToken, unVerifiedTripAdminToken, userToken;
+let TripAdminToken, superAdminToken, TripAdminSignupToken, unVerifiedTripAdminToken, userToken, decode;
 const {
   users,
   usersSignin,
@@ -203,11 +204,12 @@ describe('Trip Administartor should be able to create accomodation facilities', 
       .send(users)
       .end((err, res) => {
         TripAdminSignupToken = res.body.data;
+        decode = jwt.verify(TripAdminSignupToken, process.env.JWT_KEY);
         done(err);
       });
   });
   before((done) => {
-    chai.request(app).get(`/api/v1/auth/verify-email/13/${TripAdminSignupToken}`).end((err, res) => {
+    chai.request(app).get(`/api/v1/auth/verify-email/${decode.id}/${TripAdminSignupToken}`).end((err, res) => {
       res.should.have.status(200);
       res.body.should.be.an('object');
       done();
