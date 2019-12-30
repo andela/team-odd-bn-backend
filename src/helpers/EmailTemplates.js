@@ -4,6 +4,7 @@ import AuthenticateToken from './AuthenticateToken';
 dotenv.config();
 const { EMAIL_ADDRESS, RESET_PASSWORD_FRONTEND_URL, VERIFY_EMAIL_FRONTEND_URL } = process.env;
 
+
 /**
  * @export
  * @class EmailTemplates
