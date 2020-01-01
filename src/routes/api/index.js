@@ -21,7 +21,7 @@ router.use('/users', roleRoute);
 router.use('/location', locationRoute);
 router.use('/users', userRoute);
 router.use('/accommodations', accommodationRoute);
-router.use('/trips', bookingRouter);
+router.use('/bookings', bookingRouter);
 router.use('/notifications', notificationRoute);
 
 router.use('/search', searchRouter);

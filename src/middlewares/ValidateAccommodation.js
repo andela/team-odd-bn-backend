@@ -15,7 +15,6 @@ export default class ValidateAccommodation {
    */
   static async checkIfCheckInDateIsAsCheckOutDate(req, res, next) {
     const { checkInDate, checkOutDate } = req.body;
-
     const checkInDateCheckOutDate = {};
     const checkInDates = new Date(checkInDate);
     const checkOutDates = new Date(checkOutDate);

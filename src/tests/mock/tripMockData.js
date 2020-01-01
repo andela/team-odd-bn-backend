@@ -152,6 +152,13 @@ const tripMockData = {
     returnDate: '2030-01-10',
     reason: 'Some other good reasons'
   },
+  oneWaytrip1: {
+    originId: 2,
+    destinationId: 1,
+    startDate: '2040-11-20',
+    returnDate: '2050-01-10',
+    reason: 'Some other good reasons'
+  },
   multiCityData: {
     itinerary: [
       {

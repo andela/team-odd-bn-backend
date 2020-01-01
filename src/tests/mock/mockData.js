@@ -6,6 +6,9 @@ dotenv.config();
 const { TEST_PASSWORD_ENV } = process.env;
 
 const mockData = {
+  resendEmailData: {
+    email: 'jamson@gmail.com'
+  },
   users: {
     firstName: 'Yannick',
     lastName: 'Jamson',

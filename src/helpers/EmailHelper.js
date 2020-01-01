@@ -31,11 +31,10 @@ class EmailHelper {
    * rsend email to the manager
    * @static
    * @param {Object} req the template to use
-   * @param {Object} email the template to use
    * @returns {Object} sendEmail
    */
-  static approveEmailHelper(req, email) {
-    transporter.sendMail(EmailTemplates.approveEmailTemplate(req, email));
+  static approveEmailHelper(req) {
+    transporter.sendMail(EmailTemplates.approveEmailTemplate(req));
   }
 
   /**

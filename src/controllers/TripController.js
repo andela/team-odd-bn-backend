@@ -72,6 +72,24 @@ class TripController {
   }
 
   /**
+   * fetch a single trip
+   * @static
+   * @param {object} req request object
+   * @param {object} res response object
+   * @memberof TripController
+   * @returns {object} data
+   */
+  static async getSingleTrip(req, res) {
+    try {
+      const { tripId } = req.params;
+      const result = await TripService.getSingleTrip(tripId);
+      return Response.successMessage(req, res, 'succesfully fetched one  trip', result, 200);
+    } catch (err) {
+      return Response.errorMessage(req, res, err.message, 500);
+    }
+  }
+
+  /**
    * Manager should be able to accept a trip request
    * @static
    * @param {object} req request object

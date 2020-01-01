@@ -13,7 +13,7 @@
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  const socket = io('http://localhost:3000');
+  const socket = io('https://team-odd-bn-backend-staging.herokuapp.com/');
   socket.on('approve_reject_client', (name) => {
     console.log(JSON.parse(name));
   });
@@ -29,6 +29,7 @@
   socket.on('trip_request_client', (name) => {
     console.log(JSON.parse(name));
   });
- 
+
 </script>
+
 </html>

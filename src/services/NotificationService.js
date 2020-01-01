@@ -151,7 +151,7 @@ class NotificationService {
     notificationEvents('post_comment_notification', { message, data });
     NotificationService.saveNotification({
       userId,
-      tripRequestId,
+      tripRequestId: params.tripRequestId,
       message
     });
     notificationEvents('approve_reject_notification', { message, data });
@@ -222,18 +222,6 @@ class NotificationService {
     data.travelAdminId = accommodation[0]['room.accommodation.userId'];
 
     notificationEvents('booking_notification', { data });
-  }
-
-  /**
-   * generate notification
-   * @static
-   * @param {object} dataNotification pass object to save in Table
-   * @memberof NotificationService
-   * @returns {object} data
-   */
-  static async saveNotification(dataNotification) {
-    const newNotification = await CommonQueries.create(notifications, dataNotification);
-    return newNotification;
   }
 
   /**

@@ -3,17 +3,16 @@ module.exports = (sequelize, DataTypes) => {
   const booking = sequelize.define('booking', {
     tripId: DataTypes.INTEGER,
     roomId: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER,
     checkInDate: DataTypes.DATE,
     checkOutDate: DataTypes.DATE
   }, {});
   booking.associate = function(models) {
     booking.belongsTo(models.trips, {
-      foreignKey: "tripId",
+      sourceKey: "tripId",
       targetKey: "id",
     });
     booking.belongsTo(models.rooms, {
-      foreignKey: "roomId",
+      sourceKey: "roomId",
       targetKey: "id",
     });
   };

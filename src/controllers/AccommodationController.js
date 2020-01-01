@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import Response from '../helpers/Response';
 import AccommodationService from '../services/AccommodationService';
 
-const { createNewRating, createAccomodation } = AccommodationService;
+const { createNewRating, createAccomodation, getAccommodations } = AccommodationService;
 dotenv.config();
 /**
  * @exports
@@ -67,6 +67,23 @@ class AccommodationController {
     try {
       const newAccommodation = await createAccomodation(req);
       return Response.successMessage(req, res, 'Accommodation successfully posted', newAccommodation, 201);
+    } catch (err) {
+      return Response.errorMessage(req, res, 'Server Error', 500);
+    }
+  }
+
+  /**
+  * Travel Admin can be able to create accommodation facility
+   * @static
+   * @param {object} req  request object
+   * @param {object} res response object
+   * @memberof AccommodationController
+   * @returns {object} data
+   */
+  static async getAccommodations(req, res) {
+    try {
+      const accommodations = await getAccommodations(req);
+      return Response.successMessage(req, res, 'Accommodation(s) successfully fetched', accommodations, 200);
     } catch (err) {
       return Response.errorMessage(req, res, 'Server Error', 500);
     }

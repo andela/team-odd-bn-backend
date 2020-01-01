@@ -31,7 +31,7 @@ class Conflict {
     * @returns {object} data
     */
   static isUsersConflict(req, res, next) {
-    return DataEngine.findOne(req, res, next, users, { id: req.params.id }, 'The user already exist');
+    return DataEngine.findOne(req, res, next, users, { email: req.body.email }, `${req.body.email} does not exist`);
   }
 
   /**
@@ -87,7 +87,7 @@ class Conflict {
     );
   }
 
-/**
+  /**
 * Check if accomodation already exist
 * @static
 * @param {object} req request object

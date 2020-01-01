@@ -273,6 +273,36 @@ describe('Trip Administartor should be able to create accomodation facilities', 
         done(err);
       });
   });
+  it('It should get  accomodation facilities successfully', (done) => {
+    chai.request(app)
+      .get('/api/v1/accommodations/')
+      .set('token', TripAdminToken)
+      .end((err, res) => {
+        expect(res.status).eql(200);
+        expect(res.body.message).eql('Accommodation(s) successfully fetched');
+        done(err);
+      });
+  });
+  it('It should get  accomodation facility successfully', (done) => {
+    chai.request(app)
+      .get('/api/v1/accommodations/7')
+      .set('token', TripAdminToken)
+      .end((err, res) => {
+        expect(res.status).eql(200);
+        expect(res.body.message).eql('Accommodation(s) successfully fetched');
+        done(err);
+      });
+  });
+  it('It should not get an accomodation facility successfully when the id is a string', (done) => {
+    chai.request(app)
+      .get('/api/v1/accommodations/jhdhf')
+      .set('token', TripAdminToken)
+      .end((err, res) => {
+        expect(res.status).eql(400);
+        expect(res.body.message).eql(['ID should be an integer']);
+        done(err);
+      });
+  });
   it('It should not post an a ccomodation facility twice', (done) => {
     chai.request(app)
       .post('/api/v1/accommodations/')

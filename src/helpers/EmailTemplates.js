@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import AuthenticateToken from './AuthenticateToken';
 
 dotenv.config();
-const { EMAIL_ADDRESS, MANAGER } = process.env;
+const { EMAIL_ADDRESS } = process.env;
 
 /**
  * @export
@@ -129,12 +129,12 @@ class EmailTemplates {
    * @param {Object} email the template to use
    * @returns {Object} sendEmail
    */
-  static approveEmailTemplate(req, email) {
+  static approveEmailTemplate(req) {
     return {
-      to: email,
+      to: req.user.managerInfo.email,
       from: EMAIL_ADDRESS,
       subject: 'Trip request',
-      html: `<h4>Hi, ${MANAGER},</h4>
+      html: `<h4>Hi, ${req.user.managerInfo.firstName},</h4>
      <p>${req.user.firstName} has made a multi trip request, the reason for the request is ${req.body.reason}</p>`
     };
   }

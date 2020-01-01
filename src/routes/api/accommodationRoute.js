@@ -16,7 +16,7 @@ const { checkforDuplicateRating } = AccomodationMiddleware;
 const { isAccommodationExist } = Exists;
 const { isImage, isCoordinates } = customValidator;
 const { checkForDuplicateAccommodation } = Conflict;
-const { createNewAccomodation } = AccommodationController;
+const { createNewAccomodation, getAccommodations } = AccommodationController;
 
 /**
  * @swagger
@@ -268,5 +268,81 @@ accommodationRoute
     checkForDuplicateAccommodation,
     createNewAccomodation
   );
-
+/**
+ * @swagger
+ *
+ * /accommodations/:
+ *    get:
+ *      summary: users can be able to get all accommodation facilities
+ *      tags: [Accomodations]
+ *      parameters:
+ *        - name: token
+ *          in: header
+ *          required: true
+ *          description:  Token
+ *          schema:
+ *              $ref: '#/components/schemas/Token'
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/accomodations'
+ *      responses:
+ *        "201":
+ *          description: ok
+ *        "400":
+ *          description: Input error
+ *        "401":
+ *          description: Unauthorized
+ *        "403":
+ *          description: Forbiden
+ *
+ */
+accommodationRoute
+  .get(
+    '/',
+    verifyToken,
+    isUserVerified,
+    getAccommodations
+  );
+/**
+ * @swagger
+ *
+ * /accommodations/:
+ *    get:
+ *      summary: users can get a single accommodation facility
+ *      tags: [Accomodations]
+ *      parameters:
+ *        - name: token
+ *          in: header
+ *          required: true
+ *          description: Token
+ *          schema:
+ *              $ref: '#/components/schemas/Token'
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/accomodations'
+ *      responses:
+ *        "201":
+ *          description: ok
+ *        "400":
+ *          description: Input error
+ *        "401":
+ *          description: Unauthorized
+ *        "403":
+ *          description: Forbiden
+ */
+accommodationRoute
+  .get(
+    '/:accommodationId',
+    verifyToken,
+    isUserVerified,
+    Validate.isAccommodationIDInteger(),
+    checkInputDataError,
+    getAccommodations
+  );
 export default accommodationRoute;

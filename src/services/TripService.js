@@ -4,7 +4,6 @@ import {
 } from '../database/models';
 import TripHelper from '../helpers/TripHelper';
 import CommonQueries from './CommonQueries';
-import mostTraveledDestination from '../helpers/TripHelper';
 
 /**
  * @export
@@ -171,10 +170,24 @@ class TripService {
     };
     requests = await CommonQueries.findAll(userProfile, userTripsObject);
     const tripsWithCityName = await requests.map(async (trip) => {
-      const { originId, destinationId } = trip.dataValues.user.dataValues.tripRequests[0].dataValues.trips[0].dataValues;
-      const { origin, destination } = await TripHelper.getCityName({ originId, destinationId });
-      trip.dataValues.user.dataValues.tripRequests[0].dataValues.trips[0].dataValues.originId = origin.city;
-      trip.dataValues.user.dataValues.tripRequests[0].dataValues.trips[0].dataValues.destinationId = destination.city;
+      const {
+        originId,
+        destinationId
+      } = trip.dataValues.user.dataValues.tripRequests[0].dataValues.trips[0].dataValues;
+      const {
+        origin,
+        destination
+      } = await TripHelper.getCityName({ originId, destinationId });
+      trip.dataValues
+        .user.dataValues
+        .tripRequests[0].dataValues
+        .trips[0].dataValues
+        .originId = origin.city;
+      trip.dataValues
+        .user.dataValues
+        .tripRequests[0].dataValues
+        .trips[0].dataValues
+        .destinationId = destination.city;
       return trip;
     });
     return Promise.all(tripsWithCityName);
@@ -188,7 +201,7 @@ class TripService {
    * @returns {object} data
    */
   static async getInfoAboutDestination() {
-    const { cityId, counter } = await mostTraveledDestination.findMostTraveledDestination();
+    const { cityId, counter } = await TripHelper.findMostTraveledDestination();
     const cityNameObj = {
       where: { id: cityId }, raw: true
     };
@@ -200,6 +213,25 @@ class TripService {
     const numberOfAccommodations = await CommonQueries.count(accommodations, findAccommodationObj);
     const timeVisited = counter;
     return { city, timeVisited, numberOfAccommodations };
+  }
+
+  /**
+   * fetch a single trip
+   * @static
+   * @param {object} tripId request object
+   * @memberof class TripService
+   * @returns {object} data
+   */
+  static async getSingleTrip(tripId) {
+    const singleTripObject = {
+      where: { id: tripId },
+      raw: true
+    };
+    const result = await CommonQueries.findOne(trips, singleTripObject);
+    const { originId, destinationId } = result;
+    const { origin, destination } = await TripHelper.getCityName({ originId, destinationId });
+    result.city = { origin, destination };
+    return result;
   }
 }
 

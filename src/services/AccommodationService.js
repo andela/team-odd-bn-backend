@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
 import {
-  accommodations, rooms, accommodationImages, ratings, likes, sequelize
+  accommodations, rooms, accommodationImages, ratings, likes, sequelize, cities
 } from '../database/models';
 import CommonQueries from './CommonQueries';
 
@@ -107,8 +107,10 @@ class AccommodationService {
     const accommodation = await CommonQueries.findOne(
       accommodations, { where: { id: accommodationId } }
     );
-    const isLikedOrDisliked = await CommonQueries.findOne(likes, { where: { userId: id } });
-
+    const isLikedOrDisliked = await CommonQueries.findOne(
+      likes,
+      { where: { userId: id, accommodationId } }
+    );
     if (isLikedOrDisliked) {
       const { liked, disliked } = isLikedOrDisliked.dataValues;
 
@@ -194,25 +196,63 @@ class AccommodationService {
       address,
       description,
       googleCoordinates,
-      userId
     };
     const newAccommodation = await CommonQueries.create(accommodations, newAccommodationObject);
+    let createdImageUrls;
     await sequelize.transaction(async () => {
-      Array.from(new Set(imageUrls)).map(async (imageUrl) => {
-        await CommonQueries.create(accommodationImages,
+      createdImageUrls = Array.from(new Set(imageUrls)).map(async (imageUrl) => {
+        const createdImageUrl = await CommonQueries.create(accommodationImages,
           { accommodationId: newAccommodation.id, imageUrl });
+        return createdImageUrl.dataValues;
       });
+      createdImageUrls = await Promise.all(createdImageUrls);
+      createdImageUrls = [].concat(...createdImageUrls);
     });
-    const roomSet = new Set(userRooms.map(a => a.id));
-    const unique = Array.from(roomSet);
-    const uniqueRooms = unique.map(id => userRooms.find(a => a.id === id));
+
+
+    const roomSet = [...new Set(userRooms.map(room => room))];
+    let createdRooms;
     await sequelize.transaction(async () => {
-      uniqueRooms.map(async (room) => {
+      createdRooms = roomSet.map(async (room) => {
         room.accommodationId = newAccommodation.id;
-        await CommonQueries.create(rooms, room);
+        const createdRoom = await CommonQueries.create(rooms, room);
+        return createdRoom.dataValues;
       });
+      createdRooms = await Promise.all(createdRooms);
+      createdRooms = [].concat(...createdRooms);
     });
+    newAccommodation.dataValues.imageUrls = createdImageUrls;
+    newAccommodation.dataValues.rooms = createdRooms;
     return newAccommodation;
+  }
+
+  /**
+   * Get single/all accommodations
+   * @static
+   * @param {object} req  request object
+   * @memberof AccommodationService
+   * @returns {object} data
+   */
+  static async getAccommodations(req) {
+    const getAccommodationsQueryObject = req.params.accommodationId
+      ? {
+        where: { id: req.params.accommodationId },
+        include: [{
+          model: rooms,
+          as: 'accommodationRooms',
+        }, {
+          model: cities,
+        },
+        { model: accommodationImages, as: 'imagesAccommodation' }]
+      }
+      : {
+        include: [{
+          model: rooms, as: 'accommodationRooms'
+        }, { model: accommodationImages, as: 'imagesAccommodation' },
+        { model: cities }]
+      };
+    const result = await CommonQueries.findAll(accommodations, getAccommodationsQueryObject);
+    return result;
   }
 }
 
