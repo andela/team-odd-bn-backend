@@ -71,6 +71,7 @@ tripRouter
     isUserVerified,
     getAllTripTypes
   );
+
 /**
  * @swagger
  *

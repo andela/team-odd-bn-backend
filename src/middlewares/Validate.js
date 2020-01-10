@@ -121,14 +121,14 @@ class Validate {
     const minAge = new Date(year - 16, month, day).toDateString();
     return [
       oneOf([
-        check('gender').isIn(['male', 'female']),
+        check('gender').optional().isIn(['male', 'female']),
       ], 'Gender should be either male or female'),
-      check('birthDate', 'Invalid Date of Birth(format: YYYY-MM-DD && Make sure you are above 16)').isBefore(minAge),
-      check('address', 'Address should be specified').isAlphanumeric(),
-      check('imageURL', 'PRofile image URL should be valid'),
-      check('department', 'department should be valid').isAlpha(),
-      check('managerId', 'PLease provide your line manager').isInt(),
-      check('bio', 'Please your bio is needed to complete your profile(at least 15 characters)').isLength({ min: 15 })
+      check('birthDate', 'Invalid Date of Birth(format: YYYY-MM-DD && Make sure you are above 16)').optional().isBefore(minAge),
+      check('address', 'Address should be specified').optional().isAlphanumeric(),
+      check('imageURL', 'PRofile image URL should be valid').optional(),
+      check('department', 'department should be valid').optional().isAlpha(),
+      check('managerId', 'PLease provide your line manager').optional().isInt(),
+      check('bio', 'Please your bio is needed to complete your profile(at least 15 characters)').optional().isLength({ min: 15 })
     ];
   }
 
