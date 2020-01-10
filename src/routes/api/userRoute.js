@@ -6,6 +6,7 @@ import UserController from '../../controllers/UserController';
 import verifyToken from '../../middlewares/verifyToken';
 import checkInputDataError from '../../middlewares/checkInputDataError';
 import customValidator from '../../middlewares/customValidator';
+import advancedVerifyToken from '../../middlewares/advancedVerifyToken';
 
 const userRoute = express.Router();
 
@@ -151,4 +152,5 @@ const { isImage } = customValidator;
 userRoute.put('/profile-settings', verifyToken, profileUpdateRules(), checkInputDataError, isImage, isManager, isUserVerified, UserController.updateProfile);
 userRoute.get('/view-profile', verifyToken, isUserVerified, UserController.viewProfile);
 userRoute.get('/notification', verifyToken, isUserVerified, UserController.viewNotification);
+userRoute.patch('/logout', advancedVerifyToken, UserController.logout);
 export default userRoute;

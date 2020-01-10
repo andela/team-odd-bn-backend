@@ -220,6 +220,23 @@ class UserController {
     const notification = await NotificationService.viewNotification(req);
     return Response.successMessage(req, res, 'Available notification', notification, HttpStatus.OK);
   }
+
+  /**
+    * User can Logout
+    * @description PATCH /api/v1/users/logout
+    * @static
+    * @param {object} req request object
+    * @param {object} res response object
+    * @returns {object} Logout
+  */
+  static async logout(req, res) {
+    try {
+      await UserService.saveUserToken(req.user.token);
+      return Response.successMessage(req, res, 'Logout successfully', undefined, HttpStatus.OK);
+    } catch (error) {
+      return Response.errorMessage(req, res, 'Signout failed', 500);
+    }
+  }
 }
 
 export default UserController;
