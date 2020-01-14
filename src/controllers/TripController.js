@@ -4,7 +4,7 @@ import Response from '../helpers/Response';
 import TripHelper from '../helpers/TripHelper';
 import NotificationService from '../services/NotificationService';
 
-const { availtripRequestsToManager } = TripService;
+const { availtripRequestsToManager, getTripTypes } = TripService;
 const { createNewTrip } = TripHelper;
 /**
  * @export
@@ -182,6 +182,23 @@ class TripController {
       return Response.successMessage(req, res, 'Most traveled destination info retrieved successfully', result, 200);
     } catch (err) {
       return Response.errorMessage(req, res, err.message, 500);
+    }
+  }
+
+  /**
+   * Get all trip types
+   * @static
+   * @param {object} req request object
+   * @param {object} res response object
+   * @memberof TripController
+   * @returns {object} data
+   */
+  static async getAllTripTypes(req, res) {
+    try {
+      const tripTypes = await getTripTypes();
+      return Response.successMessage(req, res, 'Sucessfully retrieved all the trip types', tripTypes, 200);
+    } catch (error) {
+      return Response.errorMessage(req, res, error, 500);
     }
   }
 }

@@ -356,7 +356,7 @@ describe('Get requests', () => {
       });
   });
   it('A user should receive 404 error when the trip id is not found in the database', (done) => {
-    chai.request(app).get('/api/v1/trips/nbfddbb')
+    chai.request(app).get('/api/v1/trips/wseftgyhu')
       .set('token', token)
       .end((err, res) => {
         res.should.have.status(400);
@@ -591,6 +591,31 @@ describe('User or Manager get info on most traveled destination', () => {
       .set('token', userToken)
       .end((err, res) => {
         expect(res.body.message).eql('Most traveled destination info retrieved successfully');
+        res.should.have.status(200);
+        res.body.should.be.an('object');
+        done(err);
+      });
+  });
+
+  it('should not provide any trip types if token is invalid', (done) => {
+    chai.request(app)
+      .get('/api/v1/trips/tripTypes')
+      .set('token', mockData.invalidToken)
+      .end((err, res) => {
+        expect(res.body.message.message).eql('jwt malformed');
+        res.should.have.status(401);
+        res.body.should.be.an('object');
+        done(err);
+      });
+  });
+
+  it('should get all trip types', (done) => {
+    chai.request(app)
+      .get('/api/v1/trips/tripTypes')
+      .set('token', userToken)
+      .end((err, res) => {
+        console.log(res.body);
+        expect(res.body.message).eql('Sucessfully retrieved all the trip types');
         res.should.have.status(200);
         res.body.should.be.an('object');
         done(err);

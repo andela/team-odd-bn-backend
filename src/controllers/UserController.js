@@ -156,10 +156,10 @@ class UserController {
     user.password = hashedPassword;
     user.save();
     if (!user) {
-      return Response.errorMessage(req, res, 'Oops reset password was not successful', user.password, 404);
+      return Response.errorMessage(req, res, 'Oops reset password was not successful', '', 404);
     }
     emailHelper.resetPasswordSuccessfulHelper(user);
-    return Response.successMessage(req, res, 'Password reset successfull!', user.password, 200);
+    return Response.successMessage(req, res, 'Password reset successfull!', '', 200);
   }
 
   /**
