@@ -229,6 +229,18 @@ const mockData = {
   },
   approveRequest: {
     reason: 'yes we agree with your reason'
+  },
+  facebook_feke_user: {
+    id: 10,
+    email: 'feke@facebook.domain',
+    firstName: 'Patrick',
+    lastName: 'john',
+  },
+  google_feke_user: {
+    id: 10,
+    email: 'feke@google.domain',
+    firstName: 'Patrick',
+    lastName: 'john',
   }
 };
 

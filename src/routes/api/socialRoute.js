@@ -1,8 +1,9 @@
 import passport from 'passport';
 import { Router } from 'express';
 import '../../services/passport';
-import socialErrorHandler from '../../middlewares/socialErrorHandler';
 import UserController from '../../controllers/UserController';
+import Validate from '../../middlewares/Validate';
+import checkInputDataError from '../../middlewares/checkInputDataError';
 
 const router = Router();
 router.use(passport.initialize());
@@ -15,7 +16,7 @@ passport.serializeUser((user, done) => {
  * @swagger
  *
  * /auth/facebook:
- *    post:
+ *    get:
  *      summary: User login with facebook account
  *      tags: [Users]
  *      requestBody:
@@ -32,7 +33,7 @@ passport.serializeUser((user, done) => {
  * @swagger
  *
  * /auth/google:
- *    post:
+ *    get:
  *      summary: User login with google account
  *      tags: [Users]
  *      requestBody:
@@ -81,6 +82,25 @@ passport.serializeUser((user, done) => {
  */
 
 
-router.post('/facebook', passport.authenticate('facebook-token'), socialErrorHandler, UserController.OAuthfacebook);
-router.post('/google', passport.authenticate('google-plus-token'), socialErrorHandler, UserController.OAuthgoogle);
+router.get(
+  '/facebook',
+  passport.authenticate('facebook', { scope: ['email'] })
+);
+router.get(
+  '/facebook/callback',
+  passport.authenticate('facebook',
+    { failureRedirect: process.env.REDIRECT_SOCIAL_AUTH_ERROR_URL }),
+  UserController.OAuthfacebook
+);
+router.get(
+  '/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+router.get(
+  '/google/callback',
+  passport.authenticate('google'),
+  UserController.OAuthgoogle
+);
+router.post('/google', Validate.validateSocialLogin(), checkInputDataError, UserController.OAuthgoogle);
 module.exports = router;

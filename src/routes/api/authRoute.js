@@ -7,6 +7,7 @@ import Middlewares from '../../middlewares/ForgotPasswordMiddlewares';
 import verifyToken from '../../middlewares/verifyToken';
 import Conflict from '../../middlewares/Conflict';
 import checkInputDataError from '../../middlewares/checkInputDataError';
+import isLoggedViaSocialLogin from '../../middlewares/isLoggedViaSocialLogin';
 
 const authRouter = express.Router();
 
@@ -78,6 +79,7 @@ authRouter.post(
 authRouter
   .post(
     '/signin',
+    isLoggedViaSocialLogin,
     Validate.signinRules(),
     checkInputDataError,
     validateCredentials,
