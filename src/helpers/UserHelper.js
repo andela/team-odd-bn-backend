@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import Response from './Response';
 import { users } from '../database/models';
 import AuthenticateToken from './AuthenticateToken';
+import UserService from '../services/UserService';
 
 dotenv.config();
 
@@ -57,8 +58,9 @@ class UserHelper {
           isVerified
         }
       });
-
-      done(null, socialUser[0].dataValues);
+      const { password, ...userInfo } = socialUser[0].dataValues;
+      const newToken = AuthenticateToken.signToken(userInfo);
+      done(null, newToken);
     } catch (error) {
       done(error, false, error.message);
     }
@@ -68,18 +70,10 @@ class UserHelper {
    * oauth social
    * @param {object} req request object
    * @param {object} res response object
-   * @param {object} successSocialSignUp success message
    * @returns {object} object
    */
-  static OAuthSocial(req, res, successSocialSignUp) {
-    const token = AuthenticateToken.signToken(req.user);
-    const {
-      id, email, firstName, lastName, signupType, isVerified
-    } = req.user;
-    const data = {
-      id, email, firstName, lastName, signupType, isVerified, token
-    };
-    const socialInfo = JSON.stringify({ signupType, token });
+  static OAuthSocial(req, res) {
+    const socialInfo = JSON.stringify({ signupType: req.user.signupType, token: req.user });
     return res.redirect(`${process.env.REDIRECT_SOCIAL_AUTH_DATA_URL}/?info=${socialInfo}`);
   }
 }

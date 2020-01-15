@@ -1,4 +1,4 @@
-import { users, userProfile } from '../database/models';
+import { users, userProfile, blacklist } from '../database/models';
 import CommonQueries from './CommonQueries';
 import HashPassword from '../helpers/HashPassword';
 /**
@@ -168,6 +168,34 @@ class UserService {
     const userData = await CommonQueries.findOne(userProfile, viewUserProfileObject);
 
     return userData;
+  }
+
+  /**
+   * Save user token in blacklist table
+   * @static
+   * @param {Object} token the request object
+   * @returns {Object} response
+   */
+  static async saveUserToken(token) {
+    const saveInBlackList = {
+      token
+    };
+    const result = await CommonQueries.create(blacklist, saveInBlackList);
+    return result;
+  }
+
+  /**
+   * Is token blacklisted
+   * @static
+   * @param {Object} token the request object
+   * @returns {Object} response
+   */
+  static async blacklistToken(token) {
+    const isTokenBlacklisted = {
+      where: { token }
+    };
+    const result = await CommonQueries.findOne(blacklist, isTokenBlacklisted);
+    return result;
   }
 }
 

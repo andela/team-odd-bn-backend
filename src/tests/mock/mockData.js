@@ -241,7 +241,11 @@ const mockData = {
     email: 'feke@google.domain',
     firstName: 'Patrick',
     lastName: 'john',
-  }
+  },
+  fekeData: {
+    id: 1,
+    email: 'example@email.com'
+  },
 };
 
 export default mockData;

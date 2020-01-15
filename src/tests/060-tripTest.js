@@ -614,7 +614,6 @@ describe('User or Manager get info on most traveled destination', () => {
       .get('/api/v1/trips/tripTypes')
       .set('token', userToken)
       .end((err, res) => {
-        console.log(res.body);
         expect(res.body.message).eql('Sucessfully retrieved all the trip types');
         res.should.have.status(200);
         res.body.should.be.an('object');
