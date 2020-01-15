@@ -620,5 +620,49 @@ describe('User or Manager get info on most traveled destination', () => {
         res.body.should.be.an('object');
         done(err);
       });
+    describe('Get all cities types functionality tests', () => {
+      before((done) => {
+        chai.request(app)
+          .post('/api/v1/auth/signin')
+          .send(mockData.testUser)
+          .end((err, res) => {
+            userToken = res.body.data;
+            done(err);
+          });
+      });
+
+      before((done) => {
+        chai.request(app)
+          .get('/api/v1/trips/all-cities')
+          .set('token', userToken)
+          .send(mockData.usersSignin)
+          .end(() => {
+            done();
+          });
+      });
+      it('should not provide the cities if token is invalid', (done) => {
+        chai.request(app)
+          .get('/api/v1/trips/all-cities')
+          .set('token', mockData.invalidToken)
+          .end((err, res) => {
+            expect(res.body.message.message).eql('jwt malformed');
+            res.should.have.status(401);
+            res.body.should.be.an('object');
+            done(err);
+          });
+      });
+
+      it('should get all cities', (done) => {
+        chai.request(app)
+          .get('/api/v1/trips/all-cities')
+          .set('token', userToken)
+          .end((err, res) => {
+            expect(res.body.message).eql('Successfully retrieved all cities');
+            res.should.have.status(200);
+            res.body.should.be.an('object');
+            done(err);
+          });
+      });
+    });
   });
 });

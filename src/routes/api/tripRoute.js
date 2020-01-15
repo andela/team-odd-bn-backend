@@ -1,6 +1,7 @@
 import express from 'express';
 import verifyToken from '../../middlewares/verifyToken';
 import TripController from '../../controllers/TripController';
+import CitiesController from '../../controllers/CitiesController';
 import ValidateTrip from '../../middlewares/ValidateTrip';
 import Validate from '../../middlewares/Validate';
 import checkInputDataError from '../../middlewares/checkInputDataError';
@@ -36,6 +37,7 @@ const {
   acceptOrRejectRequestsController, getTripStatsController
 } = TripController;
 
+const { getAllCities } = CitiesController;
 /**
  * @swagger
  *
@@ -71,6 +73,35 @@ tripRouter
     isUserVerified,
     getAllTripTypes
   );
+/**
+ * @swagger
+ *
+ * /cities/all:
+ *    get:
+ *      summary: Available cities
+ *      tags: [Trips]
+ *      parameters:
+ *        - name: token
+ *          in: header
+ *          description: enter token
+ *          required: true
+ *          schema:
+ *            type: string
+ *      responses:
+ *        "200":
+ *          description: Cities retrieved successfuly
+ *        "404":
+ *          description: City not found
+ */
+
+tripRouter
+  .get(
+    '/all-cities',
+    verifyToken,
+    getAllCities
+  );
+
+
 /**
  * @swagger
  *
