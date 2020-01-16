@@ -18,9 +18,7 @@ class CitiesService {
     const queryObject = {
       attributes: ['id', 'city']
     };
-    console.log('queryObject', queryObject);
     const allCities = await CommonQueries.findAll(cities, queryObject);
-    console.log('allCities', allCities);
     return allCities;
   }
 }

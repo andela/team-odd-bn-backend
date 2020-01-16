@@ -1,6 +1,6 @@
 import Sequelize, { Promise } from 'sequelize';
 import {
-  tripRequests, trips, userProfile, users, accommodations, cities, tripTypes
+  tripRequests, trips, userProfile, users, accommodations, cities, tripTypes, status
 } from '../database/models';
 import TripHelper from '../helpers/TripHelper';
 import CommonQueries from './CommonQueries';
@@ -99,13 +99,33 @@ class TripService {
    */
   static async getUserRequests(req) {
     const requestsUsersObject = {
+      where: { userId: req.user.id },
+
       include: [{
-        model: tripRequests,
-        where: { userId: req.user.id }
+        model: trips,
+      },
+      {
+        model: tripTypes,
+      },
+      {
+        model: status,
       }],
     };
-    const requests = await CommonQueries.findAll(trips, requestsUsersObject);
+    const requests = await CommonQueries.findAll(tripRequests, requestsUsersObject);
+    const tripsWithCityName = requests.map((tripss) => tripss.trips.map(async (trip) => {
+      const { originId, destinationId } = trip;
+      const { origin, destination } = await TripHelper.getCityName({ originId, destinationId });
+      trip.originId = origin.city;
+      trip.destinationId = destination.city;
+      return trip;
+    }));
+    let cc = await Promise.all(tripsWithCityName.map(async (t) => {
+      const u = await Promise.all(t);
 
+      return u;
+    }));
+    cc = [].concat(...cc);
+    requests.trips = cc;
     return requests;
   }
 
@@ -218,19 +238,27 @@ class TripService {
   /**
    * fetch a single trip
    * @static
-   * @param {object} tripId request object
+   * @param {object} tripRequestId request object
    * @memberof class TripService
    * @returns {object} data
    */
-  static async getSingleTrip(tripId) {
+  static async getSingleTrip(tripRequestId) {
     const singleTripObject = {
-      where: { id: tripId },
-      raw: true
+      where: { id: tripRequestId },
+      include: [{
+        model: trips,
+      }],
     };
-    const result = await CommonQueries.findOne(trips, singleTripObject);
-    const { originId, destinationId } = result;
-    const { origin, destination } = await TripHelper.getCityName({ originId, destinationId });
-    result.city = { origin, destination };
+    const result = await CommonQueries.findOne(tripRequests, singleTripObject);
+
+    const tripsWithRealNames = result.trips.map(async (trip) => {
+      const { originId, destinationId } = trip;
+      const { origin, destination } = await TripHelper.getCityName({ originId, destinationId });
+      trip.dataValues.originId = origin.city;
+      trip.destinationId = destination.city;
+      return trip;
+    });
+    result.trips = await Promise.all(tripsWithRealNames);
     return result;
   }
 

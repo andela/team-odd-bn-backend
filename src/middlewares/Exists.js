@@ -79,7 +79,7 @@ class Exists {
   static async getLineManager(req, res, next) {
     const { id } = req.user;
     const userIdProfile = await userProfile.findOne({ where: { userId: id } });
-    if (!userIdProfile.managerId) {
+    if (!userIdProfile || !userIdProfile.managerId) {
       return Response.errorMessage(req, res, 'Please update your line manager', 404);
     }
     const { managerId } = userProfile;

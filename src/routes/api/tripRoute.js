@@ -147,6 +147,7 @@ tripRouter
   .post(
     '/oneway',
     verifyToken,
+    Exists.getLineManager,
     Validate.requestOnewayTripRules(),
     checkInputDataError,
     ValidateTrip.checkIfOriginDestinationExists,
@@ -223,6 +224,7 @@ tripRouter
 tripRouter.post(
   '/multicity',
   verifyToken,
+  Exists.getLineManager,
   Validate.requestMultiTripRules(),
   checkInputDataError,
   ValidateTrip.checkIfOriginDestinationExists,
@@ -232,20 +234,6 @@ tripRouter.post(
   ValidateTrip.checkForSimilarRequestsDateRange,
   TripController.requestTrip
 );
-
-tripRouter
-  .post(
-    '/twoWay',
-    verifyToken,
-    Validate.twoWayTripRules(),
-    checkInputDataError,
-    ValidateTrip.checkIfOriginDestinationExists,
-    ValidateTrip.checkIfOriginSameAsDestination,
-    ValidateTrip.checkMultiCityForSimilarRequests,
-    ValidateTrip.checkForSimilarRequests,
-    ValidateTrip.checkForSimilarRequestsDateRange,
-    returnTripController
-  );
 
 /**
  * @swagger
@@ -310,6 +298,7 @@ tripRouter
   .post(
     '/twoWay',
     verifyToken,
+    Exists.getLineManager,
     Validate.twoWayTripRules(),
     checkInputDataError,
     ValidateTrip.checkIfOriginDestinationExists,
@@ -386,11 +375,13 @@ tripRouter.get(
  *          description: Trip requests are not found
  */
 tripRouter.get(
-  '/:tripId',
+  '/:tripRequestId',
   verifyToken,
   isUserVerified,
   Validate.isTripIDInteger(),
   checkInputDataError,
+  isTripRequestFound,
+  IsOwnerOfTrip,
   tripAccess,
   TripController.getSingleTrip
 );

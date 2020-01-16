@@ -55,32 +55,22 @@ export const commentAccess = async (req, res, next) => {
 };
 export const tripAccess = async (req, res, next) => {
   const { id } = req.user;
-  const { tripId } = req.params;
+  const { tripRequestId } = req.params;
   const userObj = {
-    where: { id: tripId },
-    include: [{
-      model: tripRequests,
-    }],
+    where: { id: tripRequestId, userId: id },
   };
   const tripObj = {
     where: {
-      id: tripId,
+      id: tripRequestId,
     },
     include: [{
-      model: tripRequests,
-      where: { userId: id, }
+      model: users,
+      include: [{ model: userProfile, where: { managerId: id, } }]
     }]
   };
-  const tripUser = await CommonQueries.findOne(trips, userObj);
-  const { userId } = tripUser.dataValues.tripRequest.dataValues;
-  const qObject = {
-    where: { userId, managerId: id }
-  };
-  const isManager = await CommonQueries.findOne(userProfile, qObject);
-
-  const isRequester = await CommonQueries.findOne(trips, tripObj);
-
-  if (isManager || isRequester) {
+  const tripUser = await CommonQueries.findOne(tripRequests, userObj);
+  const isManager = await CommonQueries.findOne(tripRequests, tripObj);
+  if (tripUser || isManager) {
     return next();
   }
   return Response.errorMessage(req, res, 'You should be either a requester or a manager', 403);
