@@ -207,22 +207,7 @@ describe('User profile page settings', () => {
       });
   });
 
-  it('it should not update user profile with empty fileds', (done) => {
-    chai.request(app)
-      .put('/api/v1/users/profile-settings')
-      .set('token', unverifiedUserToken)
-      .send({})
-      .end((err, res) => {
-        expect(res.status).eql(400);
-        expect(res.body.message[0]).eql('Gender should be either male or female');
-        expect(res.body.message[1]).eql('Invalid Date of Birth(format: YYYY-MM-DD && Make sure you are above 16)');
-        expect(res.body.message[2]).eql('Address should be specified');
-        expect(res.body.message[3]).eql('department should be valid');
-        expect(res.body.message[4]).eql('PLease provide your line manager');
-        expect(res.body.message[5]).eql('Please your bio is needed to complete your profile(at least 15 characters)');
-        done(err);
-      });
-  });
+
   it('it should not update user profile with invalid filed', (done) => {
     chai.request(app)
       .put('/api/v1/users/profile-settings')
