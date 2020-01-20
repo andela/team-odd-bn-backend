@@ -65,29 +65,40 @@ class TripService {
    * @returns {object} trip requests of requesters that report to manager
    */
   static async availtripRequestsToManager(id) {
-    return userProfile.findAll({
-      where: { managerId: id },
-      attributes: ['id', 'userId'],
-      include: [
-        {
-          model: users,
-          attributes: ['id', 'firstName', 'lastName'],
-          as: 'user',
-          include: [
-            {
-              model: tripRequests,
-              where: { statusId: 1 },
-              attributes: ['id', 'tripTypeId', 'statusId'],
-              include: [
-                {
-                  model: trips
-                }
-              ]
-            }
-          ],
+    const managerRequestsObj = {
+      attributes: ['id', 'updatedAt', 'createdAt'],
+      include: [{
+        model: trips,
+        attributes: ['id', 'reason', 'startDate'],
+        include: {
+          model: cities,
+          attributes: ['city', 'id']
         }
+      },
+      {
+        model: tripTypes,
+        attributes: ['id', 'tripType'],
+      },
+      {
+        model: status,
+        attributes: ['id', 'status'],
+      },
+      {
+        model: users,
+        attributes: ['id', 'firstName', 'lastName'],
+        include: [
+          {
+            model: userProfile,
+            where: { managerId: id },
+            attributes: [],
+          }
+        ]
+      }
       ],
-    });
+    };
+    let result = await CommonQueries.findAll(tripRequests, managerRequestsObj);
+    result = result.filter((item) => item.user);
+    return result;
   }
 
   /**
