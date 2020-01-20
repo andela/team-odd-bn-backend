@@ -1,10 +1,20 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const roles = sequelize.define('roles', {
-    type: DataTypes.STRING
-  }, {});
+  const roles = sequelize.define(
+    'roles',
+    {
+      type: DataTypes.STRING
+    },
+    {}
+  );
   roles.associate = function(models) {
-    roles.hasMany(models.users, {foreignKey: 'id'});
+    roles.hasMany(
+      models.users,
+      { sourceKey: 'id' },
+      { targetKey: 'roleId' },
+      { onDelete: 'cascade' },
+      { onUpdate: 'cascade' }
+    );
   };
   return roles;
 };
