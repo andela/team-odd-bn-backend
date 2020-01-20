@@ -65,29 +65,49 @@ class TripService {
    * @returns {object} trip requests of requesters that report to manager
    */
   static async availtripRequestsToManager(id) {
-    return userProfile.findAll({
+    const userObj = {
       where: { managerId: id },
-      attributes: ['id', 'userId'],
-      include: [
-        {
-          model: users,
-          attributes: ['id', 'firstName', 'lastName'],
-          as: 'user',
-          include: [
-            {
-              model: tripRequests,
-              where: { statusId: 1 },
-              attributes: ['id', 'tripTypeId', 'statusId'],
-              include: [
-                {
-                  model: trips
-                }
-              ]
+      attributes: ['userId'],
+      raw: true
+    };
+    const managerUsers = await CommonQueries.findAll(userProfile, userObj);
+    let managerRequests = managerUsers.map(async user => {
+      const managerRequestsObj = {
+        where: { userId: user.userId, statusId: 1 },
+        attributes: ['id', 'updatedAt', 'createdAt'],
+        include: [
+          {
+            model: trips,
+            attributes: ['id', 'reason', 'startDate'],
+            include: {
+              model: cities,
+              attributes: ['city', 'id']
             }
-          ],
-        }
-      ],
+          },
+          {
+            model: tripTypes,
+            attributes: ['id', 'tripType']
+          },
+          {
+            model: status,
+            attributes: ['id', 'status']
+          },
+          {
+            model: users,
+            attributes: ['id', 'firstName', 'lastName']
+          }
+        ]
+      };
+      const result = await CommonQueries.findAll(
+        tripRequests,
+        managerRequestsObj
+      );
+      return result;
     });
+
+    managerRequests = await Promise.all(managerRequests);
+    managerRequests = [].concat(...managerRequests);
+    return managerRequests;
   }
 
   /**
@@ -254,8 +274,8 @@ class TripService {
     const tripsWithRealNames = result.trips.map(async (trip) => {
       const { originId, destinationId } = trip;
       const { origin, destination } = await TripHelper.getCityName({ originId, destinationId });
-      trip.dataValues.originId = origin.city;
-      trip.destinationId = destination.city;
+      trip.dataValues.origin = origin.city;
+      trip.dataValues.destination = destination.city;
       return trip;
     });
     result.trips = await Promise.all(tripsWithRealNames);

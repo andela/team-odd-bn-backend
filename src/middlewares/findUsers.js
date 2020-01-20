@@ -15,7 +15,8 @@ const findOneUser = async (req, res, next) => {
 };
 
 export const IsOwnerOfTrip = async (req, res, next) => {
-  if (req.user.id !== req.row.userId) {
+  const isManager = await CommonQueries.findOne(userProfile, { where: { userId: req.row.userId, managerId: req.user.id } });
+  if (req.user.id !== req.row.userId && !isManager) {
     return Response.errorMessage(req, res, 'You are not the owner of the trip', 409);
   }
   next();

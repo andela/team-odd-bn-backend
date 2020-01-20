@@ -381,7 +381,6 @@ tripRouter.get(
   Validate.isTripIDInteger(),
   checkInputDataError,
   isTripRequestFound,
-  IsOwnerOfTrip,
   tripAccess,
   TripController.getSingleTrip
 );
