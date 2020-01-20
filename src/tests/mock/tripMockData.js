@@ -310,8 +310,8 @@ const tripMockData = {
       {
         originId: 3,
         destinationId: 5,
-        startDate: '2020-01-20',
-        returnDate: '2021-01-10',
+        startDate: '2020-05-20',
+        returnDate: '2021-05-10',
         reason: 'edit me multicity 1'
       },
       {

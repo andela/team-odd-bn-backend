@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 import Response from '../helpers/Response';
+import UserService from '../services/UserService';
+
 /**
   * verify token
   * @param {object} req request object
@@ -15,11 +17,16 @@ const verifyToken = (req, res, next) => {
   }
   jwt.verify(
     token, process.env.JWT_KEY,
-    (err, result) => {
+    async (err, result) => {
       if (err) {
         return Response.errorMessage(req, res, err, 401);
       }
+      const isTokenExist = await UserService.blacklistToken(token);
+      if (isTokenExist) {
+        return Response.errorMessage(req, res, 'You have provided an invalid token', 401);
+      }
       req.user = result;
+      result.token = token;
       next();
     }
   );
