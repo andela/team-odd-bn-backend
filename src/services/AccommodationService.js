@@ -243,13 +243,15 @@ class AccommodationService {
         }, {
           model: cities,
         },
-        { model: accommodationImages, as: 'imagesAccommodation' }]
+        { model: accommodationImages, as: 'imagesAccommodation' },
+        { model: ratings, as: 'ratings' }]
       }
       : {
         include: [{
           model: rooms, as: 'accommodationRooms'
         }, { model: accommodationImages, as: 'imagesAccommodation' },
-        { model: cities }]
+        { model: cities },
+        { model: ratings, as: 'ratings' }]
       };
     const result = await CommonQueries.findAll(accommodations, getAccommodationsQueryObject);
     return result;

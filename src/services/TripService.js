@@ -265,9 +265,27 @@ class TripService {
   static async getSingleTrip(tripRequestId) {
     const singleTripObject = {
       where: { id: tripRequestId },
-      include: [{
-        model: trips,
-      }],
+      include: [
+        {
+          model: trips,
+          include: {
+            model: cities,
+            attributes: ['city', 'id']
+          }
+        },
+        {
+          model: tripTypes,
+          attributes: ['id', 'tripType']
+        },
+        {
+          model: status,
+          attributes: ['id', 'status']
+        },
+        {
+          model: users,
+          attributes: ['id', 'firstName', 'lastName']
+        }
+      ]
     };
     const result = await CommonQueries.findOne(tripRequests, singleTripObject);
 
