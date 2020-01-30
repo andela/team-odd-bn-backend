@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 
 dotenv.config();
-
 const tripMockData = {
   aUser: {
     id: 1,
@@ -59,7 +58,6 @@ const tripMockData = {
     startDate: '20-11-2019',
     returnDate: '2019-12-30',
   },
-
   earlyReturnDate: {
     originId: 1,
     destinationId: 2,
@@ -304,7 +302,6 @@ const tripMockData = {
     ]
   },
   invalidToken: 'jfdgvfjfjdbfjbdjfbdjbfjdbfjdb',
-
   newMultiCityData: {
     itinerary: [
       {
@@ -330,7 +327,6 @@ const tripMockData = {
     returnDate: '2022-01-10',
     reason: 'edit me one-way trip'
   },
-
   editNewOneWay: {
     originId: 1,
     destinationId: 4,
@@ -339,5 +335,4 @@ const tripMockData = {
     reason: 'edit me one-way trip'
   }
 };
-
 export default tripMockData;

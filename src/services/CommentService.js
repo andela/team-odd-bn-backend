@@ -1,4 +1,4 @@
-import { comments, users } from '../database/models';
+import { comments, users, userProfile } from '../database/models';
 import CommonQueries from './CommonQueries';
 
 /**
@@ -40,12 +40,20 @@ class CommentService {
     const { tripRequestId } = req.params;
     const queryObj = {
       attributes: ['id', 'comment', 'updatedAt'],
-      include: [{
-        model: users,
-        attributes: ['firstName', 'lastName']
-      }],
+      include: [
+        {
+          model: users,
+          attributes: ['id', 'firstName', 'lastName'],
+          include: [
+            {
+              model: userProfile,
+              attributes: ['imageURL']
+            }
+          ]
+        }
+      ],
       where: {
-        tripRequestId,
+        tripRequestId
       }
     };
     const tripComments = await CommonQueries.findAll(comments, queryObj);

@@ -1,4 +1,4 @@
-import { users, userProfile, blacklist } from '../database/models';
+import { users, roles, userProfile, blacklist } from '../database/models';
 import CommonQueries from './CommonQueries';
 import HashPassword from '../helpers/HashPassword';
 /**
@@ -73,7 +73,13 @@ class UserService {
    */
   static async availableUsers() {
     const allUsersObj = {
-      attributes: ['id', 'firstName', 'lastName', 'email', 'roleId']
+      attributes: ['id', 'firstName', 'lastName', 'email', 'roleId'],
+      include: [
+        {
+          model: roles,
+          attributes: ['type']
+        }
+      ]
     };
     const allUsers = CommonQueries.findAll(users, allUsersObj);
     return allUsers;
