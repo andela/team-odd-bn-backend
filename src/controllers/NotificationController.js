@@ -23,8 +23,8 @@ class AccommodationController {
       const { notificationIds } = req.body;
       const { notificationId } = req.params;
       const notificationArr = req.params.notificationId
-        ? notificationIds.filter(id => id === parseInt(notificationId, 10))
-        : notificationIds;
+        ? notificationId
+        : notificationIds.filter(id => id === parseInt(id, 10));
       await markNotificationAsRead(notificationArr);
       return Response.successMessage(req, res, 'Notification marked as read successfully', '', 201);
     } catch (err) {

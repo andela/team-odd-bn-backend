@@ -4,6 +4,7 @@ import { sendNotification } from './notificationConfig';
 const socketIo = (server) => {
   const io = socketIO(server);
   io.use((sockets, next) => {
+
     if (sockets) {
       sockets.socket = sockets;
       next();
@@ -16,7 +17,6 @@ const socketIo = (server) => {
   sendNotification(io, 'post_comment_notification', 'post_comment_client');
   sendNotification(io, 'booking_notification', 'booking_client');
   sendNotification(io, 'trip_request_notification', 'trip_request_client');
-
   return io;
 };
 

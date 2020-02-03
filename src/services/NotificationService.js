@@ -11,7 +11,7 @@ import {
   booking,
   sequelize
 } from '../database/models';
-import { notificationEvents } from '../helpers/notificationConfig';
+import { notificationEvents, sendNotification } from '../helpers/notificationConfig';
 
 dotenv.config();
 
@@ -53,6 +53,7 @@ class NotificationService {
       updatedAt
     };
     notificationEvents('approve_reject_notification', { message, data });
+    sendNotification(req.io, 'approve_reject_notification', req.connectedClients, result);
   }
 
   /**
@@ -102,6 +103,7 @@ class NotificationService {
       updatedAt
     };
     notificationEvents('edit_trip_notification', { message, data });
+    sendNotification(req.io, 'edit_trip_notification', req.connectedClients, result);
   }
 
   /**
@@ -132,29 +134,24 @@ class NotificationService {
     let receiverId;
 
     if (userId === user.id) {
-      receiverId = managerId; // is a manage
+      receiverId = managerId; 
     } else {
-      receiverId = userId; // is a user
+      receiverId = userId; 
     }
 
     const result = await NotificationService.saveNotification({
       userId: receiverId,
-      commentsId: params.tripRequestId,
+      tripRequestId: params.tripRequestId,
       message
     });
 
     const data = {
       notificationId: result.dataValues.id,
-      commentsId: params.tripRequestId,
+      tripRequestId: params.tripRequestId,
       updatedAt: result.dataValues.updatedAt
     };
-    notificationEvents('post_comment_notification', { message, data });
-    NotificationService.saveNotification({
-      userId,
-      tripRequestId: params.tripRequestId,
-      message
-    });
-    notificationEvents('approve_reject_notification', { message, data });
+    notificationEvents('post_comment_notification', { data });
+    sendNotification(req.io, 'post_comment_notification', req.connectedClients, result);
   }
 
   /**
@@ -176,13 +173,14 @@ class NotificationService {
     const tripUser = await CommonQueries.findAll(userProfile, managerIdqueryObject);
     const message = `${tripUser[0]['user.firstName']} ${tripUser[0]['user.lastName']} has made an new travel request`;
     const newNotification = await NotificationService.saveNotification({
-      userId: req.user.id,
+      userId: tripUser[0].managerId,
       message,
       tripRequestId: req.result.id
     });
     const { bookingId, updatedAt, ...data } = newNotification.dataValues;
-    data.managerId = tripUser.managerId;
+    data.managerId = tripUser[0].managerId;
     notificationEvents('trip_request_notification', { data });
+    sendNotification(req.io, 'trip_request_notification', req.connectedClients, data);
   }
 
 
@@ -222,6 +220,7 @@ class NotificationService {
     data.travelAdminId = accommodation[0]['room.accommodation.userId'];
 
     notificationEvents('booking_notification', { data });
+    sendNotification(req.io, 'booking_notification', req.connectedClients, data);
   }
 
   /**

@@ -354,7 +354,7 @@ class Validate {
   static validateNotificationIdRules() {
     return [
       check('notificationId', 'The notificationId should be an integer').isInt().optional(),
-      check('notificationIds', 'The notificationIds should be an array').isArray(),
+      check('notificationIds', 'The notificationIds should be an array').isArray().optional(),
       check('notificationIds.*', 'The notification IDs should be integer').isInt()
     ];
   }
