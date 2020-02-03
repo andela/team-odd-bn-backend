@@ -178,6 +178,23 @@ class UserController {
   }
 
   /**
+   * @static
+   * @description GET /api/users/all/id
+   * @param {Object} req request object
+   * @param {Object} res response object
+   * @returns {Object} response
+   */
+  static async viewSpecificUserInfo(req, res) {
+    const { userId } = req.params;
+    const result = await UserService.specificUsers(userId);
+
+    if (!result) {
+      return Response.errorMessage(req, res, 'User not found', 404);
+    }
+    return Response.successMessage(req, res, 'Available user Information', result.dataValues, 200);
+  }
+
+  /**
 * User can update his/her profile
 * @description POST /api/v1/user/profile-settings
 * @static

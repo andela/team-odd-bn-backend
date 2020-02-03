@@ -120,5 +120,13 @@ roleRoute
  *          description: Users are not found
  */
 
+roleRoute
+  .get(
+    '/all/:userId',
+    Validate.isUserId(),
+    checkInputDataError,
+    verifyToken,
+    UserController.viewSpecificUserInfo
+  );
 
 export default roleRoute;

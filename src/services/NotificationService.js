@@ -215,7 +215,7 @@ class NotificationService {
     const message = `${user[0].firstName} ${user[0].lastName} has booked room ${accommodation[0]['room.name']} `;
     const newNotification = await NotificationService.saveNotification({
       message,
-      userId: req.user.id,
+      userId: req.result.id,
       bookingId: req.result.id
     });
     const { tripRequestId, updatedAt, ...data } = newNotification.dataValues;
