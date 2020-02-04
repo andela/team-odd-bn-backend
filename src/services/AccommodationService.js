@@ -126,12 +126,16 @@ class AccommodationService {
         setObject = { disliked: true, liked: false };
         displayMessage = 'You disliked this accommodation!';
       }
+      if (like && !liked && disliked) {
+        setObject = { disliked: false, liked: true };
+        displayMessage = 'You liked this accommodation!';
+      }
       if (!liked && !disliked) {
         setObject = { liked: like, disliked: !like };
         displayMessage = like ? 'You liked this accommodation!' : 'You disliked this accommodation!';
       }
 
-      const updateLikeObject = [setObject, { where: { userId: id } }];
+      const updateLikeObject = [setObject, { where: { userId: id, accommodationId } }];
 
       await CommonQueries.update(likes, updateLikeObject);
     } else {
