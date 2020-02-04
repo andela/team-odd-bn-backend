@@ -4,12 +4,12 @@ const notificationEvents = (eventName, clientData) => {
   eventEmitters.emit(eventName, JSON.stringify(clientData));
 };
 
-const sendNotification = (io, emitterEvent, socketEvent) => {
-  io.on('connection', (socket) => {
-    eventEmitters.on(emitterEvent, (data) => {
-      socket.emit(socketEvent, data);
+const sendNotification = (io, socketEvent, connectedClients, data) => {
+  if (connectedClients[data.userId.toString()]) {
+    connectedClients[data.userId.toString()].forEach(client => {
+      io.to(client).emit(socketEvent, data);
     });
-  });
+  }
 };
 
 export {

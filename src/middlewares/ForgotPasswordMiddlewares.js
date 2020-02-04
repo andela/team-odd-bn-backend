@@ -63,6 +63,21 @@ class ForgotPasswordMiddlewares {
   }
 
   /**
+   * decode token middleware
+   * @static
+   * @param {Object} token token
+   * @returns {Object} returns a response error if error exists or returns a token if exists
+   */
+  static decodeTokenHelper(token) {
+    try {
+      const verifiedUser = jwt.verify(token, process.env.JWT_KEY);
+      return verifiedUser;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  /**
     * Validate forgot password input
     * @static
     * @returns {object} errors if doesn't follow pre-set rules

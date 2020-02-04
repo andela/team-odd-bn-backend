@@ -93,7 +93,7 @@ describe('Notification tests', () => {
       });
   });
   it('A user should be able to mark one notification as read', (done) => {
-    chai.request(app).patch('/api/v1/notifications/markRead/11')
+    chai.request(app).patch('/api/v1/notifications/markRead')
       .set('token', userToken1)
       .send(notificationIds)
       .end((err, res) => {
