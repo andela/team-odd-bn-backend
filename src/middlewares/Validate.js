@@ -148,6 +148,17 @@ class Validate {
   * @static
   * @returns {object} errors
   */
+  static isUserId() {
+    return [
+      check('userId', 'ID should be an integer').isInt(),
+    ];
+  }
+
+  /**
+  * Validate input
+  * @static
+  * @returns {object} errors
+  */
   static isTripIDInteger() {
     return [
       check('tripRequestId', 'ID should be an integer').isInt(),

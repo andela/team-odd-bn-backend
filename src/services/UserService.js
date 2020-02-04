@@ -86,6 +86,31 @@ class UserService {
   }
 
   /**
+   * @static
+   * @description GET /api/users/all/id
+   * @param {id} id request object
+   * @returns {Object} response
+   */
+  static async specificUsers(id) {
+    const allUsersObj = {
+      where: { id },
+      attributes: ['id', 'firstName', 'lastName', 'email', 'roleId'],
+      include: [
+        {
+          model: roles,
+          attributes: ['type']
+        },
+        {
+          model: userProfile,
+          as: 'userProfile',
+        }
+      ]
+    };
+    const userProfileInfo = CommonQueries.findOne(users, allUsersObj);
+    return userProfileInfo;
+  }
+
+  /**
     * User can update his/her profile
     * @description POST /api/v1/user/profile-settings
     * @static

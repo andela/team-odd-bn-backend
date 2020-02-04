@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
 import {
-  accommodations, rooms, accommodationImages, ratings, likes, sequelize, cities
+  accommodations, rooms, accommodationImages, ratings, likes, sequelize, cities, users, userProfile
 } from '../database/models';
 import CommonQueries from './CommonQueries';
 
@@ -131,7 +131,7 @@ class AccommodationService {
         displayMessage = like ? 'You liked this accommodation!' : 'You disliked this accommodation!';
       }
 
-      const updateLikeObject = [setObject, { where: { userId: id } }];
+      const updateLikeObject = [setObject, { where: { userId: id, accommodationId } }];
 
       await CommonQueries.update(likes, updateLikeObject);
     } else {
@@ -244,14 +244,38 @@ class AccommodationService {
           model: cities,
         },
         { model: accommodationImages, as: 'imagesAccommodation' },
-        { model: ratings, as: 'ratings' }]
+        {
+          model: ratings,
+          as: 'ratings',
+          include: [{
+            model: users,
+            as: 'users',
+            attributes: ['id', 'firstName', 'lastName', 'email', 'roleId'],
+            include: [{
+              model: userProfile,
+              as: 'userProfile',
+            }]
+          }]
+        }]
       }
       : {
         include: [{
           model: rooms, as: 'accommodationRooms'
         }, { model: accommodationImages, as: 'imagesAccommodation' },
-        { model: cities },
-        { model: ratings, as: 'ratings' }]
+        {
+          model: ratings,
+          as: 'ratings',
+          include: [{
+            model: users,
+            as: 'users',
+            attributes: ['id', 'firstName', 'lastName', 'email', 'roleId'],
+            include: [{
+              model: userProfile,
+              as: 'userProfile',
+            }]
+          }]
+        },
+        { model: cities }]
       };
     const result = await CommonQueries.findAll(accommodations, getAccommodationsQueryObject);
     return result;
