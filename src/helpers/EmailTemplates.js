@@ -23,8 +23,7 @@ class EmailTemplates {
     return {
       to: user.email,
       subject: 'Verify email',
-      html:
-      `<div 
+      html: `<div 
       style="position:absolute;
       width:100%; height:100%; 
       background-color:#F4F4F4">
@@ -65,7 +64,7 @@ class EmailTemplates {
           target='_blank' > Verify Email</a>
           <p style=''>This link expires in 24 hours after the original verification request</p>
           <p>Click<a 
-          href=${resendUrl}
+          href=${VERIFY_EMAIL_FRONTEND_URL}?verifiedToken=${token}
           style='display:block; 
           color:#00B9F2; 
           text-decoration:none;' 
@@ -101,8 +100,56 @@ class EmailTemplates {
       to: user.email,
       from: EMAIL_ADDRESS,
       subject: 'Reset Password Link',
-      html: `<h4>Hi, ${user.firstName},</h4>
-      You requested for a password reset, kindly use2 this <a href=${RESET_PASSWORD_FRONTEND_URL}?resetToken=${token}>link</a> to reset your password</p>`
+      html: `<div 
+      style="position:absolute;
+      width:100%; height:100%; 
+      background-color:#F4F4F4">
+        <div 
+        style='display:flex; 
+        height:120px; font-size:25px;'>
+          <div style='margin:17px 7px 0px 40px';>
+            <img 
+            src='https://res.cloudinary.com/hezzie/image/upload/c_scale,w_60/v1573559746/barefootNomad/icon_givw7v.png' 
+            alt='Bare Foot Nomad Icon' 
+            />
+          </div>
+          <div>
+            <h1 style='color:#00B9F2; font-weight:900'>Barefoot Nomad</h1>
+          </div>
+        </div>
+        <div 
+        style='height:60%; 
+        margin:auto; width: 94%; 
+        text-align:left; 
+        background-color:#FFFF; 
+        -webkit-box-shadow: 5px 5px 5px 5px black; 
+        -moz-box-shadow: 5px 5px 5px 5px black;
+        box-shadow: 5px 5px 5px 5px black;'>
+          <div style='height:65%; padding:10px'>
+          <p style=""> Hi, ${user.firstName}, </p>
+          <p style="">You requested for a password reset, kindly click on below button</p>
+          <a 
+          href=${RESET_PASSWORD_FRONTEND_URL}?resetToken=${token}
+          style='display:block; 
+          background-color:#00B9F2; 
+          width:200px; 
+          text-align:center; 
+          height:auto; 
+          text-decoration:none; 
+          color:#FFFF; padding:5px;' 
+          target='_blank' > Reset password</a>
+          </div>
+          <div 
+          style='background-color:#F4F4F4; 
+         height:25%; width:100%;
+                     float:bottom;padding:10px'>
+            <p style="">
+              If you have any issue, please contact us immediately at on our support email 
+              <a href='mailto:oddbarefootnomad@gmail.com' target='_self'> Barefoot</a>
+            </p>
+          </div>
+       </div>
+     </div>`
     };
   }
 

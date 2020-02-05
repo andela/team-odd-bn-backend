@@ -36,16 +36,10 @@ class AccommodationMiddleware {
   static async isAccommodationAvail(req, res, next) {
     const { checkInDate, roomId } = req.body;
     const serviceQueries = await BookingService.bookAccommodationService(req, res);
+
     const {
       isAccommodationExist, allAvailRoom, isRoomBooked
     } = serviceQueries;
-
-    const isOwnerOfTheTrip = await BookingService.isOwnerOftheTripService(req, res);
-
-    if (isOwnerOfTheTrip.length === 0) {
-      return Response.errorMessage(req, res, 'Sorry, You are not the owner of this trip request', 403);
-    }
-
     const allAvailRoomId = allAvailRoom.map(i => i.id);
     const isRoomExist = allAvailRoomId.includes(parseInt(roomId, 10));
     if (!isRoomExist) {

@@ -70,7 +70,6 @@ class Conflict {
 * @returns {object} data
 */
   static isRoomBooked(req, res, next) {
-    const { tripId } = req.params;
     const { roomId, checkInDate, checkOutDate } = req.body;
     return DataEngine.findConflict(
       req,
@@ -78,7 +77,6 @@ class Conflict {
       next,
       booking,
       {
-        tripId: parseInt(tripId, 10),
         roomId: parseInt(roomId, 10),
         checkInDate: new Date(checkInDate),
         checkOutDate: new Date(checkOutDate)

@@ -41,6 +41,13 @@ module.exports = (sequelize, DataTypes) => {
       { onDelete: 'cascade' },
       { onUpdate: 'cascade' }
     );
+    users.hasMany(
+      models.booking,
+      { sourceKey: 'id' },
+      { targetKey: 'userId' },
+      { onDelete: 'cascade' },
+      { onUpdate: 'cascade' }
+    );
     users.belongsTo(
       models.roles,
       { sourceKey: 'roleId' },
