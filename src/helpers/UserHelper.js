@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import Response from './Response';
-import { users } from '../database/models';
+import { users, userProfile } from '../database/models';
 import AuthenticateToken from './AuthenticateToken';
 import UserService from '../services/UserService';
 
@@ -58,6 +58,15 @@ class UserHelper {
           isVerified
         }
       });
+      const { id } = socialUser[0].dataValues;
+      const k = await userProfile.findOrCreate({
+        where: { userId: id },
+        defaults: {
+          userId: id,
+        }
+      });
+      console.log('====>', k);
+
       const { password, ...userInfo } = socialUser[0].dataValues;
       const newToken = AuthenticateToken.signToken(userInfo);
       done(null, newToken);

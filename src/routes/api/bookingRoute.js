@@ -10,7 +10,7 @@ import isUserVerified from '../../middlewares/isUserVerified';
 
 const { checkIfCheckInDateIsAsCheckOutDate } = ValidateAccommodation;
 const bookingRouter = express.Router();
-const { isTripFound, isRoomBooked } = Conflict;
+const { isRoomBooked } = Conflict;
 
 
 /**
@@ -68,10 +68,9 @@ const { isTripFound, isRoomBooked } = Conflict;
  *           checkOutDate: 2019-11-19 11:11:41.668+02
  */
 bookingRouter.post(
-  '/:tripId',
+  '/',
   verifyToken,
   isUserVerified,
-  isTripFound,
   Validate.bookAccommodationRules(),
   checkInputDataError,
   checkIfCheckInDateIsAsCheckOutDate,

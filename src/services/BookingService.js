@@ -1,9 +1,15 @@
 import {
-  trips, accommodations, rooms, booking, tripRequests, userProfile
+  trips,
+  accommodations,
+  rooms,
+  booking,
+  tripRequests,
+  userProfile,
+  accommodationImages,
+  cities
 } from '../database/models';
 import CommonQueries from './CommonQueries';
 import Response from '../helpers/Response';
-
 
 /**
  * @exports
@@ -11,28 +17,24 @@ import Response from '../helpers/Response';
  */
 class BookingService {
   /**
- * users should be able to booking an accommodation facility
- * @static
- * @description POST /api/trips/:tripId/booking
- * @param {object} req request object
- * @param {object} res response object
- * @memberof BookingController
- * @returns {object} data
- */
+   * users should be able to booking an accommodation facility
+   * @static
+   * @description POST /api/trips/:tripId/booking
+   * @param {object} req request object
+   * @param {object} res response object
+   * @memberof BookingController
+   * @returns {object} data
+   */
   static async bookAccommodationService(req, res) {
     try {
-      const { tripId } = req.params;
-      const tripObj = {
-        where: { id: tripId }, raw: true
-      };
-      const getTrip = await CommonQueries.findOne(trips, tripObj);
-      const { destinationId } = getTrip;
-
       const accommodationObj = {
-        where: { cityId: destinationId }, raw: true
+        raw: true
       };
-      const isAccommodationExist = await CommonQueries.findAll(accommodations, accommodationObj);
-      const availlableRooms = isAccommodationExist.map(async (accommodation) => {
+      const isAccommodationExist = await CommonQueries.findAll(
+        accommodations,
+        accommodationObj
+      );
+      const availlableRooms = isAccommodationExist.map(async accommodation => {
         const roomObj = {
           where: { accommodationId: accommodation.id },
           raw: true
@@ -46,14 +48,14 @@ class BookingService {
       const allAvailRoom = availlableRoomsArray;
       const allAvailRoomId = allAvailRoom.map(i => i.id);
       const bookedRoomObj = {
-        where: { roomId: allAvailRoomId }, raw: true
+        where: { roomId: allAvailRoomId },
+        raw: true
       };
       const isRoomBooked = await CommonQueries.findAll(booking, bookedRoomObj);
       return {
         allAvailRoom,
         isAccommodationExist,
-        getTrip,
-        isRoomBooked,
+        isRoomBooked
       };
     } catch (error) {
       return Response.errorMessage(req, res, error.message, 500);
@@ -61,86 +63,95 @@ class BookingService {
   }
 
   /**
- * create an accommodation request
- * @static
- * @param {object} req request object
- * @param {object} res response object
- * @memberof BookingController
- * @returns {object} data
- */
+   * create an accommodation request
+   * @static
+   * @param {object} req request object
+   * @param {object} res response object
+   * @memberof BookingController
+   * @returns {object} data
+   */
   static async createAccommodationService(req) {
-    const { tripId } = req.params;
     const { id } = req.user;
     const { roomId, checkInDate, checkOutDate } = req.body;
 
     const bookAccommodationObj = {
-      tripId,
       userId: id,
       roomId: parseInt(roomId, 10),
       checkInDate: new Date(checkInDate),
       checkOutDate: new Date(checkOutDate)
-
     };
+
     const result = await CommonQueries.create(booking, bookAccommodationObj);
     return result;
   }
 
   /**
- * As Manager can get all accommodation request made
- * @static
- * @param {object} req request object
- * @param {object} res response object
- * @memberof BookingController
- * @returns {object} data
- */
+   * As Manager can get all accommodation request made
+   * @static
+   * @param {object} req request object
+   * @param {object} res response object
+   * @memberof BookingController
+   * @returns {object} data
+   */
   static async getAllBookingReqService() {
     const result = await CommonQueries.findAll(booking);
+
     return result;
   }
 
   /**
- * As Manager can get specific accommodation request made
- * @static
- * @param {object} req request object
- * @param {object} res response object
- * @memberof BookingController
- * @returns {object} data
- */
+   * As Manager can get specific accommodation request made
+   * @static
+   * @param {object} req request object
+   * @param {object} res response object
+   * @memberof BookingController
+   * @returns {object} data
+   */
   static async getUserBookingReqService(req) {
     const { bookingId: id } = req.params;
     const managerObj = {
       where: { managerId: req.user.id }
     };
     const findOneBookingOb = {
-      where: id ? { id } : {},
-      include: [{
-        model: trips,
-        include: [{
-          model: tripRequests,
-          where: { userId: req.user.id }
-        }],
-      }],
-      raw: true
+      where: id ? { id, userId: req.user.id } : { userId: req.user.id },
+      include: [
+        {
+          model: rooms,
+          include: [{
+            model: accommodations,
+            include: [{
+              model: accommodationImages,
+              as: 'imagesAccommodation'
+            },
+            {
+              model: cities,
+            }]
+          }]
+        }
+      ]
     };
-    let myBookingsresult = await CommonQueries.findAll(booking, findOneBookingOb);
-    myBookingsresult = myBookingsresult.filter(res => res['trip.tripRequest.userId'] === req.user.id);
+    const myBookingsresult = await CommonQueries.findAll(
+      booking,
+      findOneBookingOb
+    );
     const res = await CommonQueries.findAll(userProfile, managerObj);
     let managerWatchBookings;
     if (res) {
       managerWatchBookings = res.map(async r => {
         const findOneBookingO = {
           where: id ? { id } : {},
-          include: [{
-            model: trips,
-            include: [{
-              model: tripRequests,
-              where: { userId: r.userId }
-            }],
-          }],
+          include: [
+            {
+              model: rooms,
+              include: [{ model: accommodations }]
+            }
+          ],
           raw: true
         };
         let resul = await CommonQueries.findAll(booking, findOneBookingO);
-        resul = resul.filter(res => res['trip.tripRequest.userId'] === r.userId);
+        resul = resul.filter(
+          res => res['trip.tripRequest.userId'] === r.userId
+        );
         return resul;
       });
       managerWatchBookings = [].concat(...managerWatchBookings);
@@ -152,13 +163,13 @@ class BookingService {
   }
 
   /**
- * Check If s/he is the owner of that trip s/he is booking an accommodation for
- * @static
- * @param {object} req request object
- * @param {object} res response object
- * @memberof BookingController
- * @returns {object} data
- */
+   * Check If s/he is the owner of that trip s/he is booking an accommodation for
+   * @static
+   * @param {object} req request object
+   * @param {object} res response object
+   * @memberof BookingController
+   * @returns {object} data
+   */
   static async isOwnerOftheTripService(req, res) {
     try {
       const { tripId } = req.params;
@@ -166,10 +177,12 @@ class BookingService {
       const { id } = req.user;
       const findOneBookingObj = {
         where: { id: i },
-        include: [{
-          model: tripRequests,
-          where: { userId: id }
-        }],
+        include: [
+          {
+            model: tripRequests,
+            where: { userId: id }
+          }
+        ],
         raw: true
       };
       const result = await CommonQueries.findAll(trips, findOneBookingObj);
