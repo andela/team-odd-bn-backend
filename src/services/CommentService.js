@@ -40,6 +40,9 @@ class CommentService {
     const { tripRequestId } = req.params;
     const queryObj = {
       attributes: ['id', 'comment', 'updatedAt'],
+      order: [
+        ['updatedAt', 'ASC'],
+      ],
       include: [
         {
           model: users,
