@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
 import {
-  accommodations, rooms, accommodationImages, ratings, likes, sequelize, cities, users, userProfile
+  accommodations, rooms, accommodationImages, ratings, likes, sequelize, cities, users, userProfile,
 } from '../database/models';
 import CommonQueries from './CommonQueries';
 
@@ -160,6 +160,8 @@ class AccommodationService {
    */
   static async getAccommodationLikes(req) {
     const { accommodationId } = req.params;
+    const { id } = req.user;
+
     const likeCounter = await CommonQueries.count(likes, {
       where: {
         accommodationId,
@@ -172,7 +174,20 @@ class AccommodationService {
         disliked: true
       }
     });
-    return { likeCounter, dislikeCounter };
+
+    const joinedTable = await CommonQueries.findAll(likes, {
+      where: { accommodationId, userId: id },
+      include: [{
+        model: accommodations,
+        where: { id: accommodationId }
+      }],
+    });
+
+    const [allAboutWhoReacted] = joinedTable;
+
+    return {
+      likeCounter, dislikeCounter, allAboutWhoReacted
+    };
   }
 
   /**

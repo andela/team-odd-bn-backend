@@ -113,7 +113,6 @@ class BookingService {
       where: { managerId: req.user.id }
     };
     const findOneBookingOb = {
-<<<<<<< HEAD
       where: id ? { id, userId: req.user.id } : { userId: req.user.id },
       order: [['updatedAt', 'DESC']],
       include: [
@@ -135,39 +134,6 @@ class BookingService {
           ]
         }
       ]
-=======
-<<<<<<< HEAD
-      where: id ? { id } : {},
-      order: [
-        ['updatedAt', 'DESC'],
-      ],
-      include: [{
-        model: trips,
-        include: [{
-          model: tripRequests,
-          where: { userId: req.user.id }
-        }],
-      }],
-      raw: true
-=======
-      where: id ? { id, userId: req.user.id } : { userId: req.user.id },
-      include: [
-        {
-          model: rooms,
-          include: [{
-            model: accommodations,
-            include: [{
-              model: accommodationImages,
-              as: 'imagesAccommodation'
-            },
-            {
-              model: cities,
-            }]
-          }]
-        }
-      ]
->>>>>>> ch(booking): change user booking response
->>>>>>> ch(booking): change user booking response
     };
     const myBookingsresult = await CommonQueries.findAll(
       booking,

@@ -23,8 +23,6 @@ class BookingController {
       await NotificationService.newBookingNotification(req);
       return Response.successMessage(req, res, 'You have booked an accommodation facility successfully', result, 201);
     } catch (error) {
-      console.log(error);
-
       return Response.errorMessage(req, res, 'Server error', 500);
     }
   }

@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "id",
       as: "ratings"
     });
+    accommodations.hasMany(models.likes, {
+      targetKey: "accommodationId",
+      sourceKey: "id"
+    });
     accommodations.belongsTo(models.users,
       {
         targetKey: 'id',
