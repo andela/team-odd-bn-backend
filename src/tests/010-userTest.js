@@ -207,18 +207,6 @@ describe('User profile page settings', () => {
       });
   });
 
-
-  it('it should not update user profile with invalid filed', (done) => {
-    chai.request(app)
-      .put('/api/v1/users/profile-settings')
-      .set('token', unverifiedUserToken)
-      .send(userInvalidImage)
-      .end((err, res) => {
-        expect(res.status).eql(400);
-        expect(res.body.message).eql('Invalid image url');
-        done(err);
-      });
-  });
   it('it should not update profile of unverified user', (done) => {
     chai.request(app)
       .put('/api/v1/users/profile-settings')

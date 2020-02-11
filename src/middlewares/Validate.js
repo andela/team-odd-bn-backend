@@ -127,7 +127,7 @@ class Validate {
       check('address', 'Address should be specified').optional().isAlphanumeric(),
       check('imageURL', 'PRofile image URL should be valid').optional(),
       check('department', 'department should be valid').optional().isAlpha(),
-      check('managerId', 'PLease provide your line manager').optional().isInt(),
+      check('managerId', 'Please provide your line manager').isInt(),
       check('bio', 'Please your bio is needed to complete your profile(at least 15 characters)').optional().isLength({ min: 15 })
     ];
   }
