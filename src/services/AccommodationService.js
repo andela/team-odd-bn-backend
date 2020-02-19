@@ -263,6 +263,9 @@ class AccommodationService {
         }]
       }
       : {
+        order: [
+          ['updatedAt', 'DESC'],
+        ],
         include: [{
           model: rooms, as: 'accommodationRooms'
         }, { model: accommodationImages, as: 'imagesAccommodation' },

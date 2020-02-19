@@ -75,6 +75,9 @@ class TripService {
       const managerRequestsObj = {
         where: { userId: user.userId, statusId: 1 },
         attributes: ['id', 'updatedAt', 'createdAt'],
+        order: [
+          ['updatedAt', 'DESC'],
+        ],
         include: [
           {
             model: trips,
@@ -120,7 +123,9 @@ class TripService {
   static async getUserRequests(req) {
     const requestsUsersObject = {
       where: { userId: req.user.id },
-
+      order: [
+        ['updatedAt', 'DESC'],
+      ],
       include: [{
         model: trips,
       },

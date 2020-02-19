@@ -113,6 +113,9 @@ class BookingService {
     };
     const findOneBookingOb = {
       where: id ? { id } : {},
+      order: [
+        ['updatedAt', 'DESC'],
+      ],
       include: [{
         model: trips,
         include: [{

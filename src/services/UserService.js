@@ -74,6 +74,9 @@ class UserService {
   static async availableUsers() {
     const allUsersObj = {
       attributes: ['id', 'firstName', 'lastName', 'email', 'roleId'],
+      order: [
+        ['updatedAt', 'DESC'],
+      ],
       include: [
         {
           model: roles,
