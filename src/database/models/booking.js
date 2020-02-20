@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "roomId",
       targetKey: "id",
     });
+    booking.hasMany(models.likes, {
+      foreignKey: "accommodationId",
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
 
   };
   return booking;
