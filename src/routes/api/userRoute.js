@@ -148,7 +148,7 @@ const { isImage } = customValidator;
  *        "404":
  *          description: Notification not found
  */
-userRoute.put('/profile-settings', verifyToken, profileUpdateRules(), checkInputDataError, isImage, isManager, isUserVerified, UserController.updateProfile);
+userRoute.put('/profile-settings', verifyToken, profileUpdateRules(), checkInputDataError, isManager, isUserVerified, UserController.updateProfile);
 userRoute.get('/view-profile', verifyToken, isUserVerified, UserController.viewProfile);
 userRoute.get('/notification', verifyToken, isUserVerified, UserController.viewNotification);
 userRoute.patch('/logout', verifyToken, UserController.logout);
