@@ -302,6 +302,7 @@ class Validate {
     const MaxDate = new Date(year + 20, month, day).toDateString();
     return [
       check('tripTypeId', 'trip type id should be an integer(1: One-way, 2: two-way, 3: Multi-city)').isInt(),
+      check('user', 'user should be identified by id of integer type').isInt().optional(),
       check('from', 'To date should be valid(YYYY-MM-DD)').isBefore(MaxDate),
       check('to', 'End date should be valid(YYYY-MM-DD)').isBefore(MaxDate),
     ];

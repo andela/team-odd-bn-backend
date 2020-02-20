@@ -153,7 +153,6 @@ tripRouter
     ValidateTrip.checkIfOriginDestinationExists,
     ValidateTrip.checkIfOriginSameAsDestination,
     ValidateTrip.checkMultiCityForSimilarRequests,
-    ValidateTrip.checkForSimilarRequests,
     OneWayTripController
   );
 
@@ -230,7 +229,6 @@ tripRouter.post(
   ValidateTrip.checkIfOriginDestinationExists,
   ValidateTrip.checkIfOriginSameAsDestination,
   ValidateTrip.checkMultiCityForSimilarRequests,
-  ValidateTrip.checkForSimilarRequests,
   ValidateTrip.checkForSimilarRequestsDateRange,
   TripController.requestTrip
 );
@@ -304,7 +302,6 @@ tripRouter
     ValidateTrip.checkIfOriginDestinationExists,
     ValidateTrip.checkIfOriginSameAsDestination,
     ValidateTrip.checkMultiCityForSimilarRequests,
-    ValidateTrip.checkForSimilarRequests,
     ValidateTrip.checkForSimilarRequestsDateRange,
     returnTripController
   );

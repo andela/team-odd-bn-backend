@@ -79,15 +79,6 @@ describe('Request One way trip test', () => {
         done();
       });
   });
-  it('should not be able to create one way trip twice', (done) => {
-    chai.request(app).post('/api/v1/trips/oneway').send(tripMockData.correctOneWayTrip)
-      .set('token', token)
-      .end((err, res) => {
-        res.should.have.status(409);
-        res.body.should.be.an('object');
-        done();
-      });
-  });
   it('should  not be able to create one way trip with wrong date', (done) => {
     chai.request(app).post('/api/v1/trips/oneway').send(tripMockData.wrongDatesOneWayTrip)
       .set('token', token)
@@ -569,8 +560,8 @@ describe('User stats for trips in X timeframe', () => {
       .get('/api/v1/trips/stats/2?from=2020-01-01&to=2025-12-30&user=b')
       .set('token', managerToken)
       .end((err, res) => {
-        expect(res.status).eql(500);
-        expect(res.body).to.have.property('message', 'invalid input syntax for integer: "b"');
+        expect(res.status).eql(400);
+        expect(res.body.message).eql(['user should be identified by id of integer type']);
         done(err);
       });
   });
