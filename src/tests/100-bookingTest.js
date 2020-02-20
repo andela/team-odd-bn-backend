@@ -48,7 +48,7 @@ describe('Book an accomadition facility', () => {
       });
   });
   it('should not be able to book an accomadition facility when checkInDate is greater than checkOutDate', (done) => {
-    chai.request(app).post(`/api/v1/bookings/${7}`)
+    chai.request(app).post('/api/v1/bookings')
       .set('token', userToken1)
       .send(bookMockData.checkInDateGreaterThanCheckOutDate)
       .end((err, res) => {
@@ -59,7 +59,7 @@ describe('Book an accomadition facility', () => {
       });
   });
   it('should not be able to book an accomadition facility when checkInDate is Equal to checkOutDate', (done) => {
-    chai.request(app).post(`/api/v1/bookings/${7}`)
+    chai.request(app).post('/api/v1/bookings')
       .set('token', userToken1)
       .send(bookMockData.checkInDateEqualsToCheckOutDate)
       .end((err, res) => {
@@ -70,7 +70,7 @@ describe('Book an accomadition facility', () => {
       });
   });
   it('should not be able to book an accomadition facility when no roomid provided', (done) => {
-    chai.request(app).post(`/api/v1/bookings/${7}`)
+    chai.request(app).post('/api/v1/bookings')
       .set('token', userToken1)
       .send(bookMockData.noRoomIdProvided)
       .end((err, res) => {
@@ -81,7 +81,7 @@ describe('Book an accomadition facility', () => {
       });
   });
   it('should be able to book an accomadition facility', (done) => {
-    chai.request(app).post('/api/v1/bookings/7')
+    chai.request(app).post('/api/v1/bookings')
       .set('token', userToken1)
       .send(bookMockData.bookAccommodation)
       .end((err, res) => {
@@ -92,7 +92,7 @@ describe('Book an accomadition facility', () => {
       });
   });
   it('should not be able to book an accomadition facility when some one took it', (done) => {
-    chai.request(app).post(`/api/v1/bookings/${7}`)
+    chai.request(app).post('/api/v1/bookings')
       .set('token', userToken1)
       .send(bookMockData.someTookAccommodation)
       .end((err, res) => {
@@ -102,33 +102,11 @@ describe('Book an accomadition facility', () => {
         done(err);
       });
   });
-  it('should not be able to book an accomadition facility when already requested', (done) => {
-    chai.request(app).post(`/api/v1/bookings/${7}`)
-      .set('token', userToken1)
-      .send(bookMockData.bookAccommodation)
-      .end((err, res) => {
-        expect(res.body.message).eql('The accommodation has already booked');
-        res.should.have.status(409);
-        res.body.should.be.an('object');
-        done(err);
-      });
-  });
-  it('should not be able to book an accomadition facility when trip id not found', (done) => {
-    chai.request(app).post(`/api/v1/bookings/${900}`)
-      .set('token', userToken1)
-      .send(bookMockData.bookAccommodation)
-      .end((err, res) => {
-        expect(res.body.message).eql('The trip id not found');
-        res.should.have.status(404);
-        res.body.should.be.an('object');
-        done(err);
-      });
-  });
 });
 describe('Get User Booking accomadition request', () => {
   it('should be able to get user booking request', (done) => {
     chai.request(app).get('/api/v1/bookings')
-      .set('token', managerSignin)
+      .set('token', userToken1)
       .end((err, res) => {
         res.should.have.status(200);
         res.body.should.be.an('object');
@@ -138,7 +116,7 @@ describe('Get User Booking accomadition request', () => {
   });
   it('should be able to get a specific user booking request', (done) => {
     chai.request(app).get('/api/v1/bookings/1')
-      .set('token', managerSignin)
+      .set('token', userToken1)
       .end((err, res) => {
         expect(res.body.message).eql('User booking requests are retrieved successfully');
         res.should.have.status(200);
@@ -148,7 +126,7 @@ describe('Get User Booking accomadition request', () => {
   });
   it('should not be able to get a specific user booking request when the request does not found', (done) => {
     chai.request(app).get('/api/v1/bookings/8000')
-      .set('token', managerSignin)
+      .set('token', userToken1)
       .end((err, res) => {
         expect(res.body.message).eql('No Booking request found');
         res.should.have.status(404);
