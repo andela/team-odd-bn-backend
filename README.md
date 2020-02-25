@@ -3,6 +3,10 @@
 [![Coverage Status](https://coveralls.io/repos/github/andela/team-odd-bn-backend/badge.svg?branch=develop)](https://coveralls.io/github/andela/team-odd-bn-backend?branch=develop)
 [![Maintainability](https://api.codeclimate.com/v1/badges/97cfd183a562e8b5d53f/maintainability)](https://codeclimate.com/github/andela/team-odd-bn-backend/maintainability)
 
+### Version
+
+[![GitHub Release](https://img.shields.io/badge/version-1.0.0-yellow.svg)]()
+
 Barefoot Nomad - Making company travel and accomodation easy and convinient.
 =======
 
