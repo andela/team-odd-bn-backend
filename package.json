@@ -21,7 +21,7 @@
     "@babel/polyfill": "^7.7.0",
     "@hapi/joi": "^16.1.7",
     "babel-eslint": "^10.0.3",
-    "bcrypt": "^3.0.7",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
