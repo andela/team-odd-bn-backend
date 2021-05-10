@@ -36,7 +36,7 @@
     "express-validator": "^6.2.0",
     "http-status-codes": "^1.4.0",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "method-override": "^2.3.10",
     "methods": "^1.1.2",
     "mocha": "^6.2.2",
